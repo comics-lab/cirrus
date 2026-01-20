@@ -1,0 +1,13 @@
+/tmp
+/var/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-bluetooth.service-MDpQw7/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-lm-sensors.service-FoetUO/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-low-memory-monitor.service-2e3wOJ/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-polkit.service-GUT7Pl/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-switcheroo-control.service-7RHJTW/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-systemd-logind.service-7zs0EE/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-ModemManager.service-otMhqE/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-colord.service-yQNumY/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-upower.service-UVgfJ9/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-power-profiles-daemon.service-GMnOhJ/tmp
+/var/tmp/systemd-private-c05056134eb649659b4452469a1a95ba-fwupd.service-bt5AG2/tmp

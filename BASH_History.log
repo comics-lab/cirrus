@@ -1,0 +1,136 @@
+ip addr
+ping reality.local
+ping hippy.local
+ping hawkeye.local
+sudo systemctl poweroff
+date -s --date="Sun Jan 11 8:25 PM PST 2026"
+sudo systemctl status time-set.target 
+sudo systemctl status time-sync.target 
+man time-sync
+man timed
+man ntpd
+sudo systemctl reboot
+sudo apt update
+sudo nano /etc/apt/sources.list
+sudo apt update
+sudo nano /etc/apt/sources.list
+sudo systemctl start ntpd
+date
+date 01-11-2026
+date --help
+date -s 011126
+sudo date -s 011126
+sudo date -s 110126
+sudo date -s 20260111
+time --help
+date --help
+sudo apt update
+man date
+man date | more
+date -s --date="2026-01-11 20:21:00 -0800"
+date -s --date="11 Jan 2026 20:21:00 -0800"
+date -s --date="20:21:00 -0800"
+date --help
+date
+sudo apt update
+cd /etc/sudoers.d/
+alias ll='ls -lrt'
+ll
+cat README 10-installer 
+sudo cat README 10-installer 
+ls -laF
+ll ..
+sudo apt update
+apt list --upgradable | less
+ip addr
+sudo apt update
+sudo fwupdmgr get-devices
+sudo fwupdmgr get-updates
+pwd
+lsblk
+findmount
+findmnt 
+sudo findmnt 
+sudo lsblk
+cd ~
+ls -laF
+ssh-keygen -b 4096
+ls -laF .ssh
+ssh-copy-id --help
+ssh-copy-id -n -i .ssh/id_ed25519.pub rmleonard@reality.local
+ssh-copy-id -i .ssh/id_ed25519.pub rmleonard@reality.local
+ssh reality.local
+ssh-copy-id -i .ssh/id_ed25519.pub reality.local
+ssh reality.local
+ssh rmleonard@reality.local
+cat .ssh/id_ed25519.pub
+ssh rmleonard@reality.local
+ssh-keygen --help
+ssh-keygen -b 4096 -t rsa
+cat .ssh/id_rsa.pub
+ssh reality.local
+sudo apt update && sudo apt upgrade
+sudo systemctl reboot
+exit
+cyme
+lspci
+cyme
+cyme --help
+cyme -t -v --list-root-hubs
+cyme -t -v --list-root-hubs > usb_doc.txt
+cat usb_doc.txt 
+cyme -t -v --list-root-hubs > usb_doc.txt
+cat usb_doc.txt 
+lsusb -t
+udevadm info -q path -n /dev/sda
+lsblk -o NAME,MODEL,SERIAL,TRAN,SIZE
+cd Project
+mkdir -p Projects/cirrus
+cd Projects/cirrus/
+nano architecture.md
+less architecture.md 
+cd Projects/cirrus/
+ll
+ls -l
+nano hardening.md
+less hardening.md 
+systemctl list-unit-files --state=enabled | more
+systemctl cat switcheroo-control.service
+systemctl list-unit-files --state=enabled | more
+systemctl cat xfs_scrub_all.service 
+sudo apt update && sudo apt full-upgrade
+sudo apt autoremove --purge
+hostname -fqdn
+hostname --long
+hostname --domain
+sudo hostnamectl --help
+sudo hostnamectl status
+sudo nano /etc/hosts
+hostname --fqdn
+hostname
+sudo hostnamectl status
+getent group sudo
+sudo passwd -l root
+sudo visudo
+ssh reality
+ssh reality.local
+nano /etc/sudoers.d/rmleonard
+sudo nano /etc/sudoers.d/rmleonard
+sudo nano /etc/ssh/sshd_config
+sudo systemctl ssh
+sudo systemctl status ssh.service 
+sudo systemctl restart ssh.service 
+sudo apt list ufw
+sudo apt show ufw
+sudo apt install ufw
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow ssh
+sudo ufw enable
+sudo ufw status verbose
+sudo nano /etc/sysctl.d/99-hardening.conf
+sudo sysctl --system
+cd Projects/cirrus/
+history --help
+history -anrw BASH_History.log
+history -w BASH_History.log
