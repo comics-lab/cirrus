@@ -54,7 +54,8 @@ Current state:
 - Phoenix has already been wiped and recreated as a clean Btrfs volume
 - selected initial layout: the lean Phoenix subvolume set documented in `logical_storage.md`
 - the lean Phoenix subvolume layout has been created
-- long-lived application data can live there once ownership and service-write policy are defined
+- ownership and service-write policy are now documented in `logical_storage.md`
+- shared group and ACL baseline have been applied on the live host
 
 ## Phase 5: Container Baseline
 

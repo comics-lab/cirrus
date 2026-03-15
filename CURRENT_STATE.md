@@ -36,6 +36,12 @@ State captured from `state-of-hardware-20260315-220018.txt`, `state-of-hardware-
   - `media/incoming`
   - `services/kavita`
   - `services/mylar`
+- Phoenix shared access baseline has been applied:
+  - shared group: `media`
+  - `rmleonard` is a member of `media`
+  - top-level shared trees are `root:media`
+  - shared directories use setgid mode `2775`
+  - default ACLs grant group `media` `rwx` inheritance
 
 ## Hardening Status
 
@@ -117,6 +123,6 @@ The larger book structure under `the_lab/comics-lab-book/` exists, but much of i
 ## Immediate Truths
 
 - Cirrus setup is not complete.
-- Phoenix has been reset as a clean Btrfs data volume and the initial subvolume layout now exists, but ownership and service-write policy still need to be defined.
+- Phoenix has been reset as a clean Btrfs data volume, the initial subvolume layout exists, and the shared group/ACL baseline has been applied.
 - Docker and application deployment should wait until hardening and storage decisions are finished.
 - This repo should continue to document Cirrus itself, not the whole lab.

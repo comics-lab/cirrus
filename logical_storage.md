@@ -140,6 +140,63 @@ Books subtree rationale:
 - `other` provides a deliberate bucket for PDFs or book-adjacent formats that do not behave like standard ebook files
 - this avoids having to reorganize a flat `books` directory later
 
+### Ownership Map
+
+Recommended shared group:
+- group name: `media`
+- human operator: `rmleonard` should be a member
+- container group: both Kavita and Mylar should run with this shared `PGID`
+
+Recommended policy:
+- use one shared group for manual operations and service access
+- keep one primary writer per library tree wherever possible
+- keep service config/state separated from library content
+- use setgid directories and default ACLs on shared writable trees
+
+Subvolume ownership map:
+
+| Path | Intended owner | Group | Mode | Primary writer | Notes |
+|---|---|---|---|---|---|
+| `/mnt/phoenix/media` | `root` | `media` | `2775` | human/admin | top-level container for library trees |
+| `/mnt/phoenix/media/comics` | `root` | `media` | `2775` | Mylar | Kavita should mount read-only if possible |
+| `/mnt/phoenix/media/books` | `root` | `media` | `2775` | human/admin | top-level subtree for non-comics books |
+| `/mnt/phoenix/media/books/ebooks` | `root` | `media` | `2775` | human/admin | EPUB, MOBI, AZW, similar |
+| `/mnt/phoenix/media/books/other` | `root` | `media` | `2775` | human/admin | PDFs and non-standard book formats |
+| `/mnt/phoenix/media/incoming` | `root` | `media` | `2775` | human/admin and Mylar if needed | staging/quarantine before final placement |
+| `/mnt/phoenix/services` | `root` | `media` | `2775` | human/admin | top-level container for service state |
+| `/mnt/phoenix/services/kavita` | service UID or `root` | `media` | `2775` | Kavita | writable app state/config/cache |
+| `/mnt/phoenix/services/mylar` | service UID or `root` | `media` | `2775` | Mylar | writable app state/config/cache |
+| `/mnt/phoenix/backups` | `root` | `media` | `2775` | human/admin | exported backups only, not live app state |
+| `/mnt/phoenix/staging` | `root` | `media` | `2775` | human/admin | bulk repair, reorg, and temporary work |
+
+File mode target:
+- regular files on shared trees: `0664`
+
+Directory mode target:
+- shared directories: `2775`
+
+ACL baseline:
+- set default ACLs so new files and directories inherit group `media` write access on:
+  - `/mnt/phoenix/media`
+  - `/mnt/phoenix/services`
+  - `/mnt/phoenix/backups`
+  - `/mnt/phoenix/staging`
+
+Container mapping recommendation:
+- Kavita and Mylar should use the same `PGID`
+- Mylar should be the primary writer for `/mnt/phoenix/media/comics`
+- Kavita should prefer read-only access to library trees and write only within `/mnt/phoenix/services/kavita`
+- human/manual operations should be performed by `rmleonard` through the shared `media` group, not by loosening permissions to world-writable
+
+### Applied Baseline (2026-03-15)
+
+The following have been applied on the live host:
+- group `media` created
+- user `rmleonard` added to group `media`
+- `/mnt/phoenix/media`, `/mnt/phoenix/services`, `/mnt/phoenix/backups`, and `/mnt/phoenix/staging` set to group `media`
+- shared directories set to mode `2775`
+- default ACLs added so group `media` inherits `rwx` on new files and directories under the shared trees
+
 ---
 
 ## Future Volumes

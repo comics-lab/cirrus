@@ -21,3 +21,5 @@
 - Wiped and recreated Phoenix as a fresh Btrfs volume labeled `phoenix`, updated `/etc/fstab`, and remounted it with `noatime,compress=zstd:3`.
 - Installed `smartmontools` and `gdisk`, then replaced the default `DEVICESCAN` config with explicit SMART monitoring for Phoenix and both NVMe devices.
 - Created the selected lean Phoenix Btrfs subvolume layout, including the `books/ebooks` and `books/other` subtree.
+- Documented the Phoenix ownership map using a shared `media` group for both services and manual operator access.
+- Applied the Phoenix shared-group baseline: created group `media`, added `rmleonard`, set shared trees to `root:media`, enabled setgid directories, and added default ACLs.

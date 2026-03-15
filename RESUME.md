@@ -11,6 +11,8 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - Phoenix has been recreated as a clean Btrfs volume at `/mnt/phoenix` and the selected lean subvolume layout has been created.
 - Docker is not installed on Cirrus.
 - Lean Phoenix subvolume layout is the selected baseline; see `logical_storage.md`.
+- Phoenix ownership and shared-group policy are documented in `logical_storage.md`.
+- Phoenix shared group and ACL baseline have been applied on the live host.
 
 ## Start With
 - `README.md`
@@ -35,9 +37,8 @@ Start in: `/home/rmleonard/Projects/cirrus`
 1. Review the `docs-normalization` branch diff before merging it into `main`.
 2. Review `SERVICES.md` and apply the recommended keep/drop service baseline.
 3. Decide explicitly whether Cirrus is a server with temporary GNOME, or a workstation with services.
-4. Define the Phoenix ownership model and service-write policy for the created subvolumes.
-5. Capture another state snapshot after any hardening or storage-layout changes.
-6. Install Docker only after the storage and hardening decisions are settled.
+4. Capture another state snapshot after any hardening or storage-layout changes.
+5. Install Docker only after the storage and hardening decisions are settled.
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
