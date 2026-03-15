@@ -20,6 +20,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - `SETUP_PLAN.md`
 - `SERVICES.md`
 - `NEXT_STEPS_2026-03-15.md`
+- `state-of-hardware-20260315-230117.txt`
 - `state-of-hardware-20260315-220018.txt`
 - `state-of-hardware-20260126-055629.txt`
 
@@ -37,7 +38,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 1. Review the `docs-normalization` branch diff before merging it into `main`.
 2. Review `SERVICES.md` and apply the recommended keep/drop service baseline.
 3. Decide explicitly whether Cirrus is a server with temporary GNOME, or a workstation with services.
-4. Capture another state snapshot after any hardening or storage-layout changes.
+4. Begin Docker baseline planning using the current Phoenix and service posture.
 5. Install Docker only after the storage and hardening decisions are settled.
 
 ## Open Questions

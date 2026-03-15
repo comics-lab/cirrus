@@ -23,6 +23,7 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `SERVICES.md`: current live service baseline and keep/drop review queue
 - `RESUME.md`: normalized session handoff for the next restart
 - `NEXT_STEPS_2026-03-15.md`: restructuring assessment and rationale
+- `state-of-hardware-20260315-230117.txt`: post-change host snapshot
 - `state-of-hardware-20260315-220018.txt`: current live host snapshot
 - `state-of-hardware-20260126-055629.txt`: baseline host snapshot
 - `cirrus_checklist.md`: older staged bring-up checklist
@@ -43,6 +44,7 @@ Current root docs:
 
 Reference and working notes:
 
+- `state-of-hardware-20260315-230117.txt`: latest post-change host snapshot
 - `state-of-hardware-20260315-220018.txt`: latest captured live host snapshot
 - `state-of-hardware-20260126-055629.txt`: captured host snapshot
 - `cirrus_checklist.md`: older bring-up checklist with captured state
