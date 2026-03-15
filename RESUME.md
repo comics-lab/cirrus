@@ -8,8 +8,9 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - Root docs were reindexed so `README.md`, `CURRENT_STATE.md`, `SETUP_PLAN.md`, and this file agree on repo purpose and location.
 - Hardening baseline already in place: SSH key-only, UFW active, unattended-upgrades enabled, journald persistent, logrotate.timer enabled.
 - SMART monitoring is installed and explicitly configured for Phoenix and both NVMe devices.
-- Phoenix has been recreated as a clean Btrfs volume at `/mnt/phoenix` and now needs a deliberate directory/subvolume layout.
+- Phoenix has been recreated as a clean Btrfs volume at `/mnt/phoenix` and the selected lean subvolume layout has been created.
 - Docker is not installed on Cirrus.
+- Lean Phoenix subvolume layout is the selected baseline; see `logical_storage.md`.
 
 ## Start With
 - `README.md`
@@ -34,10 +35,9 @@ Start in: `/home/rmleonard/Projects/cirrus`
 1. Review the `docs-normalization` branch diff before merging it into `main`.
 2. Review `SERVICES.md` and apply the recommended keep/drop service baseline.
 3. Decide explicitly whether Cirrus is a server with temporary GNOME, or a workstation with services.
-4. Define the Phoenix directory or subvolume layout and target ownership model.
+4. Define the Phoenix ownership model and service-write policy for the created subvolumes.
 5. Capture another state snapshot after any hardening or storage-layout changes.
 6. Install Docker only after the storage and hardening decisions are settled.
 
 ## Open Questions
-- Should Phoenix be wiped and rebuilt now, or kept intact until more data is inspected?
 - Which desktop-oriented services are still intentionally enabled on Cirrus?

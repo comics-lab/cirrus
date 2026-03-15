@@ -28,7 +28,14 @@ State captured from `state-of-hardware-20260315-220018.txt`, `state-of-hardware-
 - Phoenix label: `phoenix`
 - Phoenix UUID: `16dcd3d6-bfaf-4551-9c3d-ea23ecdf3481`
 - Phoenix mount options: `defaults,noatime,compress=zstd:3`
-- Phoenix is now clean and ready for a deliberate service-data layout
+- Phoenix now has an initial Btrfs subvolume layout for `media`, `services`, `backups`, and `staging`
+- Phoenix application/library subvolumes currently include:
+  - `media/comics`
+  - `media/books/ebooks`
+  - `media/books/other`
+  - `media/incoming`
+  - `services/kavita`
+  - `services/mylar`
 
 ## Hardening Status
 
@@ -110,6 +117,6 @@ The larger book structure under `the_lab/comics-lab-book/` exists, but much of i
 ## Immediate Truths
 
 - Cirrus setup is not complete.
-- Phoenix has been reset as a clean Btrfs data volume, but its directory and ownership layout still needs to be defined.
+- Phoenix has been reset as a clean Btrfs data volume and the initial subvolume layout now exists, but ownership and service-write policy still need to be defined.
 - Docker and application deployment should wait until hardening and storage decisions are finished.
 - This repo should continue to document Cirrus itself, not the whole lab.

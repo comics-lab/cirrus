@@ -20,3 +20,4 @@
 - Captured a fresh live state snapshot in `state-of-hardware-20260315-220018.txt` and documented that Phoenix still looks like legacy/recovery data rather than clean service storage.
 - Wiped and recreated Phoenix as a fresh Btrfs volume labeled `phoenix`, updated `/etc/fstab`, and remounted it with `noatime,compress=zstd:3`.
 - Installed `smartmontools` and `gdisk`, then replaced the default `DEVICESCAN` config with explicit SMART monitoring for Phoenix and both NVMe devices.
+- Created the selected lean Phoenix Btrfs subvolume layout, including the `books/ebooks` and `books/other` subtree.

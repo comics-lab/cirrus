@@ -22,7 +22,19 @@
 - Phoenix UUID: `16dcd3d6-bfaf-4551-9c3d-ea23ecdf3481`
 - Phoenix mountpoint: `/mnt/phoenix`
 - Phoenix mount options now include `noatime,compress=zstd:3`
-- Phoenix currently mounts the filesystem root (`subvol=/`) and is effectively empty
+- Phoenix currently mounts the filesystem root (`subvol=/`)
+- Implemented subvolumes:
+  - `media`
+  - `media/comics`
+  - `media/books`
+  - `media/books/ebooks`
+  - `media/books/other`
+  - `media/incoming`
+  - `services`
+  - `services/kavita`
+  - `services/mylar`
+  - `backups`
+  - `staging`
 
 ## Boot Volume
 
@@ -71,9 +83,62 @@ unless explicitly documented otherwise.
 Phoenix is now suitable as the long-term data volume for CBR, CBZ, PDF, and other library or service data.
 
 Recommended next step:
-- create an explicit directory or subvolume layout for service data before placing applications there
+- define ownership and write permissions for the created subvolumes
 - decide whether Docker should use a Phoenix path directly or a dedicated subvolume
-- keep backups and media separated by directory or subvolume from service state
+- keep backups and media separated from service state as currently laid out
+
+### Candidate Subvolume Layouts
+
+Full layout:
+
+```text
+/mnt/phoenix
+├── media
+│   ├── comics
+│   ├── books
+│   └── incoming
+├── services
+│   ├── kavita
+│   ├── mylar
+│   └── shared
+├── backups
+├── staging
+└── snapshots
+```
+
+Lean layout:
+
+```text
+/mnt/phoenix
+├── media
+│   ├── comics
+│   ├── books
+│   │   ├── ebooks
+│   │   └── other
+│   └── incoming
+├── services
+│   ├── kavita
+│   └── mylar
+├── backups
+└── staging
+```
+
+### Selected Baseline
+
+Use the lean layout first.
+
+Status:
+- implemented on Phoenix as Btrfs subvolumes on `2026-03-15`
+
+Reason:
+- it matches the current known services
+- it keeps only one planned expansion under `books`, where format separation is already justified
+- it still leaves room to add `shared` or `snapshots` later when there is actual need
+
+Books subtree rationale:
+- `ebooks` gives a clean home for EPUB, MOBI, AZW, and similar formats
+- `other` provides a deliberate bucket for PDFs or book-adjacent formats that do not behave like standard ebook files
+- this avoids having to reorganize a flat `books` directory later
 
 ---
 
