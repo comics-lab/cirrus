@@ -8,6 +8,14 @@ No fluff. This is ops-grade.
 
 A) Debian 13 Server Hardening — Checklist (Cirrus)
 
+## Observed State (2026-01-26)
+- SSH: PermitRootLogin no, PasswordAuthentication no, PubkeyAuthentication yes
+- UFW: active, default deny incoming, SSH allowed
+- Services: ssh enabled; ufw enabled; unattended-upgrades enabled; nftables disabled; fail2ban not installed
+- Journald: Storage=persistent configured
+- Log rotation: logrotate.timer enabled
+- State log: state-of-hardware-20260126-055629.txt
+
 Treat this as a check sheet, not a tutorial. Each item is intentional.
 
 ⸻

@@ -1,0 +1,46 @@
+I don’t have the Beast storage map in this repo. I searched the Cirrus docs and only found high‑level references to `/mnt/grackle/LIBRARY` in `architecture.md` and a note in `restart.md` saying a storage inventory was created, but the actual map file isn’t here. If it lives elsewhere, point me to it (path or repo) and I’ll load it.
+
+Given your goal (dedupe/reduce, then combine two 9TB drives into a single 9TB Btrfs volume and move `LIBRARY` there), here’s the safest path forward and how Phoenix fits:
+
+**Best path forward (high‑level)**
+1) **Inventory and freeze Beast storage truth**
+   - Capture `lsblk -f`, `findmnt`, `btrfs filesystem show`, `df -hT`, and current mountpoints for Beast.
+   - Identify which drive(s) currently host `LIBRARY` and any mirrors/arrays.
+
+2) **Create the new 9TB Btrfs volume**
+   - Two 9TB drives → **Btrfs RAID1** gives ~9TB usable with redundancy.
+   - If you truly want a *single* 9TB volume (not mirrored), that’s **single profile** (higher risk). I’d recommend RAID1 for LIBRARY.
+
+3) **Deduplication and cleanup (before migration)**
+   - Run hash‑based duplicate detection (e.g., `rdfind`, `fdupes`, or a content‑hash scanner) *outside* LIBRARY first to avoid accidental deletes.
+   - Use a quarantine/move strategy (do not delete first pass).
+   - Only prune once you’ve got verified reports.
+
+4) **Migrate LIBRARY**
+   - Use `rsync -aHAX --numeric-ids --info=progress2 --dry-run` first.
+   - Then a real copy, followed by a verification pass (checksums or rsync with `--checksum`).
+
+5) **Cutover**
+   - Swap mountpoint so new volume becomes `/mnt/grackle` (or whatever your authoritative mount is).
+   - Keep old volume read‑only or offline for a safety window.
+
+**Best use of Phoenix**
+- **Phoenix should be a staging / rebuild zone**, not authoritative storage.
+- Use it for:
+  - Ingest and dedupe workflows
+  - Temporary rebuilds
+  - Testing new library layouts
+- Avoid making Phoenix the final LIBRARY if it’s single‑disk and not redundant.
+
+**Docker access to LIBRARY**
+- Bind‑mount the authoritative LIBRARY **read‑only** into containers.
+- Keep container writable data elsewhere (either NVMe RAID1 or a dedicated Docker volume).
+
+---
+
+If you want me to proceed, I need:
+- The **Beast storage map** (or permission to run the inventory commands on Beast).
+- Confirmation on **RAID1 vs single** for the new 9TB volume.
+- Whether Phoenix should remain a staging/rebuild zone (recommended).
+
+Once you confirm, I’ll outline the exact step‑by‑step commands.

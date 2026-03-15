@@ -8,6 +8,13 @@
 
 ---
 
+## Current Implementation (2026-01-25)
+- Boot volume: Btrfs on md0p1 (NVMe RAID), subvols / and /home
+- Phoenix: /mnt/phoenix on /dev/sda1 (Btrfs), mounted via fstab
+- Phoenix mount options: rw,relatime,space_cache=v2,subvolid=5,subvol=/
+- Phoenix usage: 3.7T total, 3.1T used (84%)
+- State log: state-of-hardware-20260126-055629.txt
+
 ## Boot Volume
 
 ### Purpose
