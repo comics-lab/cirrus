@@ -4,6 +4,17 @@ Below is a practical Cirrus bring-up plan in the order I’d run it, with concre
 
 ⸻
 
+## Status Snapshot (2026-01-26)
+- State log: state-of-hardware-20260126-055629.txt
+- OS: Debian GNU/Linux 13 (trixie), kernel 6.12.63+deb13-amd64
+- Boot volume: Btrfs on md0p1 (NVMe RAID), subvols / and /home
+- Phoenix: /mnt/phoenix on /dev/sda1 (Btrfs), fstab entry present, mounted; 3.7T total, 84% used
+- SSH hardening: PermitRootLogin no, PasswordAuthentication no, PubkeyAuthentication yes
+- Firewall: UFW active, default deny incoming, SSH allowed
+- Services: ssh enabled; ufw enabled; unattended-upgrades enabled; nftables disabled; fail2ban not installed
+- Journald: Storage=persistent configured
+- Log rotation: logrotate.timer enabled
+
 Phase 1: Freeze the ground truth
 
 Capture baseline “truth bundle”

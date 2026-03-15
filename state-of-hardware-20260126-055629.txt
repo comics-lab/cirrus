@@ -1,0 +1,566 @@
+# Cirrus State of Hardware
+# Timestamp (UTC): 2026-01-26 05:56:29 UTC
+
+## date
+Sun Jan 25 09:56:29 PM PST 2026
+
+## uname -a
+Linux cirrus 6.12.63+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.63-1 (2025-12-30) x86_64 GNU/Linux
+
+## lsb_release -a (or /etc/os-release)
+Distributor ID:	Debian
+Description:	Debian GNU/Linux 13 (trixie)
+Release:	13
+Codename:	trixie
+
+## uptime
+ 21:56:29 up 12 days, 21:59,  5 users,  load average: 0.00, 0.00, 0.00
+
+## ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute 
+       valid_lft forever preferred_lft forever
+2: enp1s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 78:55:36:02:9b:69 brd ff:ff:ff:ff:ff:ff
+    altname enx785536029b69
+    inet 192.168.1.113/24 brd 192.168.1.255 scope global dynamic noprefixroute enp1s0
+       valid_lft 4153sec preferred_lft 4153sec
+    inet6 fe80::bc73:5955:c51e:cbc8/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+3: enp2s0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state DOWN group default qlen 1000
+    link/ether 78:55:36:02:9b:68 brd ff:ff:ff:ff:ff:ff
+    altname enx785536029b68
+4: wlo1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+    link/ether 98:fe:3e:5e:b6:54 brd ff:ff:ff:ff:ff:ff
+    altname wlp0s20f3
+    altname wlx98fe3e5eb654
+    inet 192.168.1.79/24 brd 192.168.1.255 scope global dynamic noprefixroute wlo1
+       valid_lft 5100sec preferred_lft 5100sec
+    inet6 fe80::2f50:5110:8464:b6be/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+
+## ip r
+default via 192.168.1.1 dev enp1s0 proto dhcp src 192.168.1.113 metric 100 
+default via 192.168.1.1 dev wlo1 proto dhcp src 192.168.1.79 metric 600 
+192.168.1.0/24 dev enp1s0 proto kernel scope link src 192.168.1.113 metric 100 
+192.168.1.0/24 dev wlo1 proto kernel scope link src 192.168.1.79 metric 600 
+
+## lsblk -o NAME,SIZE,MODEL,SERIAL,TRAN,FSTYPE,MOUNTPOINTS
+NAME           SIZE MODEL                SERIAL           TRAN   FSTYPE            MOUNTPOINTS
+sda            3.6T HGST HDS5C4040ALE630 PL1331LAGG248H   usb                      
+└─sda1         3.6T                                              btrfs             /mnt/phoenix
+mmcblk0       58.2G                      0xcd30b932       mmc                      
+├─mmcblk0p1    100M                                       mmc    vfat              
+├─mmcblk0p2     16M                                       mmc                      
+├─mmcblk0p3      1G                                       mmc    ntfs              
+└─mmcblk0p4   57.1G                                       mmc    ntfs              
+nvme0n1      931.5G KINGSTON SNV2S1000G  50026B76860DF86F nvme                     
+└─nvme0n1p1  931.5G                                       nvme   linux_raid_member 
+  └─md0      930.9G                                                                
+    └─md0p1  930.9G                                              btrfs             /home
+                                                                                   /
+nvme1n1      931.5G KINGSTON SNV2S1000G  50026B76860DFFB3 nvme                     
+├─nvme1n1p1    487M                                       nvme   vfat              /boot/efi
+└─nvme1n1p2    931G                                       nvme   linux_raid_member 
+  └─md0      930.9G                                                                
+    └─md0p1  930.9G                                              btrfs             /home
+                                                                                   /
+mmcblk0boot0     4M                      0xcd30b932       mmc                      
+mmcblk0boot1     4M                      0xcd30b932       mmc                      
+
+## findmnt -o SOURCE,FSTYPE,TARGET,OPTIONS
+SOURCE             FSTYPE          TARGET                                        OPTIONS
+/dev/md0p1[/@]     btrfs           /                                             rw,relatime,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@
+sysfs              sysfs           ├─/sys                                        rw,nosuid,nodev,noexec,relatime
+efivarfs           efivarfs        │ ├─/sys/firmware/efi/efivars                 rw,nosuid,nodev,noexec,relatime
+securityfs         securityfs      │ ├─/sys/kernel/security                      rw,nosuid,nodev,noexec,relatime
+cgroup2            cgroup2         │ ├─/sys/fs/cgroup                            rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot
+pstore             pstore          │ ├─/sys/fs/pstore                            rw,nosuid,nodev,noexec,relatime
+bpf                bpf             │ ├─/sys/fs/bpf                               rw,nosuid,nodev,noexec,relatime,mode=700
+tracefs            tracefs         │ ├─/sys/kernel/tracing                       rw,nosuid,nodev,noexec,relatime
+debugfs            debugfs         │ ├─/sys/kernel/debug                         rw,nosuid,nodev,noexec,relatime
+fusectl            fusectl         │ ├─/sys/fs/fuse/connections                  rw,nosuid,nodev,noexec,relatime
+configfs           configfs        │ └─/sys/kernel/config                        rw,nosuid,nodev,noexec,relatime
+proc               proc            ├─/proc                                       rw,nosuid,nodev,noexec,relatime
+systemd-1          autofs          │ └─/proc/sys/fs/binfmt_misc                  rw,relatime,fd=40,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=6814
+binfmt_misc        binfmt_misc     │   └─/proc/sys/fs/binfmt_misc                rw,nosuid,nodev,noexec,relatime
+udev               devtmpfs        ├─/dev                                        rw,nosuid,relatime,size=8000744k,nr_inodes=2000186,mode=755,inode64
+devpts             devpts          │ ├─/dev/pts                                  rw,nosuid,noexec,relatime,gid=5,mode=600,ptmxmode=000
+tmpfs              tmpfs           │ ├─/dev/shm                                  rw,nosuid,nodev,inode64
+mqueue             mqueue          │ ├─/dev/mqueue                               rw,nosuid,nodev,noexec,relatime
+hugetlbfs          hugetlbfs       │ └─/dev/hugepages                            rw,nosuid,nodev,relatime,pagesize=2M
+tmpfs              tmpfs           ├─/run                                        rw,nosuid,nodev,noexec,relatime,size=1614504k,mode=755,inode64
+tmpfs              tmpfs           │ ├─/run/lock                                 rw,nosuid,nodev,noexec,relatime,size=5120k,inode64
+tmpfs              tmpfs           │ ├─/run/credentials/systemd-journald.service ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,inode64,noswap
+tmpfs              tmpfs           │ └─/run/user/1000                            rw,nosuid,nodev,relatime,size=1614500k,nr_inodes=403625,mode=700,uid=1000,gid=1000,inode64
+portal             fuse.portal     │   ├─/run/user/1000/doc                      rw,nosuid,nodev,relatime,user_id=1000,group_id=1000
+gvfsd-fuse         fuse.gvfsd-fuse │   └─/run/user/1000/gvfs                     rw,nosuid,nodev,relatime,user_id=1000,group_id=1000
+tmpfs              tmpfs           ├─/tmp                                        rw,nosuid,nodev,size=8072508k,nr_inodes=1048576,inode64
+/dev/md0p1[/@home] btrfs           ├─/home                                       rw,relatime,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/@home
+/dev/nvme1n1p1     vfat            ├─/boot/efi                                   rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro
+/dev/sda1          btrfs           └─/mnt/phoenix                                rw,relatime,space_cache=v2,subvolid=5,subvol=/
+
+## df -hT
+Filesystem     Type      Size  Used Avail Use% Mounted on
+udev           devtmpfs  7.7G     0  7.7G   0% /dev
+tmpfs          tmpfs     1.6G  1.9M  1.6G   1% /run
+efivarfs       efivarfs  192K  108K   80K  58% /sys/firmware/efi/efivars
+/dev/md0p1     btrfs     931G   13G  913G   2% /
+tmpfs          tmpfs     7.7G   12K  7.7G   1% /dev/shm
+tmpfs          tmpfs     5.0M   12K  5.0M   1% /run/lock
+tmpfs          tmpfs     7.7G  3.9M  7.7G   1% /tmp
+tmpfs          tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+/dev/md0p1     btrfs     931G   13G  913G   2% /home
+/dev/nvme1n1p1 vfat      487M  7.0M  480M   2% /boot/efi
+tmpfs          tmpfs     1.6G  136K  1.6G   1% /run/user/1000
+/dev/sda1      btrfs     3.7T  3.1T  614G  84% /mnt/phoenix
+
+## btrfs filesystem show /
+Label: none  uuid: 8f8bd0c2-452d-4095-b4e9-2cd4c9027f52
+	Total devices 1 FS bytes used 12.54GiB
+	devid    1 size 930.91GiB used 20.02GiB path /dev/md0p1
+
+## btrfs filesystem df /
+Data, single: total=14.01GiB, used=12.27GiB
+System, DUP: total=8.00MiB, used=16.00KiB
+Metadata, DUP: total=3.00GiB, used=273.12MiB
+GlobalReserve, single: total=29.44MiB, used=0.00B
+
+## btrfs device stats /
+[/dev/md0p1].write_io_errs    0
+[/dev/md0p1].read_io_errs     0
+[/dev/md0p1].flush_io_errs    0
+[/dev/md0p1].corruption_errs  0
+[/dev/md0p1].generation_errs  0
+
+## /etc/fstab
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a device; this may
+# be used with UUID= as a more robust way to name devices that works even if
+# disks are added and removed. See fstab(5).
+#
+# <file system>             <mount point>  <type>  <options>  <dump>  <pass>
+UUID=8EBB-3633                            /boot/efi      vfat    defaults   0 2
+UUID=8f8bd0c2-452d-4095-b4e9-2cd4c9027f52 /              btrfs   subvol=/@,defaults 0 0
+UUID=8f8bd0c2-452d-4095-b4e9-2cd4c9027f52 /home          btrfs   subvol=/@home,defaults 0 0
+
+# external disk
+UUID=02d9bc81-c5b0-4ba9-beab-50cf314b3eb2 /mnt/phoenix	btrfs	defaults	0 1
+
+
+## systemctl is-enabled ssh ufw nftables fail2ban unattended-upgrades
+enabled
+enabled
+disabled
+not-found
+not-found
+
+## sshd -T | egrep 'passwordauthentication|permitrootlogin|pubkeyauthentication'
+permitrootlogin no
+pubkeyauthentication yes
+passwordauthentication no
+
+## ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere                  
+22/tcp (v6)                ALLOW IN    Anywhere (v6)             
+
+
+## nft list ruleset
+table ip filter {
+	chain ufw-before-logging-input {
+	}
+
+	chain ufw-before-logging-output {
+	}
+
+	chain ufw-before-logging-forward {
+	}
+
+	chain ufw-before-input {
+		iifname "lo" counter packets 791 bytes 92109 accept
+		ct state related,established counter packets 722020 bytes 941762604 accept
+		ct state invalid counter packets 0 bytes 0 jump ufw-logging-deny
+		ct state invalid counter packets 0 bytes 0 drop
+		ip protocol icmp icmp type destination-unreachable counter packets 0 bytes 0 accept
+		ip protocol icmp icmp type time-exceeded counter packets 0 bytes 0 accept
+		ip protocol icmp icmp type parameter-problem counter packets 0 bytes 0 accept
+		ip protocol icmp icmp type echo-request counter packets 0 bytes 0 accept
+		udp sport 67 udp dport 68 counter packets 15854 bytes 5200247 accept
+		counter packets 5917031 bytes 1199952723 jump ufw-not-local
+		ip daddr 224.0.0.251 udp dport 5353 counter packets 955229 bytes 211663275 accept
+		ip daddr 239.255.255.250 udp dport 1900 counter packets 0 bytes 0 accept
+		counter packets 4961802 bytes 988289448 jump ufw-user-input
+	}
+
+	chain ufw-before-output {
+		oifname "lo" counter packets 792 bytes 92149 accept
+		ct state related,established counter packets 531856 bytes 5352935337 accept
+		counter packets 8295 bytes 859194 jump ufw-user-output
+	}
+
+	chain ufw-before-forward {
+		ct state related,established counter packets 0 bytes 0 accept
+		ip protocol icmp icmp type destination-unreachable counter packets 0 bytes 0 accept
+		ip protocol icmp icmp type time-exceeded counter packets 0 bytes 0 accept
+		ip protocol icmp icmp type parameter-problem counter packets 0 bytes 0 accept
+		ip protocol icmp icmp type echo-request counter packets 0 bytes 0 accept
+		counter packets 0 bytes 0 jump ufw-user-forward
+	}
+
+	chain ufw-after-input {
+		udp dport 137 counter packets 81954 bytes 6417702 jump ufw-skip-to-policy-input
+		udp dport 138 counter packets 15105 bytes 3567293 jump ufw-skip-to-policy-input
+		tcp dport 139 counter packets 0 bytes 0 jump ufw-skip-to-policy-input
+		tcp dport 445 counter packets 0 bytes 0 jump ufw-skip-to-policy-input
+		udp dport 67 counter packets 23377 bytes 12039866 jump ufw-skip-to-policy-input
+		udp dport 68 counter packets 0 bytes 0 jump ufw-skip-to-policy-input
+		fib daddr type broadcast counter packets 4808091 bytes 965168932 jump ufw-skip-to-policy-input
+	}
+
+	chain ufw-after-output {
+	}
+
+	chain ufw-after-forward {
+	}
+
+	chain ufw-after-logging-input {
+		limit rate 3/minute burst 10 packets counter packets 30397 bytes 983115 log prefix "[UFW BLOCK] "
+	}
+
+	chain ufw-after-logging-output {
+	}
+
+	chain ufw-after-logging-forward {
+		limit rate 3/minute burst 10 packets counter packets 0 bytes 0 log prefix "[UFW BLOCK] "
+	}
+
+	chain ufw-reject-input {
+	}
+
+	chain ufw-reject-output {
+	}
+
+	chain ufw-reject-forward {
+	}
+
+	chain ufw-track-input {
+	}
+
+	chain ufw-track-output {
+		ip protocol tcp ct state new counter packets 2012 bytes 120720 accept
+		ip protocol udp ct state new counter packets 6256 bytes 737370 accept
+	}
+
+	chain ufw-track-forward {
+	}
+
+	chain INPUT {
+		type filter hook input priority filter; policy drop;
+		counter packets 6655696 bytes 2147007683 jump ufw-before-logging-input
+		counter packets 6655696 bytes 2147007683 jump ufw-before-input
+		counter packets 4961768 bytes 988287304 jump ufw-after-input
+		counter packets 33241 bytes 1093511 jump ufw-after-logging-input
+		counter packets 33241 bytes 1093511 jump ufw-reject-input
+		counter packets 33241 bytes 1093511 jump ufw-track-input
+	}
+
+	chain OUTPUT {
+		type filter hook output priority filter; policy accept;
+		counter packets 540944 bytes 5353886720 jump ufw-before-logging-output
+		counter packets 540944 bytes 5353886720 jump ufw-before-output
+		counter packets 8296 bytes 859234 jump ufw-after-output
+		counter packets 8296 bytes 859234 jump ufw-after-logging-output
+		counter packets 8296 bytes 859234 jump ufw-reject-output
+		counter packets 8296 bytes 859234 jump ufw-track-output
+	}
+
+	chain FORWARD {
+		type filter hook forward priority filter; policy drop;
+		counter packets 0 bytes 0 jump ufw-before-logging-forward
+		counter packets 0 bytes 0 jump ufw-before-forward
+		counter packets 0 bytes 0 jump ufw-after-forward
+		counter packets 0 bytes 0 jump ufw-after-logging-forward
+		counter packets 0 bytes 0 jump ufw-reject-forward
+		counter packets 0 bytes 0 jump ufw-track-forward
+	}
+
+	chain ufw-logging-deny {
+		ct state invalid limit rate 3/minute burst 10 packets counter packets 0 bytes 0 return
+		limit rate 3/minute burst 10 packets counter packets 0 bytes 0 log prefix "[UFW BLOCK] "
+	}
+
+	chain ufw-logging-allow {
+		limit rate 3/minute burst 10 packets counter packets 0 bytes 0 log prefix "[UFW ALLOW] "
+	}
+
+	chain ufw-skip-to-policy-input {
+		counter packets 4928527 bytes 987193793 drop
+	}
+
+	chain ufw-skip-to-policy-output {
+		counter packets 0 bytes 0 accept
+	}
+
+	chain ufw-skip-to-policy-forward {
+		counter packets 0 bytes 0 drop
+	}
+
+	chain ufw-not-local {
+		fib daddr type local counter packets 66026 bytes 5173534 return
+		fib daddr type multicast counter packets 988436 bytes 212730120 return
+		fib daddr type broadcast counter packets 4862569 bytes 982049069 return
+		limit rate 3/minute burst 10 packets counter packets 0 bytes 0 jump ufw-logging-deny
+		counter packets 0 bytes 0 drop
+	}
+
+	chain ufw-user-input {
+		tcp dport 22 counter packets 34 bytes 2144 accept
+	}
+
+	chain ufw-user-output {
+	}
+
+	chain ufw-user-forward {
+	}
+
+	chain ufw-user-logging-input {
+	}
+
+	chain ufw-user-logging-output {
+	}
+
+	chain ufw-user-logging-forward {
+	}
+
+	chain ufw-user-limit {
+		limit rate 3/minute burst 5 packets counter packets 0 bytes 0 log prefix "[UFW LIMIT BLOCK] "
+		counter packets 0 bytes 0 reject
+	}
+
+	chain ufw-user-limit-accept {
+		counter packets 0 bytes 0 accept
+	}
+}
+table ip6 filter {
+	chain ufw6-before-logging-input {
+	}
+
+	chain ufw6-before-logging-output {
+	}
+
+	chain ufw6-before-logging-forward {
+	}
+
+	chain ufw6-before-input {
+		iifname "lo" counter packets 112044 bytes 5045385568 accept
+		rt type 0 counter packets 0 bytes 0 drop
+		ct state related,established counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type echo-reply counter packets 0 bytes 0 accept
+		ct state invalid counter packets 0 bytes 0 jump ufw6-logging-deny
+		ct state invalid counter packets 0 bytes 0 drop
+		meta l4proto ipv6-icmp icmpv6 type destination-unreachable counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type packet-too-big counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type time-exceeded counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type parameter-problem counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type echo-request counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type nd-router-solicit ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type nd-router-advert ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type nd-neighbor-solicit ip6 hoplimit 255 counter packets 4 bytes 288 accept
+		meta l4proto ipv6-icmp icmpv6 type nd-neighbor-advert ip6 hoplimit 255 counter packets 12 bytes 848 accept
+		meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp icmpv6 type mld-listener-query counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp icmpv6 type mld-listener-report counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp icmpv6 type mld-listener-done counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp xt match "icmp6" counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 1 counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 1 counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 1 counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 ip6 daddr fe80::/10 udp sport 547 udp dport 546 counter packets 0 bytes 0 accept
+		ip6 daddr ff02::fb udp dport 5353 counter packets 918989 bytes 219883422 accept
+		ip6 daddr ff02::f udp dport 1900 counter packets 0 bytes 0 accept
+		counter packets 28 bytes 30706 jump ufw6-user-input
+	}
+
+	chain ufw6-before-output {
+		oifname "lo" counter packets 98451 bytes 5044515616 accept
+		rt type 0 counter packets 0 bytes 0 drop
+		ct state related,established counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type destination-unreachable counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type packet-too-big counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type time-exceeded counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type parameter-problem counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type echo-request counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type echo-reply counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type nd-router-solicit ip6 hoplimit 255 counter packets 669 bytes 32112 accept
+		meta l4proto ipv6-icmp icmpv6 type nd-neighbor-advert ip6 hoplimit 255 counter packets 4 bytes 264 accept
+		meta l4proto ipv6-icmp icmpv6 type nd-neighbor-solicit ip6 hoplimit 255 counter packets 10 bytes 720 accept
+		meta l4proto ipv6-icmp icmpv6 type nd-router-advert ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp icmpv6 type mld-listener-query counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp icmpv6 type mld-listener-report counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp icmpv6 type mld-listener-done counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp xt match "icmp6" counter packets 23 bytes 1988 accept
+		meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 255 counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 1 counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 1 counter packets 0 bytes 0 accept
+		ip6 saddr fe80::/10 meta l4proto ipv6-icmp xt match "icmp6" ip6 hoplimit 1 counter packets 0 bytes 0 accept
+		counter packets 2441 bytes 350951 jump ufw6-user-output
+	}
+
+	chain ufw6-before-forward {
+		rt type 0 counter packets 0 bytes 0 drop
+		ct state related,established counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type destination-unreachable counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type packet-too-big counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type time-exceeded counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type parameter-problem counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type echo-request counter packets 0 bytes 0 accept
+		meta l4proto ipv6-icmp icmpv6 type echo-reply counter packets 0 bytes 0 accept
+		counter packets 0 bytes 0 jump ufw6-user-forward
+	}
+
+	chain ufw6-after-input {
+		udp dport 137 counter packets 0 bytes 0 jump ufw6-skip-to-policy-input
+		udp dport 138 counter packets 0 bytes 0 jump ufw6-skip-to-policy-input
+		tcp dport 139 counter packets 0 bytes 0 jump ufw6-skip-to-policy-input
+		tcp dport 445 counter packets 0 bytes 0 jump ufw6-skip-to-policy-input
+		udp dport 546 counter packets 0 bytes 0 jump ufw6-skip-to-policy-input
+		udp dport 547 counter packets 0 bytes 0 jump ufw6-skip-to-policy-input
+	}
+
+	chain ufw6-after-output {
+	}
+
+	chain ufw6-after-forward {
+	}
+
+	chain ufw6-after-logging-input {
+		limit rate 3/minute burst 10 packets counter packets 11 bytes 10439 log prefix "[UFW BLOCK] "
+	}
+
+	chain ufw6-after-logging-output {
+	}
+
+	chain ufw6-after-logging-forward {
+		limit rate 3/minute burst 10 packets counter packets 0 bytes 0 log prefix "[UFW BLOCK] "
+	}
+
+	chain ufw6-reject-input {
+	}
+
+	chain ufw6-reject-output {
+	}
+
+	chain ufw6-reject-forward {
+	}
+
+	chain ufw6-track-input {
+	}
+
+	chain ufw6-track-output {
+		meta l4proto tcp ct state new counter packets 0 bytes 0 accept
+		meta l4proto udp ct state new counter packets 2422 bytes 349087 accept
+	}
+
+	chain ufw6-track-forward {
+	}
+
+	chain INPUT {
+		type filter hook input priority filter; policy drop;
+		counter packets 1031077 bytes 5265300832 jump ufw6-before-logging-input
+		counter packets 1031077 bytes 5265300832 jump ufw6-before-input
+		counter packets 28 bytes 30706 jump ufw6-after-input
+		counter packets 28 bytes 30706 jump ufw6-after-logging-input
+		counter packets 28 bytes 30706 jump ufw6-reject-input
+		counter packets 28 bytes 30706 jump ufw6-track-input
+	}
+
+	chain OUTPUT {
+		type filter hook output priority filter; policy accept;
+		counter packets 101598 bytes 5044901651 jump ufw6-before-logging-output
+		counter packets 101598 bytes 5044901651 jump ufw6-before-output
+		counter packets 2441 bytes 350951 jump ufw6-after-output
+		counter packets 2441 bytes 350951 jump ufw6-after-logging-output
+		counter packets 2441 bytes 350951 jump ufw6-reject-output
+		counter packets 2441 bytes 350951 jump ufw6-track-output
+	}
+
+	chain FORWARD {
+		type filter hook forward priority filter; policy drop;
+		counter packets 0 bytes 0 jump ufw6-before-logging-forward
+		counter packets 0 bytes 0 jump ufw6-before-forward
+		counter packets 0 bytes 0 jump ufw6-after-forward
+		counter packets 0 bytes 0 jump ufw6-after-logging-forward
+		counter packets 0 bytes 0 jump ufw6-reject-forward
+		counter packets 0 bytes 0 jump ufw6-track-forward
+	}
+
+	chain ufw6-logging-deny {
+		ct state invalid limit rate 3/minute burst 10 packets counter packets 0 bytes 0 return
+		limit rate 3/minute burst 10 packets counter packets 0 bytes 0 log prefix "[UFW BLOCK] "
+	}
+
+	chain ufw6-logging-allow {
+		limit rate 3/minute burst 10 packets counter packets 0 bytes 0 log prefix "[UFW ALLOW] "
+	}
+
+	chain ufw6-skip-to-policy-input {
+		counter packets 0 bytes 0 drop
+	}
+
+	chain ufw6-skip-to-policy-output {
+		counter packets 0 bytes 0 accept
+	}
+
+	chain ufw6-skip-to-policy-forward {
+		counter packets 0 bytes 0 drop
+	}
+
+	chain ufw6-user-input {
+		tcp dport 22 counter packets 0 bytes 0 accept
+	}
+
+	chain ufw6-user-output {
+	}
+
+	chain ufw6-user-forward {
+	}
+
+	chain ufw6-user-logging-input {
+	}
+
+	chain ufw6-user-logging-output {
+	}
+
+	chain ufw6-user-logging-forward {
+	}
+
+	chain ufw6-user-limit {
+		limit rate 3/minute burst 5 packets counter packets 0 bytes 0 log prefix "[UFW LIMIT BLOCK] "
+		counter packets 0 bytes 0 reject
+	}
+
+	chain ufw6-user-limit-accept {
+		counter packets 0 bytes 0 accept
+	}
+}

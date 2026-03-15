@@ -8,6 +8,34 @@
 
 ---
 
+## Current Implementation (2026-01-25)
+- Boot volume: Btrfs on md0p1 (NVMe RAID), subvols / and /home
+- Phoenix: /mnt/phoenix on /dev/sda1 (Btrfs), mounted via fstab
+- Phoenix mount options: rw,relatime,space_cache=v2,subvolid=5,subvol=/
+- Phoenix usage: 3.7T total, 3.1T used (84%)
+- State log: state-of-hardware-20260126-055629.txt
+
+## Live Verification (2026-03-15)
+- Fresh snapshot before reset: state-of-hardware-20260315-220018.txt
+- Phoenix was then wiped and recreated as a clean Btrfs filesystem
+- Phoenix label: `phoenix`
+- Phoenix UUID: `16dcd3d6-bfaf-4551-9c3d-ea23ecdf3481`
+- Phoenix mountpoint: `/mnt/phoenix`
+- Phoenix mount options now include `noatime,compress=zstd:3`
+- Phoenix currently mounts the filesystem root (`subvol=/`)
+- Implemented subvolumes:
+  - `media`
+  - `media/comics`
+  - `media/books`
+  - `media/books/ebooks`
+  - `media/books/other`
+  - `media/incoming`
+  - `services`
+  - `services/kavita`
+  - `services/mylar`
+  - `backups`
+  - `staging`
+
 ## Boot Volume
 
 ### Purpose
@@ -50,6 +78,124 @@ Phoenix holds:
 ### Relationship to Services
 All production containers on Cirrus bind-mount or store volumes on Phoenix
 unless explicitly documented otherwise.
+
+### Current Recommendation
+Phoenix is now suitable as the long-term data volume for CBR, CBZ, PDF, and other library or service data.
+
+Recommended next step:
+- define ownership and write permissions for the created subvolumes
+- decide whether Docker should use a Phoenix path directly or a dedicated subvolume
+- keep backups and media separated from service state as currently laid out
+
+### Candidate Subvolume Layouts
+
+Full layout:
+
+```text
+/mnt/phoenix
+├── media
+│   ├── comics
+│   ├── books
+│   └── incoming
+├── services
+│   ├── kavita
+│   ├── mylar
+│   └── shared
+├── backups
+├── staging
+└── snapshots
+```
+
+Lean layout:
+
+```text
+/mnt/phoenix
+├── media
+│   ├── comics
+│   ├── books
+│   │   ├── ebooks
+│   │   └── other
+│   └── incoming
+├── services
+│   ├── kavita
+│   └── mylar
+├── backups
+└── staging
+```
+
+### Selected Baseline
+
+Use the lean layout first.
+
+Status:
+- implemented on Phoenix as Btrfs subvolumes on `2026-03-15`
+
+Reason:
+- it matches the current known services
+- it keeps only one planned expansion under `books`, where format separation is already justified
+- it still leaves room to add `shared` or `snapshots` later when there is actual need
+
+Books subtree rationale:
+- `ebooks` gives a clean home for EPUB, MOBI, AZW, and similar formats
+- `other` provides a deliberate bucket for PDFs or book-adjacent formats that do not behave like standard ebook files
+- this avoids having to reorganize a flat `books` directory later
+
+### Ownership Map
+
+Recommended shared group:
+- group name: `media`
+- human operator: `rmleonard` should be a member
+- container group: both Kavita and Mylar should run with this shared `PGID`
+
+Recommended policy:
+- use one shared group for manual operations and service access
+- keep one primary writer per library tree wherever possible
+- keep service config/state separated from library content
+- use setgid directories and default ACLs on shared writable trees
+
+Subvolume ownership map:
+
+| Path | Intended owner | Group | Mode | Primary writer | Notes |
+|---|---|---|---|---|---|
+| `/mnt/phoenix/media` | `root` | `media` | `2775` | human/admin | top-level container for library trees |
+| `/mnt/phoenix/media/comics` | `root` | `media` | `2775` | Mylar | Kavita should mount read-only if possible |
+| `/mnt/phoenix/media/books` | `root` | `media` | `2775` | human/admin | top-level subtree for non-comics books |
+| `/mnt/phoenix/media/books/ebooks` | `root` | `media` | `2775` | human/admin | EPUB, MOBI, AZW, similar |
+| `/mnt/phoenix/media/books/other` | `root` | `media` | `2775` | human/admin | PDFs and non-standard book formats |
+| `/mnt/phoenix/media/incoming` | `root` | `media` | `2775` | human/admin and Mylar if needed | staging/quarantine before final placement |
+| `/mnt/phoenix/services` | `root` | `media` | `2775` | human/admin | top-level container for service state |
+| `/mnt/phoenix/services/kavita` | service UID or `root` | `media` | `2775` | Kavita | writable app state/config/cache |
+| `/mnt/phoenix/services/mylar` | service UID or `root` | `media` | `2775` | Mylar | writable app state/config/cache |
+| `/mnt/phoenix/backups` | `root` | `media` | `2775` | human/admin | exported backups only, not live app state |
+| `/mnt/phoenix/staging` | `root` | `media` | `2775` | human/admin | bulk repair, reorg, and temporary work |
+
+File mode target:
+- regular files on shared trees: `0664`
+
+Directory mode target:
+- shared directories: `2775`
+
+ACL baseline:
+- set default ACLs so new files and directories inherit group `media` write access on:
+  - `/mnt/phoenix/media`
+  - `/mnt/phoenix/services`
+  - `/mnt/phoenix/backups`
+  - `/mnt/phoenix/staging`
+
+Container mapping recommendation:
+- Kavita and Mylar should use the same `PGID`
+- Mylar should be the primary writer for `/mnt/phoenix/media/comics`
+- Kavita should prefer read-only access to library trees and write only within `/mnt/phoenix/services/kavita`
+- human/manual operations should be performed by `rmleonard` through the shared `media` group, not by loosening permissions to world-writable
+
+### Applied Baseline (2026-03-15)
+
+The following have been applied on the live host:
+- group `media` created
+- user `rmleonard` added to group `media`
+- `/mnt/phoenix/media`, `/mnt/phoenix/services`, `/mnt/phoenix/backups`, and `/mnt/phoenix/staging` set to group `media`
+- shared directories set to mode `2775`
+- default ACLs added so group `media` inherits `rwx` on new files and directories under the shared trees
 
 ---
 
