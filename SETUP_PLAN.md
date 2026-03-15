@@ -12,6 +12,7 @@ Finish Cirrus as a clean, well-documented host before resuming broader comics-la
 - Treat `CURRENT_STATE.md` as implemented truth
 - Treat this file as forward plan
 - Keep restart and bookmark docs aligned with the current repo path and document set
+- Review the `docs-normalization` branch diff before merging the documentation cleanup into `main`
 
 ## Phase 2: Host Identity Decision
 

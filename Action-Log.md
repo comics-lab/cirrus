@@ -15,3 +15,4 @@
 - Rewrote `AGENTS.md` for Cirrus host scope and added a root `README.md` that points to local logs and setup docs.
 - Added `CURRENT_STATE.md` and `SETUP_PLAN.md` as the new top-level entry points for current truth and forward work.
 - Reindexed the root docs and normalized stale path references so restart guidance matches the current repo location.
+- Pushed branch `docs-normalization` to GitHub and left branch-diff review pending before merge.
