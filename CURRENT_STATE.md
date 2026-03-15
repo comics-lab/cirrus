@@ -24,9 +24,11 @@ State captured from `state-of-hardware-20260315-220018.txt`, `state-of-hardware-
 - Phoenix: `/mnt/phoenix` on `/dev/sda1`
 - Phoenix filesystem: Btrfs
 - Phoenix size: about 3.7T
-- Phoenix use at capture time: about 84%
-- Phoenix top level still looks like an imported Linux root filesystem, with directories such as `bin`, `boot`, `dev`, `etc`, `home.old`, `root`, `usr`, and `var`
-- Phoenix should currently be treated as legacy/recovery data, not as a clean service-data target
+- Phoenix was recreated as a fresh Btrfs volume on `2026-03-15`
+- Phoenix label: `phoenix`
+- Phoenix UUID: `16dcd3d6-bfaf-4551-9c3d-ea23ecdf3481`
+- Phoenix mount options: `defaults,noatime,compress=zstd:3`
+- Phoenix is now clean and ready for a deliberate service-data layout
 
 ## Hardening Status
 
@@ -105,6 +107,6 @@ The larger book structure under `the_lab/comics-lab-book/` exists, but much of i
 ## Immediate Truths
 
 - Cirrus setup is not complete.
-- Storage policy is not fully settled because Phoenix still needs an explicit decision.
+- Phoenix has been reset as a clean Btrfs data volume, but its directory and ownership layout still needs to be defined.
 - Docker and application deployment should wait until hardening and storage decisions are finished.
 - This repo should continue to document Cirrus itself, not the whole lab.

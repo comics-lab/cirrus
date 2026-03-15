@@ -18,3 +18,4 @@
 - Pushed branch `docs-normalization` to GitHub and left branch-diff review pending before merge.
 - Verified the live enabled and running service set on Cirrus and added `SERVICES.md` to capture the workstation-vs-server decision point.
 - Captured a fresh live state snapshot in `state-of-hardware-20260315-220018.txt` and documented that Phoenix still looks like legacy/recovery data rather than clean service storage.
+- Wiped and recreated Phoenix as a fresh Btrfs volume labeled `phoenix`, updated `/etc/fstab`, and remounted it with `noatime,compress=zstd:3`.

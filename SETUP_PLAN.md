@@ -44,15 +44,15 @@ Resolve Phoenix before Docker or app deployment.
 
 Questions to answer:
 
-- Is Phoenix staging-only, or is it intended to hold durable service data after rebuild?
-- Should Phoenix be wiped and rebuilt now, after any needed recovery copy-out?
+- Is Phoenix intended to hold durable service data? Current answer: yes.
+- What top-level directories or Btrfs subvolumes should exist on Phoenix?
 - What directory layout should exist on Phoenix?
 - What ownership and permissions model will be used?
 
-Current recommendation:
+Current state:
 
-- treat Phoenix as a recovery/staging volume until its legacy root-style contents are reviewed
-- do not place Docker `data-root` or long-lived application data there yet
+- Phoenix has already been wiped and recreated as a clean Btrfs volume
+- long-lived application data can live there once the directory layout is defined
 
 ## Phase 5: Container Baseline
 

@@ -7,7 +7,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - This repo is host-scoped for Cirrus, not an org-level comics-lab policy repo.
 - Root docs were reindexed so `README.md`, `CURRENT_STATE.md`, `SETUP_PLAN.md`, and this file agree on repo purpose and location.
 - Hardening baseline already in place: SSH key-only, UFW active, unattended-upgrades enabled, journald persistent, logrotate.timer enabled.
-- Phoenix is mounted at `/mnt/phoenix` and still needs an explicit role decision before Docker or service deployment.
+- Phoenix has been recreated as a clean Btrfs volume at `/mnt/phoenix` and now needs a deliberate directory/subvolume layout.
 - Docker is not installed on Cirrus.
 
 ## Start With
@@ -33,8 +33,8 @@ Start in: `/home/rmleonard/Projects/cirrus`
 1. Review the `docs-normalization` branch diff before merging it into `main`.
 2. Review `SERVICES.md` and apply the recommended keep/drop service baseline.
 3. Decide explicitly whether Cirrus is a server with temporary GNOME, or a workstation with services.
-4. Resolve Phoenix as recovery/staging vs rebuilt durable service data, then document the target directory and ownership model.
-5. Capture another state snapshot after any hardening or service changes.
+4. Define the Phoenix directory or subvolume layout and target ownership model.
+5. Capture another state snapshot after any hardening or storage-layout changes.
 6. Install Docker only after the storage and hardening decisions are settled.
 
 ## Open Questions

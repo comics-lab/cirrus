@@ -16,11 +16,13 @@
 - State log: state-of-hardware-20260126-055629.txt
 
 ## Live Verification (2026-03-15)
-- Fresh snapshot: state-of-hardware-20260315-220018.txt
-- Phoenix is still mounted directly at `/mnt/phoenix`
-- Phoenix still uses the filesystem root (`subvol=/`), not a service-specific subvolume layout
-- Top-level directories include `bin`, `boot`, `dev`, `etc`, `home.old`, `root`, `usr`, and `var`
-- That layout strongly indicates Phoenix is carrying an old system image or recovery payload rather than a deliberate application-data structure
+- Fresh snapshot before reset: state-of-hardware-20260315-220018.txt
+- Phoenix was then wiped and recreated as a clean Btrfs filesystem
+- Phoenix label: `phoenix`
+- Phoenix UUID: `16dcd3d6-bfaf-4551-9c3d-ea23ecdf3481`
+- Phoenix mountpoint: `/mnt/phoenix`
+- Phoenix mount options now include `noatime,compress=zstd:3`
+- Phoenix currently mounts the filesystem root (`subvol=/`) and is effectively empty
 
 ## Boot Volume
 
@@ -66,13 +68,12 @@ All production containers on Cirrus bind-mount or store volumes on Phoenix
 unless explicitly documented otherwise.
 
 ### Current Recommendation
-Do not use Phoenix for Docker `data-root` or production bind mounts yet.
+Phoenix is now suitable as the long-term data volume for CBR, CBZ, PDF, and other library or service data.
 
-First:
-- review and preserve any legacy data that matters
-- decide whether Phoenix will be wiped and rebuilt
-- create an explicit directory or subvolume layout for service data
-- then treat it as the durable data volume
+Recommended next step:
+- create an explicit directory or subvolume layout for service data before placing applications there
+- decide whether Docker should use a Phoenix path directly or a dedicated subvolume
+- keep backups and media separated by directory or subvolume from service state
 
 ---
 
