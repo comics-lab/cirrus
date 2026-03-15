@@ -7,6 +7,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - This repo is host-scoped for Cirrus, not an org-level comics-lab policy repo.
 - Root docs were reindexed so `README.md`, `CURRENT_STATE.md`, `SETUP_PLAN.md`, and this file agree on repo purpose and location.
 - Hardening baseline already in place: SSH key-only, UFW active, unattended-upgrades enabled, journald persistent, logrotate.timer enabled.
+- SMART monitoring is installed and explicitly configured for Phoenix and both NVMe devices.
 - Phoenix has been recreated as a clean Btrfs volume at `/mnt/phoenix` and now needs a deliberate directory/subvolume layout.
 - Docker is not installed on Cirrus.
 

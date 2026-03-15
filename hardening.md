@@ -16,6 +16,13 @@ A) Debian 13 Server Hardening — Checklist (Cirrus)
 - Log rotation: logrotate.timer enabled
 - State log: state-of-hardware-20260126-055629.txt
 
+## Observed State (2026-03-15)
+- SMART tooling: `smartmontools` installed
+- SMART service: `smartmontools.service` enabled and running
+- SMART config: explicit entries for `/dev/sda -d sat`, `/dev/nvme0 -d nvme`, and `/dev/nvme1 -d nvme`
+- SMART alert path: `smartd-runner`
+- Phoenix SMART: available through the USB bridge and readable with `smartctl -d sat /dev/sda`
+
 Treat this as a check sheet, not a tutorial. Each item is intentional.
 
 ⸻

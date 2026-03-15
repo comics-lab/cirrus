@@ -13,6 +13,7 @@ Verified from live `systemctl` output on Cirrus.
 - `ssh.service`: enabled and running
 - `ufw.service`: enabled
 - `unattended-upgrades.service`: enabled and running
+- `smartmontools.service`: enabled and running
 - `nftables.service`: disabled
 - `fail2ban`: not installed
 - `auditd`: not installed

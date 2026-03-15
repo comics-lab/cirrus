@@ -43,6 +43,9 @@ Already in place:
 - `unattended-upgrades` enabled
 - journald persistent storage configured
 - `logrotate.timer` enabled
+- `smartmontools` installed
+- `smartmontools.service` enabled and running
+- explicit SMART monitoring configured for Phoenix and both NVMe devices
 
 Not yet settled or incomplete:
 
