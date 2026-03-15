@@ -156,3 +156,111 @@ Recommendation:
 2. Reboot or restart the affected units and confirm remote access still works as expected.
 3. Decide whether GDM remains intentional. If not, remove the remaining desktop support stack aggressively.
 4. Capture another state snapshot after the prune.
+
+## Docker Baseline
+
+## Current State
+
+- Docker is not installed on Cirrus
+- no Docker or containerd packages are present
+- no Docker or containerd services are enabled
+- host firewall backend is `iptables-nft`
+- UFW is enabled
+
+## Install Source
+
+Use Docker's official Debian repository, not Debian's `docker.io` package.
+
+Reason:
+- current upstream packaging for `docker-ce`, `containerd.io`, `docker-buildx-plugin`, and `docker-compose-plugin`
+- clearer upgrade path
+- matches current Docker official Debian guidance
+
+Packages:
+- `docker-ce`
+- `docker-ce-cli`
+- `containerd.io`
+- `docker-buildx-plugin`
+- `docker-compose-plugin`
+
+## Runtime Model
+
+Use rootful Docker, not rootless Docker, for the initial Cirrus baseline.
+
+Reason:
+- simpler operation with bind mounts into Phoenix
+- fewer surprises around service ownership and shared media access
+- easier to align with systemd service management and current host posture
+
+Operational note:
+- do not add `rmleonard` to the `docker` group by default
+- use `sudo docker ...` unless there is a specific operational reason to grant root-equivalent Docker access to the user account
+
+## Data Placement
+
+Keep Docker daemon state on the root filesystem for now.
+
+Recommendation:
+- keep Docker `data-root` at the default `/var/lib/docker`
+- keep persistent application data on Phoenix via bind mounts
+
+Reason:
+- root filesystem is NVMe RAID1 and nearly empty
+- Docker image layers and ephemeral writable layers benefit from faster and redundant local storage
+- Phoenix should hold durable service data, media, backups, and staging content
+
+Phoenix bind mount targets:
+- `/mnt/phoenix/services/kavita`
+- `/mnt/phoenix/services/mylar`
+- `/mnt/phoenix/media/comics`
+- `/mnt/phoenix/media/books/...`
+- `/mnt/phoenix/media/incoming`
+
+## Daemon Configuration
+
+Recommended `/etc/docker/daemon.json` baseline:
+
+```json
+{
+  "log-driver": "local",
+  "live-restore": true
+}
+```
+
+Reason:
+- Docker documents `local` as the recommended default logging driver for general use because it rotates logs and reduces disk-exhaustion risk
+- `live-restore` reduces service disruption during daemon restarts
+
+Not recommended yet:
+- changing `data-root`
+- disabling Docker firewall management
+- exposing the Docker API remotely
+
+## Networking And Firewall
+
+Important constraint from Docker's official docs:
+- published container ports bypass normal UFW filtering behavior
+
+Baseline recommendation:
+- do not publish container ports casually
+- prefer a reverse proxy pattern for web services
+- if published ports are needed, control them deliberately with Docker-aware firewall rules rather than assuming UFW alone will protect them
+- do not set `"iptables": false` in `daemon.json`
+
+## Compose Policy
+
+Use `docker compose` as the canonical deployment method.
+
+Recommendation:
+- one compose project per service or tightly related service group
+- keep compose files in a tracked host path such as `/srv/compose`
+- keep secrets out of git
+- use explicit bind mounts into Phoenix for durable data
+
+## Pre-Install Checklist
+
+Before installing Docker:
+- complete the first pass of service pruning from the current desktop-heavy baseline
+- keep the current Phoenix ownership and ACL baseline
+- keep SMART monitoring enabled for Phoenix and both NVMe devices
+- confirm the intended ports for Kavita and Mylar before any publish rules are added

@@ -24,3 +24,4 @@
 - Documented the Phoenix ownership map using a shared `media` group for both services and manual operator access.
 - Applied the Phoenix shared-group baseline: created group `media`, added `rmleonard`, set shared trees to `root:media`, enabled setgid directories, and added default ACLs.
 - Captured a fresh post-change state snapshot in `state-of-hardware-20260315-230117.txt` after the Phoenix rebuild, SMART setup, and ACL baseline.
+- Merged `docs-normalization` into `main` and documented the initial Docker baseline in `SERVICES.md`.

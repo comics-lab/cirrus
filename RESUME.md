@@ -35,11 +35,10 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - `the_lab/comics-lab-book/01-physical/overview.md`
 
 ## Next Recommended Work
-1. Review the `docs-normalization` branch diff before merging it into `main`.
-2. Review `SERVICES.md` and apply the recommended keep/drop service baseline.
-3. Decide explicitly whether Cirrus is a server with temporary GNOME, or a workstation with services.
-4. Begin Docker baseline planning using the current Phoenix and service posture.
-5. Install Docker only after the storage and hardening decisions are settled.
+1. Review `SERVICES.md` and apply the recommended keep/drop service baseline.
+2. Decide explicitly whether Cirrus is a server with temporary GNOME, or a workstation with services.
+3. Begin Docker installation planning from the documented Docker baseline.
+4. Install Docker only after the storage and hardening decisions are settled.
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
