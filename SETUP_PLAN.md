@@ -27,6 +27,7 @@ That decision affects:
 - whether dual network paths are acceptable
 - how aggressive hardening should be
 - whether local desktop convenience can override service-host discipline
+- the keep/drop decisions listed in `SERVICES.md`
 
 ## Phase 3: Hardening Completion
 

@@ -49,7 +49,7 @@ Not yet settled or incomplete:
 
 ## Network and Services
 
-Observed at snapshot time:
+Observed at January snapshot time:
 
 - wired and Wi-Fi were both up
 - SSH enabled
@@ -66,6 +66,19 @@ Enabled services list includes several likely-nonessential desktop services:
 
 These should be reviewed before Cirrus is treated as a production service host.
 
+Live verification on `2026-03-15` still shows a desktop-oriented active service set including:
+
+- `gdm`
+- `avahi-daemon`
+- `bluetooth`
+- `cups`
+- `cups-browsed`
+- `ModemManager`
+- `udisks2`
+- `upower`
+
+See `SERVICES.md` for the current review set.
+
 ## Documentation State
 
 Root docs are partly redundant.
@@ -76,6 +89,7 @@ Most useful current files:
 - `AGENTS.md`
 - `CURRENT_STATE.md`
 - `SETUP_PLAN.md`
+- `SERVICES.md`
 - `RESUME.md`
 - `NEXT_STEPS_2026-03-15.md`
 - `state-of-hardware-20260126-055629.txt`

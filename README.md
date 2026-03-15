@@ -20,6 +20,7 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 
 - `CURRENT_STATE.md`: concise implemented truth for the host
 - `SETUP_PLAN.md`: ordered next work for Cirrus
+- `SERVICES.md`: current live service baseline and keep/drop review queue
 - `RESUME.md`: normalized session handoff for the next restart
 - `NEXT_STEPS_2026-03-15.md`: restructuring assessment and rationale
 - `state-of-hardware-20260126-055629.txt`: baseline host snapshot
@@ -35,6 +36,7 @@ Current root docs:
 - `README.md`: repo purpose and navigation
 - `CURRENT_STATE.md`: implemented host truth
 - `SETUP_PLAN.md`: ordered remaining work
+- `SERVICES.md`: service inventory and baseline decision point
 - `RESUME.md`: next-session restart point
 - `NEXT_STEPS_2026-03-15.md`: March restructuring rationale
 
