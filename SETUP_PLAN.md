@@ -36,6 +36,7 @@ That decision affects:
 - confirm sudo, SSH, firewall, and logging posture
 - decide whether `fail2ban` and `auditd` are needed
 - capture a fresh post-cleanup state snapshot
+- use `state-of-hardware-20260315-220018.txt` as the pre-change baseline
 
 ## Phase 4: Phoenix Decision
 
@@ -43,12 +44,15 @@ Resolve Phoenix before Docker or app deployment.
 
 Questions to answer:
 
-- Is Phoenix staging-only, or is it intended to hold durable service data?
-- Should Phoenix be wiped and rebuilt now?
+- Is Phoenix staging-only, or is it intended to hold durable service data after rebuild?
+- Should Phoenix be wiped and rebuilt now, after any needed recovery copy-out?
 - What directory layout should exist on Phoenix?
 - What ownership and permissions model will be used?
 
-Until that is answered, avoid placing long-lived application data there.
+Current recommendation:
+
+- treat Phoenix as a recovery/staging volume until its legacy root-style contents are reviewed
+- do not place Docker `data-root` or long-lived application data there yet
 
 ## Phase 5: Container Baseline
 

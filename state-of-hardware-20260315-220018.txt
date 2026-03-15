@@ -1,0 +1,247 @@
+# Cirrus State of Hardware
+# Timestamp (UTC): 2026-03-15 22:01:24 UTC
+
+## date
+Sun Mar 15 15:01:24 MST 2026
+
+## uname -a
+Linux cirrus 6.12.63+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.63-1 (2025-12-30) x86_64 GNU/Linux
+
+## hostnamectl
+ Static hostname: cirrus
+       Icon name: computer-desktop
+         Chassis: desktop 🖥️
+      Machine ID: 8fe847cb149d41fb8064eea18d0a5807
+         Boot ID: c9878d01b4da48eb93d8f54a74b996cb
+Operating System: Debian GNU/Linux 13 (trixie)
+          Kernel: Linux 6.12.63+deb13-amd64
+    Architecture: x86-64
+ Hardware Vendor: AZW
+  Hardware Model: ME mini
+Firmware Version: M1V403
+   Firmware Date: Fri 2025-06-27
+    Firmware Age: 8month 2w 4d
+
+## lsb_release -a (or /etc/os-release)
+Distributor ID:	Debian
+Description:	Debian GNU/Linux 13 (trixie)
+Release:	13
+Codename:	trixie
+
+## uptime
+ 15:01:24 up 61 days, 14:02,  2 users,  load average: 0.00, 0.00, 0.00
+
+## ip -br addr
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+enp1s0           UP             192.168.1.113/24 fe80::bc73:5955:c51e:cbc8/64 
+enp2s0           DOWN           
+wlo1             UP             192.168.1.79/24 fe80::2f50:5110:8464:b6be/64 
+
+## ip r
+default via 192.168.1.1 dev enp1s0 proto dhcp src 192.168.1.113 metric 100 
+default via 192.168.1.1 dev wlo1 proto dhcp src 192.168.1.79 metric 600 
+192.168.1.0/24 dev enp1s0 proto kernel scope link src 192.168.1.113 metric 100 
+192.168.1.0/24 dev wlo1 proto kernel scope link src 192.168.1.79 metric 600 
+
+## lsblk -o NAME,SIZE,MODEL,SERIAL,TRAN,FSTYPE,MOUNTPOINTS
+NAME           SIZE MODEL                SERIAL           TRAN   FSTYPE            MOUNTPOINTS
+sda            3.6T HGST HDS5C4040ALE630 PL1331LAGG248H   usb                      
+└─sda1         3.6T                                              btrfs             /mnt/phoenix
+mmcblk0       58.2G                      0xcd30b932       mmc                      
+├─mmcblk0p1    100M                                       mmc    vfat              
+├─mmcblk0p2     16M                                       mmc                      
+├─mmcblk0p3      1G                                       mmc    ntfs              
+└─mmcblk0p4   57.1G                                       mmc    ntfs              
+nvme0n1      931.5G KINGSTON SNV2S1000G  50026B76860DF86F nvme                     
+└─nvme0n1p1  931.5G                                       nvme   linux_raid_member 
+  └─md0      930.9G                                                                
+    └─md0p1  930.9G                                              btrfs             /home
+                                                                                   /
+nvme1n1      931.5G KINGSTON SNV2S1000G  50026B76860DFFB3 nvme                     
+├─nvme1n1p1    487M                                       nvme   vfat              /boot/efi
+└─nvme1n1p2    931G                                       nvme   linux_raid_member 
+  └─md0      930.9G                                                                
+    └─md0p1  930.9G                                              btrfs             /home
+                                                                                   /
+mmcblk0boot0     4M                      0xcd30b932       mmc                      
+mmcblk0boot1     4M                      0xcd30b932       mmc                      
+
+## findmnt -o SOURCE,FSTYPE,TARGET,OPTIONS
+SOURCE             FSTYPE          TARGET                                        OPTIONS
+/dev/md0p1[/@]     btrfs           /                                             rw,relatime,ssd,discard=async,space_cache=v2,subvolid=256,subvol=/@
+sysfs              sysfs           ├─/sys                                        rw,nosuid,nodev,noexec,relatime
+efivarfs           efivarfs        │ ├─/sys/firmware/efi/efivars                 rw,nosuid,nodev,noexec,relatime
+securityfs         securityfs      │ ├─/sys/kernel/security                      rw,nosuid,nodev,noexec,relatime
+cgroup2            cgroup2         │ ├─/sys/fs/cgroup                            rw,nosuid,nodev,noexec,relatime,nsdelegate,memory_recursiveprot
+pstore             pstore          │ ├─/sys/fs/pstore                            rw,nosuid,nodev,noexec,relatime
+bpf                bpf             │ ├─/sys/fs/bpf                               rw,nosuid,nodev,noexec,relatime,mode=700
+tracefs            tracefs         │ ├─/sys/kernel/tracing                       rw,nosuid,nodev,noexec,relatime
+debugfs            debugfs         │ ├─/sys/kernel/debug                         rw,nosuid,nodev,noexec,relatime
+fusectl            fusectl         │ ├─/sys/fs/fuse/connections                  rw,nosuid,nodev,noexec,relatime
+configfs           configfs        │ └─/sys/kernel/config                        rw,nosuid,nodev,noexec,relatime
+proc               proc            ├─/proc                                       rw,nosuid,nodev,noexec,relatime
+systemd-1          autofs          │ └─/proc/sys/fs/binfmt_misc                  rw,relatime,fd=40,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=6814
+binfmt_misc        binfmt_misc     │   └─/proc/sys/fs/binfmt_misc                rw,nosuid,nodev,noexec,relatime
+udev               devtmpfs        ├─/dev                                        rw,nosuid,relatime,size=8000744k,nr_inodes=2000186,mode=755,inode64
+devpts             devpts          │ ├─/dev/pts                                  rw,nosuid,noexec,relatime,gid=5,mode=600,ptmxmode=000
+tmpfs              tmpfs           │ ├─/dev/shm                                  rw,nosuid,nodev,inode64
+mqueue             mqueue          │ ├─/dev/mqueue                               rw,nosuid,nodev,noexec,relatime
+hugetlbfs          hugetlbfs       │ └─/dev/hugepages                            rw,nosuid,nodev,relatime,pagesize=2M
+tmpfs              tmpfs           ├─/run                                        rw,nosuid,nodev,noexec,relatime,size=1614504k,mode=755,inode64
+tmpfs              tmpfs           │ ├─/run/lock                                 rw,nosuid,nodev,noexec,relatime,size=5120k,inode64
+tmpfs              tmpfs           │ ├─/run/user/1000                            rw,nosuid,nodev,relatime,size=1614500k,nr_inodes=403625,mode=700,uid=1000,gid=1000,inode64
+portal             fuse.portal     │ │ ├─/run/user/1000/doc                      rw,nosuid,nodev,relatime,user_id=1000,group_id=1000
+gvfsd-fuse         fuse.gvfsd-fuse │ │ └─/run/user/1000/gvfs                     rw,nosuid,nodev,relatime,user_id=1000,group_id=1000
+tmpfs              tmpfs           │ └─/run/credentials/systemd-journald.service ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,inode64,noswap
+tmpfs              tmpfs           ├─/tmp                                        rw,nosuid,nodev,size=8072508k,nr_inodes=1048576,inode64
+/dev/md0p1[/@home] btrfs           ├─/home                                       rw,relatime,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/@home
+/dev/nvme1n1p1     vfat            ├─/boot/efi                                   rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro
+/dev/sda1          btrfs           └─/mnt/phoenix                                rw,relatime,space_cache=v2,subvolid=5,subvol=/
+
+## df -hT
+Filesystem     Type      Size  Used Avail Use% Mounted on
+udev           devtmpfs  7.7G     0  7.7G   0% /dev
+tmpfs          tmpfs     1.6G  2.1M  1.6G   1% /run
+efivarfs       efivarfs  192K  108K   80K  58% /sys/firmware/efi/efivars
+/dev/md0p1     btrfs     931G   15G  911G   2% /
+tmpfs          tmpfs     7.7G   16K  7.7G   1% /dev/shm
+tmpfs          tmpfs     5.0M   12K  5.0M   1% /run/lock
+tmpfs          tmpfs     7.7G   42M  7.7G   1% /tmp
+/dev/md0p1     btrfs     931G   15G  911G   2% /home
+/dev/nvme1n1p1 vfat      487M  7.0M  480M   2% /boot/efi
+tmpfs          tmpfs     1.6G  4.1M  1.6G   1% /run/user/1000
+/dev/sda1      btrfs     3.7T  3.1T  614G  84% /mnt/phoenix
+tmpfs          tmpfs     1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+
+## /etc/fstab
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a device; this may
+# be used with UUID= as a more robust way to name devices that works even if
+# disks are added and removed. See fstab(5).
+#
+# <file system>             <mount point>  <type>  <options>  <dump>  <pass>
+UUID=8EBB-3633                            /boot/efi      vfat    defaults   0 2
+UUID=8f8bd0c2-452d-4095-b4e9-2cd4c9027f52 /              btrfs   subvol=/@,defaults 0 0
+UUID=8f8bd0c2-452d-4095-b4e9-2cd4c9027f52 /home          btrfs   subvol=/@home,defaults 0 0
+
+# external disk
+UUID=02d9bc81-c5b0-4ba9-beab-50cf314b3eb2 /mnt/phoenix	btrfs	defaults	0 1
+
+
+## systemctl list-unit-files --state=enabled --no-pager
+UNIT FILE                          STATE   PRESET
+cups.path                          enabled enabled
+accounts-daemon.service            enabled enabled
+anacron.service                    enabled enabled
+apparmor.service                   enabled enabled
+avahi-daemon.service               enabled enabled
+bluetooth.service                  enabled enabled
+console-setup.service              enabled enabled
+cron.service                       enabled enabled
+cups-browsed.service               enabled enabled
+cups.service                       enabled enabled
+e2scrub_reap.service               enabled enabled
+getty@.service                     enabled enabled
+grub-common.service                enabled enabled
+keyboard-setup.service             enabled enabled
+lm-sensors.service                 enabled enabled
+low-memory-monitor.service         enabled enabled
+ModemManager.service               enabled enabled
+networking.service                 enabled enabled
+NetworkManager-dispatcher.service  enabled enabled
+NetworkManager-wait-online.service enabled enabled
+NetworkManager.service             enabled enabled
+power-profiles-daemon.service      enabled enabled
+ssh.service                        enabled enabled
+sshd-keygen.service                enabled enabled
+switcheroo-control.service         enabled enabled
+systemd-pstore.service             enabled enabled
+udisks2.service                    enabled enabled
+ufw.service                        enabled enabled
+unattended-upgrades.service        enabled enabled
+wpa_supplicant.service             enabled enabled
+system-xfs_scrub.slice             enabled enabled
+avahi-daemon.socket                enabled enabled
+cups.socket                        enabled enabled
+uuidd.socket                       enabled enabled
+remote-fs.target                   enabled enabled
+anacron.timer                      enabled enabled
+apt-daily-upgrade.timer            enabled enabled
+apt-daily.timer                    enabled enabled
+dpkg-db-backup.timer               enabled enabled
+e2scrub_all.timer                  enabled enabled
+fstrim.timer                       enabled enabled
+fwupd-refresh.timer                enabled enabled
+logrotate.timer                    enabled enabled
+man-db.timer                       enabled enabled
+mdcheck_continue.timer             enabled enabled
+mdcheck_start.timer                enabled enabled
+mdmonitor-oneshot.timer            enabled enabled
+xfs_scrub_all.timer                enabled enabled
+
+48 unit files listed.
+
+## systemctl --type=service --state=running --no-pager
+  UNIT                          LOAD   ACTIVE SUB     DESCRIPTION
+  accounts-daemon.service       loaded active running Accounts Service
+  avahi-daemon.service          loaded active running Avahi mDNS/DNS-SD Stack
+  bluetooth.service             loaded active running Bluetooth service
+  bolt.service                  loaded active running Thunderbolt system service
+  colord.service                loaded active running Manage, Install and Generate Color Profiles
+  cron.service                  loaded active running Regular background program processing daemon
+  cups-browsed.service          loaded active running Make remote CUPS printers available locally
+  cups.service                  loaded active running CUPS Scheduler
+  dbus.service                  loaded active running D-Bus System Message Bus
+  fwupd.service                 loaded active running Firmware update daemon
+  gdm.service                   loaded active running GNOME Display Manager
+  geoclue.service               loaded active running Location Lookup Service
+  low-memory-monitor.service    loaded active running Low Memory Monitor
+  mdmonitor.service             loaded active running MD array monitor
+  ModemManager.service          loaded active running Modem Manager
+  NetworkManager.service        loaded active running Network Manager
+  polkit.service                loaded active running Authorization Manager
+  power-profiles-daemon.service loaded active running Power Profiles daemon
+  rtkit-daemon.service          loaded active running RealtimeKit Scheduling Policy Service
+  ssh.service                   loaded active running OpenBSD Secure Shell server
+  switcheroo-control.service    loaded active running Switcheroo Control Proxy service
+  systemd-hostnamed.service     loaded active running Hostname Service
+  systemd-journald.service      loaded active running Journal Service
+  systemd-logind.service        loaded active running User Login Management
+  systemd-udevd.service         loaded active running Rule-based Manager for Device Events and Files
+  udisks2.service               loaded active running Disk Manager
+  unattended-upgrades.service   loaded active running Unattended Upgrades Shutdown
+  upower.service                loaded active running Daemon for power management
+  user@1000.service             loaded active running User Manager for UID 1000
+  wpa_supplicant.service        loaded active running WPA supplicant
+
+Legend: LOAD   → Reflects whether the unit definition was properly loaded.
+        ACTIVE → The high-level unit activation state, i.e. generalization of SUB.
+        SUB    → The low-level unit activation state, values depend on unit type.
+
+30 loaded units listed.
+
+## systemctl is-enabled ssh ufw nftables unattended-upgrades fail2ban auditd
+enabled
+enabled
+disabled
+enabled
+not-found
+not-found
+
+## sudo sshd -T | egrep 'passwordauthentication|permitrootlogin|pubkeyauthentication'
+permitrootlogin no
+pubkeyauthentication yes
+passwordauthentication no
+
+## sudo ufw status verbose
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+22/tcp                     ALLOW IN    Anywhere                  
+22/tcp (v6)                ALLOW IN    Anywhere (v6)             
+

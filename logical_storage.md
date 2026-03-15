@@ -15,6 +15,13 @@
 - Phoenix usage: 3.7T total, 3.1T used (84%)
 - State log: state-of-hardware-20260126-055629.txt
 
+## Live Verification (2026-03-15)
+- Fresh snapshot: state-of-hardware-20260315-220018.txt
+- Phoenix is still mounted directly at `/mnt/phoenix`
+- Phoenix still uses the filesystem root (`subvol=/`), not a service-specific subvolume layout
+- Top-level directories include `bin`, `boot`, `dev`, `etc`, `home.old`, `root`, `usr`, and `var`
+- That layout strongly indicates Phoenix is carrying an old system image or recovery payload rather than a deliberate application-data structure
+
 ## Boot Volume
 
 ### Purpose
@@ -57,6 +64,15 @@ Phoenix holds:
 ### Relationship to Services
 All production containers on Cirrus bind-mount or store volumes on Phoenix
 unless explicitly documented otherwise.
+
+### Current Recommendation
+Do not use Phoenix for Docker `data-root` or production bind mounts yet.
+
+First:
+- review and preserve any legacy data that matters
+- decide whether Phoenix will be wiped and rebuilt
+- create an explicit directory or subvolume layout for service data
+- then treat it as the durable data volume
 
 ---
 

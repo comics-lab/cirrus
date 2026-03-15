@@ -16,6 +16,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - `SETUP_PLAN.md`
 - `SERVICES.md`
 - `NEXT_STEPS_2026-03-15.md`
+- `state-of-hardware-20260315-220018.txt`
 - `state-of-hardware-20260126-055629.txt`
 
 ## Important References
@@ -30,10 +31,11 @@ Start in: `/home/rmleonard/Projects/cirrus`
 
 ## Next Recommended Work
 1. Review the `docs-normalization` branch diff before merging it into `main`.
-2. Review `SERVICES.md` and decide Cirrus host identity: server with temporary GNOME, or workstation with services.
-3. Resolve Phoenix as staging-only vs durable service data, then document the directory and ownership model.
-4. Capture a fresh post-cleanup state snapshot after any hardening or service changes.
-5. Install Docker only after the storage and hardening decisions are settled.
+2. Review `SERVICES.md` and apply the recommended keep/drop service baseline.
+3. Decide explicitly whether Cirrus is a server with temporary GNOME, or a workstation with services.
+4. Resolve Phoenix as recovery/staging vs rebuilt durable service data, then document the target directory and ownership model.
+5. Capture another state snapshot after any hardening or service changes.
+6. Install Docker only after the storage and hardening decisions are settled.
 
 ## Open Questions
 - Should Phoenix be wiped and rebuilt now, or kept intact until more data is inspected?

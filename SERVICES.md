@@ -105,3 +105,53 @@ Expected consequence:
 ## Decision Needed Before Docker
 
 Do not treat the current service set as acceptable by default. The host identity needs to be documented first, then the service baseline should be pruned to match it.
+
+## Recommended Keep/Drop Baseline
+
+This is the recommended default if Cirrus is going to become a production-oriented host before wider lab integration resumes.
+
+### Keep
+
+- `ssh.service`
+- `ufw.service`
+- `unattended-upgrades.service`
+- `NetworkManager.service`
+- `wpa_supplicant.service`
+- `cron.service`
+- `mdmonitor.service`
+- `apparmor.service`
+
+### Keep Temporarily If Local Desktop Access Is Still Required
+
+- `gdm.service`
+- `accounts-daemon.service`
+- `udisks2.service`
+- `upower.service`
+- `power-profiles-daemon.service`
+- `low-memory-monitor.service`
+
+### Drop Unless There Is A Specific Current Use Case
+
+- `avahi-daemon.service`
+- `cups.service`
+- `cups-browsed.service`
+- `bluetooth.service`
+- `ModemManager.service`
+- `geoclue.service`
+- `colord.service`
+- `switcheroo-control.service`
+
+### Open Decision
+
+- `NetworkManager-wait-online.service`
+
+Recommendation:
+
+- disable it unless a specific boot dependency actually needs network-online semantics
+
+## Recommended Order Of Service Cleanup
+
+1. Disable discovery and peripheral services with the weakest justification first: `avahi-daemon`, `cups`, `cups-browsed`, `ModemManager`, `bluetooth`.
+2. Reboot or restart the affected units and confirm remote access still works as expected.
+3. Decide whether GDM remains intentional. If not, remove the remaining desktop support stack aggressively.
+4. Capture another state snapshot after the prune.

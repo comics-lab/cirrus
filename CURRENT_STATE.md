@@ -8,13 +8,14 @@ It is not the source of truth for comics-lab organization-wide governance or arc
 
 ## Host Snapshot
 
-State captured from `state-of-hardware-20260126-055629.txt` and related root docs.
+State captured from `state-of-hardware-20260315-220018.txt`, `state-of-hardware-20260126-055629.txt`, and related root docs.
 
 - Hostname: `cirrus`
 - OS: Debian GNU/Linux 13 (`trixie`)
 - Kernel: `6.12.63+deb13-amd64`
 - Repo path: `/home/rmleonard/Projects/cirrus`
 - Root docs were normalized on `2026-03-15` to make this repo host-scoped
+- Latest live snapshot: `2026-03-15 22:01:24 UTC`
 
 ## Storage
 
@@ -24,7 +25,8 @@ State captured from `state-of-hardware-20260126-055629.txt` and related root doc
 - Phoenix filesystem: Btrfs
 - Phoenix size: about 3.7T
 - Phoenix use at capture time: about 84%
-- Phoenix currently appears to contain older data and is not yet a clean, deliberate service-data target
+- Phoenix top level still looks like an imported Linux root filesystem, with directories such as `bin`, `boot`, `dev`, `etc`, `home.old`, `root`, `usr`, and `var`
+- Phoenix should currently be treated as legacy/recovery data, not as a clean service-data target
 
 ## Hardening Status
 
@@ -77,7 +79,7 @@ Live verification on `2026-03-15` still shows a desktop-oriented active service 
 - `udisks2`
 - `upower`
 
-See `SERVICES.md` for the current review set.
+See `SERVICES.md` for the current review set and recommended keep/drop baseline.
 
 ## Documentation State
 
@@ -92,6 +94,7 @@ Most useful current files:
 - `SERVICES.md`
 - `RESUME.md`
 - `NEXT_STEPS_2026-03-15.md`
+- `state-of-hardware-20260315-220018.txt`
 - `state-of-hardware-20260126-055629.txt`
 - `logical_storage.md`
 - `hardening.md`

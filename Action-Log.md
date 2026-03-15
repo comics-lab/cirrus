@@ -17,3 +17,4 @@
 - Reindexed the root docs and normalized stale path references so restart guidance matches the current repo location.
 - Pushed branch `docs-normalization` to GitHub and left branch-diff review pending before merge.
 - Verified the live enabled and running service set on Cirrus and added `SERVICES.md` to capture the workstation-vs-server decision point.
+- Captured a fresh live state snapshot in `state-of-hardware-20260315-220018.txt` and documented that Phoenix still looks like legacy/recovery data rather than clean service storage.
