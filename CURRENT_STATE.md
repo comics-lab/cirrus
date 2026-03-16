@@ -60,6 +60,8 @@ Already in place:
 - `smartmontools.service` enabled and running
 - explicit SMART monitoring configured for Phoenix and both NVMe devices
 - Avahi is configured to advertise only on the wired interface `enp1s0` so `cirrus.local` resolves to the wired address
+- system suspend is now hard-disabled through `/etc/systemd/sleep.conf.d/90-cirrus-disable-sleep.conf`
+- GNOME idle suspend has been disabled for both `rmleonard` and the `Debian-gdm` greeter user
 
 Not yet settled or incomplete:
 
@@ -101,6 +103,12 @@ Live verification on `2026-03-15` still shows a desktop-oriented active service 
 This is now intentional in part: Cirrus keeps a minimal desktop and hardware-support stack because Debian Desktop provided the only clean install path for this hardware and correctly enabled key devices such as Wi-Fi and Bluetooth.
 
 Avahi is intentionally kept for `.local` discovery, but it is restricted to the wired interface so other hosts resolve `cirrus.local` to `192.168.1.113` instead of the Wi-Fi address.
+
+Recent operational finding:
+- Phoenix mounted correctly at boot
+- when the host suspended, `mnt-phoenix.mount` was explicitly unmounted during resume
+- Phoenix had to be remounted manually after wake
+- the mitigation in place is to disable suspend entirely until the host is stable
 
 See `SERVICES.md` for the current review set and the adjusted keep/drop baseline.
 

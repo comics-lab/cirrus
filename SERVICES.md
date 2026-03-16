@@ -117,6 +117,27 @@ Reason:
 - a small local desktop remains useful for hardware recovery and direct maintenance
 - Avahi is kept intentionally for `.local` discovery, but only on the wired interface
 
+## Power Policy
+
+Suspend is currently hard-disabled on Cirrus.
+
+Current implementation:
+- GNOME idle suspend disabled for `rmleonard`
+- GNOME idle suspend disabled for the `Debian-gdm` greeter
+- `/etc/systemd/logind.conf.d/90-cirrus-no-idle-suspend.conf` sets:
+  - `IdleAction=ignore`
+  - `IdleActionSec=0`
+- `/etc/systemd/sleep.conf.d/90-cirrus-disable-sleep.conf` sets:
+  - `AllowSuspend=no`
+  - `AllowHibernation=no`
+  - `AllowSuspendThenHibernate=no`
+  - `AllowHybridSleep=no`
+
+Reason:
+- the greeter session previously triggered suspend after idle
+- after resume, `mnt-phoenix.mount` was explicitly unmounted
+- the host should not be allowed to sleep until this workstation-with-services baseline is stable
+
 ## Recommended Keep/Drop Baseline
 
 This is the recommended default for Cirrus as a minimal desktop host that will also run services.

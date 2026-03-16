@@ -31,3 +31,5 @@
 - Updated the service baseline to treat Cirrus as a minimal desktop with services rather than a server to be stripped aggressively.
 - Removed the CUPS stack and restricted Avahi to `enp1s0` so `cirrus.local` resolves to the wired address instead of Wi-Fi.
 - Updated `RESUME.md` with the next reboot validation plan: one-hour idle test, remote login first, local login second, then Bluetooth validation before moving on to Docker.
+- Determined that the `Debian-gdm` greeter was still triggering suspend on idle; disabled GNOME idle suspend for the greeter and hard-disabled suspend/hibernate system-wide.
+- Confirmed that Phoenix was being unmounted during resume from suspend, remounted it manually, and documented suspend as the cause rather than boot mount failure.

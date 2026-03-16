@@ -15,6 +15,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - Phoenix shared group and ACL baseline have been applied on the live host.
 - Codex CLI path was standardized after a split-install issue; `codex` now resolves from `~/.nvm/versions/node/v25.8.0/bin/codex` and reports `codex-cli 0.114.0`
 - Avahi is restricted to the wired interface so `cirrus.local` resolves to `192.168.1.113`
+- Suspend is hard-disabled system-wide and GNOME idle suspend is disabled for both `rmleonard` and `Debian-gdm`
 
 ## Start With
 - `README.md`
@@ -63,6 +64,11 @@ Latest reboot result:
 - Phoenix auto-mounted successfully
 - network came up normally
 - Codex resolved cleanly from the standardized `nvm` path
+
+Latest suspend finding:
+- suspend from the greeter caused `mnt-phoenix.mount` to be unmounted on resume
+- Phoenix had to be remounted manually
+- suspend is now hard-disabled until the host proves stable across long idle periods
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
