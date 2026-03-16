@@ -13,6 +13,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - Lean Phoenix subvolume layout is the selected baseline; see `logical_storage.md`.
 - Phoenix ownership and shared-group policy are documented in `logical_storage.md`.
 - Phoenix shared group and ACL baseline have been applied on the live host.
+- Codex CLI path was standardized after a split-install issue; `codex` now resolves from `~/.nvm/versions/node/v25.8.0/bin/codex` and reports `codex-cli 0.114.0`
 
 ## Start With
 - `README.md`
@@ -52,6 +53,11 @@ Known prior behavior from the last boot:
 - Phoenix did mount successfully during boot
 - Phoenix was later unmounted during the same boot session
 - `plymouth-quit-wait.service` held the boot path for about 15 minutes
+
+Latest reboot result:
+- Phoenix auto-mounted successfully
+- network came up normally
+- Codex resolved cleanly from the standardized `nvm` path
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?

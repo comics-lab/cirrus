@@ -26,3 +26,5 @@
 - Captured a fresh post-change state snapshot in `state-of-hardware-20260315-230117.txt` after the Phoenix rebuild, SMART setup, and ACL baseline.
 - Merged `docs-normalization` into `main` and documented the initial Docker baseline in `SERVICES.md`.
 - Added a reboot-watch note to `RESUME.md` to check Phoenix auto-mount behavior and the `plymouth-quit-wait.service` boot stall on the next login.
+- Removed the stale `~/.npm-global` Codex install, reinstalled Codex under the active `nvm` global prefix, cleared stale `~/.codex/tmp/arg0` state, and verified `codex-cli 0.114.0`.
+- Verified after reboot that Phoenix auto-mounted successfully, network came up, and Codex resolved from the standardized `nvm` path.
