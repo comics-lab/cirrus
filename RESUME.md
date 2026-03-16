@@ -40,5 +40,18 @@ Start in: `/home/rmleonard/Projects/cirrus`
 3. Begin Docker installation planning from the documented Docker baseline.
 4. Install Docker only after the storage and hardening decisions are settled.
 
+## Reboot Watch
+
+After the next reboot, check these first:
+- whether `/mnt/phoenix` is mounted automatically before any manual `mount -a`
+- whether the current boot journal shows `mnt-phoenix.mount` mounting and staying mounted
+- whether `plymouth-quit-wait.service` or graphical startup stalls boot again
+- whether wired and Wi-Fi both come up normally, and when
+
+Known prior behavior from the last boot:
+- Phoenix did mount successfully during boot
+- Phoenix was later unmounted during the same boot session
+- `plymouth-quit-wait.service` held the boot path for about 15 minutes
+
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
