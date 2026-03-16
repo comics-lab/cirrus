@@ -37,10 +37,10 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - `the_lab/comics-lab-book/01-physical/overview.md`
 
 ## Next Recommended Work
-1. Review `SERVICES.md` and continue the minimal-desktop service baseline cleanup.
-2. Remove only the explicitly unwanted CUPS services first.
-3. Begin Docker installation planning from the documented Docker baseline.
-4. Install Docker only after the storage and hardening decisions are settled.
+1. Reboot and leave the box idle for about one hour with no keyboard interaction.
+2. Confirm the host still appears up, then test remote login first and local login second.
+3. Verify Bluetooth connectivity after the reboot test.
+4. If the host remains stable, proceed to Docker installation from the documented baseline.
 
 ## Reboot Watch
 
@@ -49,6 +49,10 @@ After the next reboot, check these first:
 - whether the current boot journal shows `mnt-phoenix.mount` mounting and staying mounted
 - whether `plymouth-quit-wait.service` or graphical startup stalls boot again
 - whether wired and Wi-Fi both come up normally, and when
+- whether the host stays up for about one hour with no local input and does not auto-suspend
+- whether remote login works before local login
+- whether `cirrus.local` still resolves to the wired address
+- whether Bluetooth still works after the idle-period reboot test
 
 Known prior behavior from the last boot:
 - Phoenix did mount successfully during boot

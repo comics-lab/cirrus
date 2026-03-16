@@ -30,3 +30,4 @@
 - Verified after reboot that Phoenix auto-mounted successfully, network came up, and Codex resolved from the standardized `nvm` path.
 - Updated the service baseline to treat Cirrus as a minimal desktop with services rather than a server to be stripped aggressively.
 - Removed the CUPS stack and restricted Avahi to `enp1s0` so `cirrus.local` resolves to the wired address instead of Wi-Fi.
+- Updated `RESUME.md` with the next reboot validation plan: one-hour idle test, remote login first, local login second, then Bluetooth validation before moving on to Docker.
