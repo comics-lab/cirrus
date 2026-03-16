@@ -14,6 +14,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - Phoenix ownership and shared-group policy are documented in `logical_storage.md`.
 - Phoenix shared group and ACL baseline have been applied on the live host.
 - Codex CLI path was standardized after a split-install issue; `codex` now resolves from `~/.nvm/versions/node/v25.8.0/bin/codex` and reports `codex-cli 0.114.0`
+- Avahi is restricted to the wired interface so `cirrus.local` resolves to `192.168.1.113`
 
 ## Start With
 - `README.md`
@@ -36,8 +37,8 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - `the_lab/comics-lab-book/01-physical/overview.md`
 
 ## Next Recommended Work
-1. Review `SERVICES.md` and apply the recommended keep/drop service baseline.
-2. Decide explicitly whether Cirrus is a server with temporary GNOME, or a workstation with services.
+1. Review `SERVICES.md` and continue the minimal-desktop service baseline cleanup.
+2. Remove only the explicitly unwanted CUPS services first.
 3. Begin Docker installation planning from the documented Docker baseline.
 4. Install Docker only after the storage and hardening decisions are settled.
 

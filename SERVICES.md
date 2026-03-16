@@ -107,9 +107,19 @@ Expected consequence:
 
 Do not treat the current service set as acceptable by default. The host identity needs to be documented first, then the service baseline should be pruned to match it.
 
+## Current Host Identity
+
+Cirrus should currently be treated as a minimal desktop with services.
+
+Reason:
+- Debian Desktop was the only install path that completed cleanly on this hardware
+- key hardware behavior such as Wi-Fi and Bluetooth came up correctly through that path
+- a small local desktop remains useful for hardware recovery and direct maintenance
+- Avahi is kept intentionally for `.local` discovery, but only on the wired interface
+
 ## Recommended Keep/Drop Baseline
 
-This is the recommended default if Cirrus is going to become a production-oriented host before wider lab integration resumes.
+This is the recommended default for Cirrus as a minimal desktop host that will also run services.
 
 ### Keep
 
@@ -121,26 +131,35 @@ This is the recommended default if Cirrus is going to become a production-orient
 - `cron.service`
 - `mdmonitor.service`
 - `apparmor.service`
-
-### Keep Temporarily If Local Desktop Access Is Still Required
-
 - `gdm.service`
-- `accounts-daemon.service`
+- `avahi-daemon.service`
+- `bluetooth.service`
 - `udisks2.service`
 - `upower.service`
 - `power-profiles-daemon.service`
+- `accounts-daemon.service`
 - `low-memory-monitor.service`
 
 ### Drop Unless There Is A Specific Current Use Case
 
-- `avahi-daemon.service`
 - `cups.service`
 - `cups-browsed.service`
-- `bluetooth.service`
 - `ModemManager.service`
 - `geoclue.service`
 - `colord.service`
 - `switcheroo-control.service`
+
+### Avahi Policy
+
+Keep `avahi-daemon`, but restrict it to the wired interface.
+
+Current implementation:
+- `/etc/avahi/avahi-daemon.conf`
+- `allow-interfaces=enp1s0`
+
+Reason:
+- preserve the convenience of `cirrus.local`
+- avoid resolving the host to the Wi-Fi address when wired is the preferred stable path
 
 ### Open Decision
 
@@ -152,9 +171,9 @@ Recommendation:
 
 ## Recommended Order Of Service Cleanup
 
-1. Disable discovery and peripheral services with the weakest justification first: `avahi-daemon`, `cups`, `cups-browsed`, `ModemManager`, `bluetooth`.
-2. Reboot or restart the affected units and confirm remote access still works as expected.
-3. Decide whether GDM remains intentional. If not, remove the remaining desktop support stack aggressively.
+1. Remove only `cups` and `cups-browsed` first, since local printing is explicitly not needed.
+2. Verify desktop, network, and host access still behave normally.
+3. Reassess `ModemManager`, `geoclue`, `colord`, and `switcheroo-control` one by one instead of treating the entire desktop stack as expendable.
 4. Capture another state snapshot after the prune.
 
 ## Docker Baseline

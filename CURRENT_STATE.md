@@ -59,13 +59,14 @@ Already in place:
 - `smartmontools` installed
 - `smartmontools.service` enabled and running
 - explicit SMART monitoring configured for Phoenix and both NVMe devices
+- Avahi is configured to advertise only on the wired interface `enp1s0` so `cirrus.local` resolves to the wired address
 
 Not yet settled or incomplete:
 
 - `fail2ban` not installed
 - Docker not installed
-- service baseline still looks desktop-heavy
-- host role is not fully decided: server-with-GNOME vs workstation-with-services
+- some nonessential services still need review
+- host role is now best described as a minimal desktop with services, not a stripped server
 
 ## Network and Services
 
@@ -97,7 +98,11 @@ Live verification on `2026-03-15` still shows a desktop-oriented active service 
 - `udisks2`
 - `upower`
 
-See `SERVICES.md` for the current review set and recommended keep/drop baseline.
+This is now intentional in part: Cirrus keeps a minimal desktop and hardware-support stack because Debian Desktop provided the only clean install path for this hardware and correctly enabled key devices such as Wi-Fi and Bluetooth.
+
+Avahi is intentionally kept for `.local` discovery, but it is restricted to the wired interface so other hosts resolve `cirrus.local` to `192.168.1.113` instead of the Wi-Fi address.
+
+See `SERVICES.md` for the current review set and the adjusted keep/drop baseline.
 
 ## Documentation State
 

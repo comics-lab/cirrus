@@ -28,3 +28,5 @@
 - Added a reboot-watch note to `RESUME.md` to check Phoenix auto-mount behavior and the `plymouth-quit-wait.service` boot stall on the next login.
 - Removed the stale `~/.npm-global` Codex install, reinstalled Codex under the active `nvm` global prefix, cleared stale `~/.codex/tmp/arg0` state, and verified `codex-cli 0.114.0`.
 - Verified after reboot that Phoenix auto-mounted successfully, network came up, and Codex resolved from the standardized `nvm` path.
+- Updated the service baseline to treat Cirrus as a minimal desktop with services rather than a server to be stripped aggressively.
+- Removed the CUPS stack and restricted Avahi to `enp1s0` so `cirrus.local` resolves to the wired address instead of Wi-Fi.
