@@ -1,0 +1,4 @@
+interface:
+  display_name: "Host Hardening Baseline"
+  short_description: "Harden and verify a Linux host baseline."
+  default_prompt: "Review and improve Linux host hardening and verification state."

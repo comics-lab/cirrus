@@ -33,3 +33,5 @@
 - Updated `RESUME.md` with the next reboot validation plan: one-hour idle test, remote login first, local login second, then Bluetooth validation before moving on to Docker.
 - Determined that the `Debian-gdm` greeter was still triggering suspend on idle; disabled GNOME idle suspend for the greeter and hard-disabled suspend/hibernate system-wide.
 - Confirmed that Phoenix was being unmounted during resume from suspend, remounted it manually, and documented suspend as the cause rather than boot mount failure.
+- Verified the post-fix reboot test: the host stayed awake for about one hour, Phoenix remained mounted, remote and local login both worked, Bluetooth worked, and `cirrus.local` remained valid.
+- Drafted the first reusable host-operation skill sources under `skills/`: `host-truth-capture`, `host-resume-handoff`, `host-storage-baseline`, and `host-hardening-baseline`.

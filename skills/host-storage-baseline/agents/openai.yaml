@@ -1,0 +1,4 @@
+interface:
+  display_name: "Host Storage Baseline"
+  short_description: "Plan and document Linux host storage."
+  default_prompt: "Define storage roles, layout, and permissions for a Linux host."

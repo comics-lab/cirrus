@@ -1,0 +1,4 @@
+interface:
+  display_name: "Host Truth Capture"
+  short_description: "Capture and document current Linux host truth."
+  default_prompt: "Establish current host truth from live state and update the host docs."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Host Resume Handoff"
+  short_description: "Create restart checkpoints for host work."
+  default_prompt: "Update host resume and action-log files with a clean restart handoff."

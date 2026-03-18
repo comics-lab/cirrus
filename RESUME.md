@@ -70,5 +70,13 @@ Latest suspend finding:
 - Phoenix had to be remounted manually
 - suspend is now hard-disabled until the host proves stable across long idle periods
 
+Latest idle validation result:
+- host stayed awake for about one hour after reboot with no local interaction
+- Phoenix remained mounted
+- remote login worked
+- local login worked
+- Bluetooth connectivity worked
+- `cirrus.local` remained valid
+
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
