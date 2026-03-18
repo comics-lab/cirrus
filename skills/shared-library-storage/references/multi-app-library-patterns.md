@@ -44,6 +44,19 @@ Good default:
 
 Use a more restrictive model for curated library paths when only one app should write there.
 
+## Remote Administrative Access
+
+For manual remote access to a large shared library:
+
+- prefer `SFTP` if the host already has an SSH hardening baseline
+- use the same real user and shared group model as local administration
+- avoid creating protocol-specific permission islands that diverge from the documented storage policy
+
+Add `SMB3` only when:
+- a specific client workflow genuinely needs share semantics
+- the exported paths can be kept narrow and deliberate
+- the SMB layer will not become the hidden source of truth for permissions
+
 ## Scale Considerations
 
 When the collection is very large:

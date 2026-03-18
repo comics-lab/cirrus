@@ -37,6 +37,12 @@ Typical commands:
 
 Do not rely on package presence alone. Prefer enabled and active state, plus the host role the service supports.
 
+When the user asks about remote file access:
+
+- prefer reviewing whether the existing SSH service can satisfy the need through `SFTP`
+- avoid adding `FTP`, `FTPS`, `WebDAV`, or `SMB` by default just because a client supports them
+- treat any new network file-sharing daemon as a new service-baseline decision, not a convenience toggle
+
 ## Classification Model
 
 Classify each reviewed service as one of:

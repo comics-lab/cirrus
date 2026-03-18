@@ -29,6 +29,21 @@ Use this bucket when:
 - the service adds attack surface or boot complexity
 - the service can be removed in a small, validated change wave
 
+## Network File Access Services
+
+Default ranking for an already-hardened Linux host:
+
+1. `SFTP` on the existing SSH service
+2. `SMB3` only when a real client or workflow requires share semantics
+3. `WebDAV` only for a specific compatibility case
+4. avoid `FTP`
+5. avoid `FTPS` unless a legacy requirement leaves no better option
+
+Review questions:
+- can the existing SSH service satisfy the requirement through SFTP?
+- does the user need true share semantics or just administrative file access?
+- will the new daemon complicate firewall, authentication, or permission policy?
+
 ## Review Questions
 
 Ask for each service:

@@ -188,6 +188,27 @@ Container mapping recommendation:
 - Kavita should prefer read-only access to library trees and write only within `/mnt/phoenix/services/kavita`
 - human/manual operations should be performed by `rmleonard` through the shared `media` group, not by loosening permissions to world-writable
 
+### Administrative Remote Access Policy
+
+Preferred protocol:
+- `SFTP` via the existing OpenSSH service
+
+Reason:
+- it reuses the current SSH hardening baseline
+- it respects existing UNIX ownership, groups, and ACLs on Phoenix
+- it avoids introducing a second network file service before Docker and application layout are finished
+
+Operational guidance:
+- administrative remote access should use the real user account and SSH keys
+- remote manual changes should occur through the shared `media` group model already documented here
+- avoid protocol-specific alternate permission models unless there is a clear interoperability need
+
+If a later `SMB` share is added for convenience:
+- export only deliberate library or staging paths
+- do not export broad roots casually
+- keep share layout aligned with the documented Phoenix subvolume roles
+- treat SMB as an additional access layer, not the primary source of truth for permissions
+
 ### Applied Baseline (2026-03-15)
 
 The following have been applied on the live host:

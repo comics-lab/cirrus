@@ -59,6 +59,12 @@ Prefer:
 
 If multiple applications must write the same tree, document why and define the collision policy up front.
 
+When a human operator also needs remote access from tools like mobile file browsers:
+
+- prefer `SFTP` over the existing SSH service first
+- keep the remote protocol aligned with the same user, group, and ACL model used locally
+- avoid adding a second file-sharing stack just to browse or manually correct library content
+
 ## Scale Rule
 
 When the library is already in the tens of terabytes or expected to grow that large:

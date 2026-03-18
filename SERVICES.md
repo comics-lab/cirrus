@@ -182,6 +182,43 @@ Reason:
 - preserve the convenience of `cirrus.local`
 - avoid resolving the host to the Wi-Fi address when wired is the preferred stable path
 
+## Administrative File Access Baseline
+
+Use `SFTP` over the existing OpenSSH service as the default administrative file-access method for Cirrus.
+
+Reason:
+- no additional file-sharing daemon is required
+- OpenSSH is already part of the hardening baseline
+- key-only authentication is already in place
+- FileBrowser Pro supports SFTP directly
+- SFTP aligns cleanly with existing UNIX ownership, group, and ACL policy on Phoenix
+
+Current host facts:
+- `ssh.service` is enabled and active
+- `/etc/ssh/sshd_config` includes `Subsystem sftp /usr/lib/openssh/sftp-server`
+- `PasswordAuthentication no`
+- `PermitRootLogin no`
+- `PubkeyAuthentication yes`
+
+Recommended client pattern:
+- connect to `cirrus.local`
+- prefer the wired path resolved by Avahi
+- use SSH key authentication, not passwords
+- use the normal administrative user rather than a broad guest-style share
+
+Protocol ranking for Cirrus:
+1. `SFTP`
+2. `SMB3` only if later needed for LAN-style shared-folder workflows or client compatibility
+3. `WebDAV` only for a specific constrained use case
+4. do not enable `FTP`
+5. do not enable `FTPS` unless a legacy client requirement forces it
+
+If `SMB` is added later:
+- keep it LAN-only
+- require SMB3
+- use a dedicated service/share configuration rather than exposing the whole host casually
+- map shares to documented Phoenix paths instead of exporting broad filesystem roots
+
 ### Open Decision
 
 - `NetworkManager-wait-online.service`
