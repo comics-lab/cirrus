@@ -1,0 +1,4 @@
+interface:
+  display_name: "Service Baseline Review"
+  short_description: "Classify and document a Linux host service baseline."
+  default_prompt: "Review enabled services, align them to host identity, and document the keep or review or remove baseline."

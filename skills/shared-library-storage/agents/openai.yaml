@@ -1,0 +1,4 @@
+interface:
+  display_name: "Shared Library Storage"
+  short_description: "Design storage for large shared media libraries."
+  default_prompt: "Define large-library layout, writer and reader policy, and shared access rules before deploying applications."
