@@ -35,3 +35,4 @@
 - Confirmed that Phoenix was being unmounted during resume from suspend, remounted it manually, and documented suspend as the cause rather than boot mount failure.
 - Verified the post-fix reboot test: the host stayed awake for about one hour, Phoenix remained mounted, remote and local login both worked, Bluetooth worked, and `cirrus.local` remained valid.
 - Drafted the first reusable host-operation skill sources under `skills/`: `host-truth-capture`, `host-resume-handoff`, `host-storage-baseline`, and `host-hardening-baseline`.
+- Verified administrative SFTP access from FileBrowser Pro on iOS using a dedicated ED25519 key, with a temporary password-auth window used only to retrieve/import the key file before re-locking Cirrus to key-only SSH.

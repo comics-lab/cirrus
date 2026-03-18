@@ -78,5 +78,11 @@ Latest idle validation result:
 - Bluetooth connectivity worked
 - `cirrus.local` remained valid
 
+Latest remote-access result:
+- FileBrowser Pro SFTP access to Cirrus now works with a dedicated imported SSH key
+- temporary password auth was enabled only long enough to retrieve the key file, then removed
+- Cirrus is back to key-only SSH
+- after the next reconnect, re-verify SFTP access and then continue with storage-policy refinement before Docker
+
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
