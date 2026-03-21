@@ -93,3 +93,24 @@ Latest remote-access result:
    acquisition tools, organizers, library/reader apps, and human admin access.
 3. Capture the resulting writer versus reader policy in `logical_storage.md` and the reusable storage skills.
 4. Only then begin Docker from the documented host baseline.
+
+## Separate Recovery Note: reality.local
+
+Current problem:
+- `reality.local` reportedly boots only into emergency or maintenance mode because volume `fearless` is offline
+- there appear to be many dependent bind mounts into or out of `fearless`
+
+Suggested first recovery pass:
+1. boot to the emergency shell
+2. remount `/` read-write with `mount -o remount,rw /`
+3. back up `/etc/fstab`
+4. comment out the `fearless` UUID mount entry
+5. comment out all bind mounts that depend on `fearless`
+6. optionally run `systemctl daemon-reload` and `mount -a`
+7. reboot and confirm the host can reach a normal boot without `fearless`
+
+Useful check:
+- `grep -n 'fearless\\|bind' /etc/fstab`
+
+Goal:
+- get `reality.local` booting normally first, then repair storage and reintroduce bind mounts in a controlled way
