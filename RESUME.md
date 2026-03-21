@@ -2,7 +2,7 @@
 
 Start in: `/home/rmleonard/Projects/cirrus`
 
-## Current Context (2026-03-15)
+## Current Context (2026-03-21)
 - March docs are the current source of truth for repo scope and navigation.
 - This repo is host-scoped for Cirrus, not an org-level comics-lab policy repo.
 - Root docs were reindexed so `README.md`, `CURRENT_STATE.md`, `SETUP_PLAN.md`, and this file agree on repo purpose and location.
@@ -86,3 +86,10 @@ Latest remote-access result:
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
+
+## Next Recommended Work
+1. Re-verify FileBrowser Pro SFTP access after reboot or reconnect.
+2. Refine the shared-library storage policy for the expected multi-application model:
+   acquisition tools, organizers, library/reader apps, and human admin access.
+3. Capture the resulting writer versus reader policy in `logical_storage.md` and the reusable storage skills.
+4. Only then begin Docker from the documented host baseline.
