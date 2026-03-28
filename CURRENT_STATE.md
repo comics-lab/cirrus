@@ -36,6 +36,10 @@ State captured from `state-of-hardware-20260315-230117.txt`, `state-of-hardware-
   - `media/incoming`
   - `services/kavita`
   - `services/mylar`
+- Cirrus also now has two external NFS source mounts from `reality.local`:
+  - `/mnt/old_library` -> `reality.local:/mnt/grackle`
+  - `/mnt/incoming-root` -> `reality.local:/home/Various-Downloads`
+- These remote mounts are part of the ingest/reference workflow, not replacements for the Phoenix local storage model
 - Phoenix shared access baseline has been applied:
   - shared group: `media`
   - `rmleonard` is a member of `media`

@@ -256,6 +256,29 @@ If a later `SMB` share is added for convenience:
 - keep share layout aligned with the documented Phoenix subvolume roles
 - treat SMB as an additional access layer, not the primary source of truth for permissions
 
+### External Source Mounts
+
+Cirrus also uses selected remote NFS mounts from `reality.local` as source or intake paths.
+
+Current mounts:
+- `reality.local:/mnt/grackle` mounted at `/mnt/old_library`
+- `reality.local:/home/Various-Downloads` mounted at `/mnt/incoming-root`
+
+Role in the workflow:
+- `/mnt/old_library` is an external read-mostly source library mount
+- `/mnt/incoming-root` is an external intake root for newly acquired or staged material upstream of the local curated library workflow
+
+Policy:
+- treat these as external source mounts, not as substitutes for Phoenix
+- do not let container app state live on these remote mounts by default
+- do not let remote export layout silently become the source of truth for Cirrus storage policy
+- ingest, organize, and curate against the documented Cirrus path roles even when the source material originates from these mounts
+
+Operational guidance:
+- use `/mnt/old_library` for reference, migration, comparison, or controlled import work
+- use `/mnt/incoming-root` as an upstream intake source that can feed local `media/incoming` or other documented staging paths
+- prefer local durable paths on Phoenix for final application state and curated-library ownership policy
+
 ### Applied Baseline (2026-03-15)
 
 The following have been applied on the live host:

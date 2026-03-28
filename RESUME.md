@@ -13,6 +13,9 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - Lean Phoenix subvolume layout is the selected baseline; see `logical_storage.md`.
 - Phoenix ownership and shared-group policy are documented in `logical_storage.md`.
 - Phoenix shared group and ACL baseline have been applied on the live host.
+- Two external NFS workflow mounts from `reality.local` are now in place:
+  - `/mnt/old_library`
+  - `/mnt/incoming-root`
 - Codex CLI path was standardized after a split-install issue; `codex` now resolves from `~/.nvm/versions/node/v25.8.0/bin/codex` and reports `codex-cli 0.114.0`
 - Avahi is restricted to the wired interface so `cirrus.local` resolves to `192.168.1.113`
 - Suspend is hard-disabled system-wide and GNOME idle suspend is disabled for both `rmleonard` and `Debian-gdm`
@@ -88,11 +91,9 @@ Latest remote-access result:
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Re-verify FileBrowser Pro SFTP access after reboot or reconnect.
-2. Refine the shared-library storage policy for the expected multi-application model:
-   acquisition tools, organizers, library/reader apps, and human admin access.
-3. Capture the resulting writer versus reader policy in `logical_storage.md` and the reusable storage skills.
-4. Only then begin Docker from the documented host baseline.
+1. Decide how `/mnt/old_library` and `/mnt/incoming-root` map into the local ingest and curation workflow without diluting the Phoenix policy baseline.
+2. Carry that mapping into Docker bind-mount planning for organizer and reader applications.
+3. Only then begin Docker from the documented host baseline.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.
