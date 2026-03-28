@@ -80,6 +80,7 @@ Not yet settled or incomplete:
 - Docker server version: `29.3.1`
 - Docker storage driver: `overlayfs`
 - Docker compose plugin version: `v5.1.1`
+- JDownloader 2 is the current first-planned application container, but it has not been deployed yet
 - some nonessential services still need review
 - host role is now best described as a minimal desktop with services, not a stripped server
 

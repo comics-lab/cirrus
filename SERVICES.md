@@ -332,6 +332,50 @@ Pause here to evaluate:
 - whether any service should read the external NFS source mounts directly
 - firewall expectations for published ports
 
+## First Application Candidate: JDownloader 2
+
+JDownloader 2 is the current first application candidate for Cirrus.
+
+Primary intended use case:
+- from Safari on iPhone, share curated download URLs to JDownloader
+- JDownloader queues and downloads the files
+- downloaded material lands in intake, not directly in the curated library
+
+Role classification:
+- intake or acquisition service
+- writer to intake paths only
+- not a writer to curated library trees by default
+
+Recommended Cirrus deployment model:
+- run in Docker, not as a host-managed Java jar
+- keep persistent app state on Phoenix
+- keep download output in the intake path on Phoenix
+- prefer MyJDownloader as the primary remote-control path
+- expose a local web UI only if there is a clear operational need
+
+Recommended host paths:
+- config or state: `/mnt/phoenix/services/jdownloader2`
+- download target: `/mnt/phoenix/media/incoming`
+- optional source visibility only if justified later:
+  - `/mnt/phoenix/media/sources/upstream_incoming`
+  - `/mnt/old_library`
+  - `/mnt/incoming-root`
+
+Do not grant by default:
+- write access to `/mnt/phoenix/media/comics`
+- write access to `/mnt/phoenix/media/books/...`
+- broad write access across curated library trees
+
+Reference notes from `reality.local`:
+- prior `jdownloader.service` ran a host-managed jar as `User=media`
+- treat that as historical evidence of intent, not as the Cirrus deployment template
+- Cirrus should keep app state, intake paths, and user or group boundaries cleaner than the legacy host-run setup
+
+Deployment questions to settle before running the container:
+1. MyJDownloader only, or MyJDownloader plus local browser UI?
+2. Should the container see only `/mnt/phoenix/media/incoming`, or also selected source-class paths?
+3. Should JDownloader downloads be considered final intake into `media/incoming`, or should they first land in `media/sources/upstream_incoming` and then be promoted?
+
 Recommended `/etc/docker/daemon.json` baseline:
 
 ```json

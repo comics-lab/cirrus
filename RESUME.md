@@ -21,6 +21,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
   - `/mnt/phoenix/media/sources/upstream_incoming`
 - Reference service/proxy configs from `reality.local` are staged under:
   - `/mnt/incoming-root/reality-config-export/`
+- JDownloader 2 is now the first planned application candidate, but it has not been deployed yet.
 - Codex CLI path was standardized after a split-install issue; `codex` now resolves from `~/.nvm/versions/node/v25.8.0/bin/codex` and reports `codex-cli 0.114.0`
 - Avahi is restricted to the wired interface so `cirrus.local` resolves to `192.168.1.113`
 - Suspend is hard-disabled system-wide and GNOME idle suspend is disabled for both `rmleonard` and `Debian-gdm`
@@ -60,16 +61,16 @@ Latest Docker result:
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Pause at the Docker boundary and evaluate exact application/container plans before deploying anything.
-2. Decide how `/mnt/old_library` and `/mnt/incoming-root` should be exposed to organizer or reader containers, if at all.
-3. Define exact bind mounts for the first application stack against:
-   - `/mnt/phoenix/media/comics`
+1. Finalize the JDownloader 2 container plan as the first application stack.
+2. Decide whether JDownloader should use:
+   - MyJDownloader only
+   - or MyJDownloader plus a local browser UI
+3. Define exact JDownloader bind mounts:
+   - `/mnt/phoenix/services/jdownloader2`
    - `/mnt/phoenix/media/incoming`
-   - `/mnt/phoenix/media/sources/legacy_mylar`
-   - `/mnt/phoenix/media/sources/upstream_incoming`
-   - `/mnt/phoenix/services/<app>`
+   - and any optional source-class paths only if justified
 4. Compare the staged `reality.local` reference files in `/mnt/incoming-root/reality-config-export/` against the Cirrus Docker/storage model and decide what to copy versus avoid.
-5. Only then begin application/container deployment.
+5. Deploy JDownloader only after the above is explicit, then pause again before any second application.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.
