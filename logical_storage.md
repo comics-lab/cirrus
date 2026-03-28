@@ -87,6 +87,12 @@ Recommended next step:
 - decide whether Docker should use a Phoenix path directly or a dedicated subvolume
 - keep backups and media separated from service state as currently laid out
 
+Important scale note:
+- the intended comics library is expected to span roughly 20TB or more across the full collection
+- the current Phoenix disk is not the final capacity solution for that full corpus
+- the current Phoenix layout should therefore be treated as the policy baseline for path roles, permissions, and service behavior, not proof that final storage capacity is already solved
+- avoid any path scheme that would require a major reorganization when larger or additional storage is introduced later
+
 ### Candidate Subvolume Layouts
 
 Full layout:
@@ -187,6 +193,47 @@ Container mapping recommendation:
 - Mylar should be the primary writer for `/mnt/phoenix/media/comics`
 - Kavita should prefer read-only access to library trees and write only within `/mnt/phoenix/services/kavita`
 - human/manual operations should be performed by `rmleonard` through the shared `media` group, not by loosening permissions to world-writable
+
+### Multi-Application Library Policy
+
+The current layout should now be interpreted as a multi-application library model, not a simple two-app arrangement.
+
+Expected actor classes:
+- acquisition applications
+- organizer or post-processor applications
+- library or reader applications
+- human administrative access
+- backup or export workflows
+
+Default role policy:
+- acquisition applications write into `media/incoming` and nowhere else by default
+- organizer applications may read `media/incoming` and write into curated library trees only if explicitly designated as the primary writer for that tree
+- reader and display applications should read curated library trees and write only within their own `services/<app>` state paths
+- human administrative access may operate across the library through the shared `media` group, but should prefer deliberate repair, ingest, and reorganization work in `incoming` or `staging`
+- backups and exports should read from curated trees and write only into `backups`
+
+Curated tree policy:
+- `media/comics` is a curated library tree
+- `media/books/ebooks` is a curated library tree
+- `media/books/other` is a curated library tree
+- each curated tree should have one primary writer at a time
+- additional applications should be treated as readers unless a specific multi-writer need is documented
+
+Current designated-writer baseline:
+- `media/comics`: primary writer is the organizer or acquisition stack represented today by Mylar
+- `media/books/ebooks`: primary writer is human or admin workflow until a specific organizer is adopted
+- `media/books/other`: primary writer is human or admin workflow until a specific organizer is adopted
+- `media/incoming`: shared writable intake area for acquisition and manual ingest
+- `staging`: shared repair or reorganization area, not the long-term library
+
+Collision-avoidance rule:
+- do not let multiple applications rename or reorganize the same curated library tree by default
+- if a second writer is ever allowed, document the exact reason and the expected boundary between the writers first
+
+Planned path expansion:
+- if multiple acquisition pipelines are introduced, expand under `media/incoming` first rather than fragmenting the curated library layout
+- if multiple organizer workflows are introduced, prefer separate `staging` or service-state paths rather than giving all organizers broad write access to curated trees
+- if a future larger storage target replaces or augments Phoenix, preserve these same role-based paths so the application layer does not need a wholesale remap
 
 ### Administrative Remote Access Policy
 

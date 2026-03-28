@@ -17,6 +17,7 @@ Prefer:
 - one primary writer for a curated library tree
 - one or more acquisition writers for `incoming`
 - reader apps using curated libraries read-only where possible
+- human admin access using the same shared group model, but not as an excuse to make every application a writer everywhere
 
 This reduces rename collisions, permission drift, and accidental metadata churn.
 

@@ -55,6 +55,8 @@ Current state:
 - the lean Phoenix subvolume layout has been created
 - ownership and service-write policy are now documented in `logical_storage.md`
 - shared group and ACL baseline have been applied on the live host
+- the next storage task is to refine the policy for a much larger multi-application library model, where acquisition tools, organizers, reader apps, and human admin access may all touch the collection
+- the directory and permission model should be finalized before Docker deployment so application containers inherit a deliberate writer versus reader policy instead of improvising one later
 
 ## Phase 5: Container Baseline
 

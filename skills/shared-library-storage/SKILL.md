@@ -59,6 +59,16 @@ Prefer:
 
 If multiple applications must write the same tree, document why and define the collision policy up front.
 
+For very large comic or book libraries, distinguish clearly between:
+
+- intake writers
+- organizer writers
+- curated-library writers
+- reader-only applications
+- human administrative access
+
+Do not collapse all of these into one broad shared-write policy unless there is no better operational boundary.
+
 When a human operator also needs remote access from tools like mobile file browsers:
 
 - prefer `SFTP` over the existing SSH service first
