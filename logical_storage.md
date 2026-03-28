@@ -129,6 +129,26 @@ Lean layout:
 └── staging
 ```
 
+Extended source-aware layout now in use:
+
+```text
+/mnt/phoenix
+├── media
+│   ├── comics
+│   ├── books
+│   │   ├── ebooks
+│   │   └── other
+│   ├── incoming
+│   └── sources
+│       ├── legacy_mylar
+│       └── upstream_incoming
+├── services
+│   ├── kavita
+│   └── mylar
+├── backups
+└── staging
+```
+
 ### Selected Baseline
 
 Use the lean layout first.
@@ -234,6 +254,7 @@ Planned path expansion:
 - if multiple acquisition pipelines are introduced, expand under `media/incoming` first rather than fragmenting the curated library layout
 - if multiple organizer workflows are introduced, prefer separate `staging` or service-state paths rather than giving all organizers broad write access to curated trees
 - if a future larger storage target replaces or augments Phoenix, preserve these same role-based paths so the application layer does not need a wholesale remap
+- keep legacy or upstream source collections under `media/sources/*` as source-class paths, distinct from both `incoming` and the curated library trees
 
 ### Administrative Remote Access Policy
 
@@ -267,6 +288,8 @@ Current mounts:
 Role in the workflow:
 - `/mnt/old_library` is an external read-mostly source library mount
 - `/mnt/incoming-root` is an external intake root for newly acquired or staged material upstream of the local curated library workflow
+- `/mnt/phoenix/media/sources/legacy_mylar` is the canonical local source-class path for old Mylar-library material
+- `/mnt/phoenix/media/sources/upstream_incoming` is the canonical local source-class path for large upstream intake material
 
 Policy:
 - treat these as external source mounts, not as substitutes for Phoenix
@@ -277,6 +300,7 @@ Policy:
 Operational guidance:
 - use `/mnt/old_library` for reference, migration, comparison, or controlled import work
 - use `/mnt/incoming-root` as an upstream intake source that can feed local `media/incoming` or other documented staging paths
+- use `media/sources/legacy_mylar` and `media/sources/upstream_incoming` as the canonical Docker-planning path names for these source classes
 - prefer local durable paths on Phoenix for final application state and curated-library ownership policy
 
 ### Applied Baseline (2026-03-15)

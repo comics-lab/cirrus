@@ -292,6 +292,13 @@ Phoenix bind mount targets:
 - `/mnt/phoenix/media/comics`
 - `/mnt/phoenix/media/books/...`
 - `/mnt/phoenix/media/incoming`
+- `/mnt/phoenix/media/sources/legacy_mylar`
+- `/mnt/phoenix/media/sources/upstream_incoming`
+
+Source-mount planning note:
+- external NFS mounts from `reality.local` currently exist at `/mnt/old_library` and `/mnt/incoming-root`
+- treat `/mnt/phoenix/media/sources/legacy_mylar` and `/mnt/phoenix/media/sources/upstream_incoming` as the canonical Docker-planning names for those source classes
+- keep final curated-library and service-state writes on Phoenix even when containers also read from external source mounts
 
 ## Daemon Configuration
 

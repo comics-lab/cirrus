@@ -34,6 +34,8 @@ State captured from `state-of-hardware-20260315-230117.txt`, `state-of-hardware-
   - `media/books/ebooks`
   - `media/books/other`
   - `media/incoming`
+  - `media/sources/legacy_mylar`
+  - `media/sources/upstream_incoming`
   - `services/kavita`
   - `services/mylar`
 - Cirrus also now has two external NFS source mounts from `reality.local`:
