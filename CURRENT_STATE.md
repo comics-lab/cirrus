@@ -72,7 +72,14 @@ Already in place:
 Not yet settled or incomplete:
 
 - `fail2ban` not installed
-- Docker not installed
+- Docker is now installed from Docker's official Debian repository
+- Docker daemon is enabled and running
+- Docker daemon config is present at `/etc/docker/daemon.json` with:
+  - `log-driver: local`
+  - `live-restore: true`
+- Docker server version: `29.3.1`
+- Docker storage driver: `overlayfs`
+- Docker compose plugin version: `v5.1.1`
 - some nonessential services still need review
 - host role is now best described as a minimal desktop with services, not a stripped server
 
@@ -144,5 +151,5 @@ The larger book structure under `the_lab/comics-lab-book/` exists, but much of i
 
 - Cirrus setup is not complete.
 - Phoenix has been reset as a clean Btrfs data volume, the initial subvolume layout exists, and the shared group/ACL baseline has been applied.
-- Docker and application deployment should wait until hardening and storage decisions are finished.
+- Docker is installed, but application/container deployment has not begun yet.
 - This repo should continue to document Cirrus itself, not the whole lab.

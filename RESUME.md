@@ -16,6 +16,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - Two external NFS workflow mounts from `reality.local` are now in place:
   - `/mnt/old_library`
   - `/mnt/incoming-root`
+- Docker is now installed and the daemon baseline is active, but no application containers have been deployed yet.
 - Codex CLI path was standardized after a split-install issue; `codex` now resolves from `~/.nvm/versions/node/v25.8.0/bin/codex` and reports `codex-cli 0.114.0`
 - Avahi is restricted to the wired interface so `cirrus.local` resolves to `192.168.1.113`
 - Suspend is hard-disabled system-wide and GNOME idle suspend is disabled for both `rmleonard` and `Debian-gdm`
@@ -91,9 +92,15 @@ Latest remote-access result:
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Decide how `/mnt/old_library` and `/mnt/incoming-root` map into the local ingest and curation workflow without diluting the Phoenix policy baseline.
-2. Carry that mapping into Docker bind-mount planning for organizer and reader applications.
-3. Only then begin Docker from the documented host baseline.
+1. Pause at the Docker boundary and evaluate exact application/container plans before deploying anything.
+2. Decide how `/mnt/old_library` and `/mnt/incoming-root` should be exposed to organizer or reader containers, if at all.
+3. Define exact bind mounts for the first application stack against:
+   - `/mnt/phoenix/media/comics`
+   - `/mnt/phoenix/media/incoming`
+   - `/mnt/phoenix/media/sources/legacy_mylar`
+   - `/mnt/phoenix/media/sources/upstream_incoming`
+   - `/mnt/phoenix/services/<app>`
+4. Only then begin application/container deployment.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.

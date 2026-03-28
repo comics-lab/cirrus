@@ -238,9 +238,9 @@ Recommendation:
 
 ## Current State
 
-- Docker is not installed on Cirrus
-- no Docker or containerd packages are present
-- no Docker or containerd services are enabled
+- Docker is installed on Cirrus from Docker's official Debian repository
+- `docker.service` is enabled and active
+- `containerd.service` is enabled
 - host firewall backend is `iptables-nft`
 - UFW is enabled
 
@@ -301,6 +301,36 @@ Source-mount planning note:
 - keep final curated-library and service-state writes on Phoenix even when containers also read from external source mounts
 
 ## Daemon Configuration
+
+Implemented baseline:
+
+```json
+{
+  "log-driver": "local",
+  "live-restore": true
+}
+```
+
+Path:
+- `/etc/docker/daemon.json`
+
+Verified result:
+- Docker server version: `29.3.1`
+- storage driver: `overlayfs`
+- cgroup driver: `systemd`
+- compose plugin version: `v5.1.1`
+
+## Stop Point Before Application Deployment
+
+Docker is installed and the daemon baseline is in place.
+
+Do not deploy application containers yet.
+
+Pause here to evaluate:
+- exact bind mounts for each planned service
+- reader versus writer access for each container
+- whether any service should read the external NFS source mounts directly
+- firewall expectations for published ports
 
 Recommended `/etc/docker/daemon.json` baseline:
 
