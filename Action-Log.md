@@ -37,3 +37,4 @@
 - Drafted the first reusable host-operation skill sources under `skills/`: `host-truth-capture`, `host-resume-handoff`, `host-storage-baseline`, and `host-hardening-baseline`.
 - Verified administrative SFTP access from FileBrowser Pro on iOS using a dedicated ED25519 key, with a temporary password-auth window used only to retrieve/import the key file before re-locking Cirrus to key-only SSH.
 - Noted a separate `reality.local` recovery issue: the host is dropping into emergency mode because volume `fearless` is offline, with many dependent bind mounts likely declared in `/etc/fstab`; recommended first-pass recovery is to remount `/` read-write, back up `/etc/fstab`, comment out the `fearless` UUID mount and all bind mounts that depend on it, then reboot and restore mounts deliberately later.
+- Confirmed that `reality.local` is back online, so the temporary `fearless` emergency-mode recovery note can be cleared from active follow-up.
