@@ -244,7 +244,13 @@ Current designated-writer baseline:
 - `media/books/ebooks`: primary writer is human or admin workflow until a specific organizer is adopted
 - `media/books/other`: primary writer is human or admin workflow until a specific organizer is adopted
 - `media/incoming`: shared writable intake area for acquisition and manual ingest
+- `media/incoming/jdownloader`: dedicated first-stage intake path for JDownloader downloads
 - `staging`: shared repair or reorganization area, not the long-term library
+
+Current intake branching rule:
+- JDownloader downloads should land in `media/incoming/jdownloader`
+- files with a valid `ComicInfo.xml` can then be promoted into the Mylar-oriented processing path
+- files without a valid `ComicInfo.xml` should be routed to alternate metadata or organizer processing rather than assumed Mylar-ready
 
 Collision-avoidance rule:
 - do not let multiple applications rename or reorganize the same curated library tree by default

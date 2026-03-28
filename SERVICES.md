@@ -355,7 +355,7 @@ Recommended Cirrus deployment model:
 
 Recommended host paths:
 - config or state: `/mnt/phoenix/services/jdownloader2`
-- download target: `/mnt/phoenix/media/incoming`
+- download target: `/mnt/phoenix/media/incoming/jdownloader`
 - optional source visibility only if justified later:
   - `/mnt/phoenix/media/sources/upstream_incoming`
   - `/mnt/old_library`
@@ -374,6 +374,12 @@ Reference notes from `reality.local`:
 Deployment questions to settle before running the container:
 1. Should the container see only `/mnt/phoenix/media/incoming`, or also selected source-class paths?
 2. Should JDownloader downloads be considered final intake into `media/incoming`, or should they first land in `media/sources/upstream_incoming` and then be promoted?
+
+Initial intake policy:
+- JDownloader should write into `/mnt/phoenix/media/incoming/jdownloader`
+- that directory is a first-stage intake queue, not a curated library
+- files with valid `ComicInfo.xml` should flow to the Mylar-ready path
+- files without valid `ComicInfo.xml` should flow to alternate processing
 
 Recommended `/etc/docker/daemon.json` baseline:
 
