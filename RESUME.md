@@ -62,9 +62,7 @@ Latest Docker result:
 
 ## Next Recommended Work
 1. Finalize the JDownloader 2 container plan as the first application stack.
-2. Decide whether JDownloader should use:
-   - MyJDownloader only
-   - or MyJDownloader plus a local browser UI
+2. JDownloader should use MyJDownloader only, with no local browser UI exposed in the initial Cirrus deployment.
 3. Define exact JDownloader bind mounts:
    - `/mnt/phoenix/services/jdownloader2`
    - `/mnt/phoenix/media/incoming`
