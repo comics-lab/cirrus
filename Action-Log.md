@@ -46,3 +46,4 @@
 - Chose MyJDownloader only for the initial Cirrus JDownloader deployment and explicitly rejected exposing a local browser UI at first.
 - Created `/mnt/phoenix/media/incoming/jdownloader` as the dedicated first-stage JDownloader intake path and documented the branching rule that valid `ComicInfo.xml` goes toward Mylar-oriented processing while files without valid metadata go to alternate processing.
 - Created `/mnt/phoenix/services/jdownloader2` and documented the first-pass JDownloader Compose spec using `jlesage/jdownloader-2`, `USER_ID=1000`, `GROUP_ID=1001`, `UMASK=002`, MyJDownloader-only control, and bind mounts limited to `/config` and `/output`.
+- Deployed the first JDownloader container from `/srv/compose/jdownloader2/docker-compose.yml` with `TZ=America/Los_Angeles`, no published browser UI port, and verified that the container starts cleanly and initializes its state under `/mnt/phoenix/services/jdownloader2` as `rmleonard:media`.

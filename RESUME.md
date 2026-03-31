@@ -15,7 +15,8 @@ Start in: `/home/rmleonard/Projects/cirrus`
 - Two external NFS workflow mounts from `reality.local` are now in place:
   - `/mnt/old_library`
   - `/mnt/incoming-root`
-- Docker is now installed and the daemon baseline is active, but no application containers have been deployed yet.
+- Docker is now installed and the daemon baseline is active.
+- JDownloader 2 is now deployed as the first application container, with no browser UI port published.
 - Canonical source-class paths now exist under Phoenix:
   - `/mnt/phoenix/media/sources/legacy_mylar`
   - `/mnt/phoenix/media/sources/upstream_incoming`
@@ -55,20 +56,18 @@ Latest Docker result:
 - Docker Engine, containerd, buildx, and compose plugin are installed from Docker's official Debian repo
 - `/etc/docker/daemon.json` is in place with `log-driver=local` and `live-restore=true`
 - Docker is enabled and active
-- no application containers have been deployed yet
+- JDownloader 2 is deployed from `/srv/compose/jdownloader2/docker-compose.yml`
+- no browser UI port is published for JDownloader
+- next validation is MyJDownloader pairing and a test download
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Finalize the JDownloader 2 container plan as the first application stack.
-2. JDownloader should use MyJDownloader only, with no local browser UI exposed in the initial Cirrus deployment.
-3. Define exact JDownloader bind mounts:
-   - `/mnt/phoenix/services/jdownloader2`
-   - `/mnt/phoenix/media/incoming/jdownloader`
-   - and no optional source-class paths in the first pass
-4. Compare the staged `reality.local` reference files in `/mnt/incoming-root/reality-config-export/` against the Cirrus Docker/storage model and decide what to copy versus avoid.
-5. Deploy JDownloader only after the above is explicit, then pause again before any second application.
+1. Pair the running JDownloader container with MyJDownloader.
+2. Perform a small test download and verify that files land in `/mnt/phoenix/media/incoming/jdownloader`.
+3. Confirm resulting ownership and permissions still match the shared `media`-group policy.
+4. Pause again before introducing any second application.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.

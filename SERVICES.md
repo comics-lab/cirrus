@@ -401,7 +401,7 @@ Environment baseline:
 - `USER_ID=1000`
 - `GROUP_ID=1001`
 - `UMASK=002`
-- `TZ=America/Phoenix`
+- `TZ=America/Los_Angeles`
 - `KEEP_APP_RUNNING=1`
 
 Suggested compose service:
@@ -416,7 +416,7 @@ services:
       USER_ID: "1000"
       GROUP_ID: "1001"
       UMASK: "002"
-      TZ: "America/Phoenix"
+      TZ: "America/Los_Angeles"
       KEEP_APP_RUNNING: "1"
     volumes:
       - /mnt/phoenix/services/jdownloader2:/config
@@ -435,6 +435,19 @@ First deployment verification:
 3. downloads land in `/mnt/phoenix/media/incoming/jdownloader`
 4. new files are owned by `uid=1000`, `gid=1001`
 5. permissions match the shared-group expectation from `UMASK=002`
+
+Current deployment result:
+- compose project path: `/srv/compose/jdownloader2/docker-compose.yml`
+- container name: `jdownloader2`
+- state path: `/mnt/phoenix/services/jdownloader2`
+- output path: `/mnt/phoenix/media/incoming/jdownloader`
+- no browser UI port is published
+- container is running successfully
+
+Immediate next step after deployment:
+- pair the container with MyJDownloader
+- verify a test download lands in `/mnt/phoenix/media/incoming/jdownloader`
+- then pause again before introducing any second application
 
 Recommended `/etc/docker/daemon.json` baseline:
 
