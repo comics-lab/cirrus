@@ -16,7 +16,7 @@ Start in: `/home/rmleonard/Projects/cirrus`
   - `/mnt/old_library`
   - `/mnt/incoming-root`
 - Docker is now installed and the daemon baseline is active.
-- JDownloader 2 is now deployed as the first application container, with no browser UI port published.
+- JDownloader 2 is now the first working application container on Cirrus, with MyJDownloader functioning and LAN-only browser UI on `192.168.1.113:5800`.
 - Canonical source-class paths now exist under Phoenix:
   - `/mnt/phoenix/media/sources/legacy_mylar`
   - `/mnt/phoenix/media/sources/upstream_incoming`
@@ -57,8 +57,8 @@ Latest Docker result:
 - `/etc/docker/daemon.json` is in place with `log-driver=local` and `live-restore=true`
 - Docker is enabled and active
 - JDownloader 2 is deployed from `/srv/compose/jdownloader2/docker-compose.yml`
-- no browser UI port is published for JDownloader
-- next validation is MyJDownloader pairing and a test download
+- LAN-only browser UI remains available for JDownloader at `192.168.1.113:5800`
+- JDownloader baseline is validated; next work is defining the post-download processing boundary
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?

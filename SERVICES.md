@@ -445,9 +445,10 @@ Current deployment result:
 - container is running successfully
 
 Immediate next step after deployment:
-- pair the container with MyJDownloader
-- verify a test download lands in `/mnt/phoenix/media/incoming/jdownloader`
-- then pause again before introducing any second application
+- MyJDownloader pairing is complete
+- test downloads are landing in `/mnt/phoenix/media/incoming/jdownloader`
+- manual move/delete operations work as expected
+- pause here before introducing any second application
 
 Recommended `/etc/docker/daemon.json` baseline:
 

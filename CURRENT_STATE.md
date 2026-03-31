@@ -80,7 +80,7 @@ Not yet settled or incomplete:
 - Docker server version: `29.3.1`
 - Docker storage driver: `overlayfs`
 - Docker compose plugin version: `v5.1.1`
-- JDownloader 2 is now deployed as the first application container
+- JDownloader 2 is now the first working application container on Cirrus
 - JDownloader's planned host paths now exist:
   - `/mnt/phoenix/services/jdownloader2`
   - `/mnt/phoenix/media/incoming/jdownloader`
@@ -88,11 +88,12 @@ Not yet settled or incomplete:
   - `/srv/compose/jdownloader2/docker-compose.yml`
 - Current JDownloader runtime:
   - image: `jlesage/jdownloader-2`
-  - no browser UI port published
-  - MyJDownloader remains the intended control path
-- Verified initial container result:
-  - `jdownloader2` container is running
+  - LAN-only browser UI is available at `http://192.168.1.113:5800`
+  - MyJDownloader is working as the routine control path
+- Verified current container result:
+  - `jdownloader2` container is running and surviving reboot cleanly
   - config/state files are being created as `rmleonard:media`
+  - downloads are landing in `/mnt/phoenix/media/incoming/jdownloader` with usable permissions
   - intake output directory remains separate at `/mnt/phoenix/media/incoming/jdownloader`
 - some nonessential services still need review
 - host role is now best described as a minimal desktop with services, not a stripped server
