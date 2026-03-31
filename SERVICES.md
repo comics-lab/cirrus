@@ -381,6 +381,61 @@ Initial intake policy:
 - files with valid `ComicInfo.xml` should flow to the Mylar-ready path
 - files without valid `ComicInfo.xml` should flow to alternate processing
 
+### Proposed First-Pass Container Spec
+
+Image:
+- `jlesage/jdownloader-2`
+
+Initial runtime policy:
+- do not publish the browser UI port
+- rely on MyJDownloader as the remote-control path
+- mount only config and first-stage intake storage
+- do not mount curated library trees
+- do not mount external NFS source paths in the first deployment
+
+Host bind mounts:
+- `/mnt/phoenix/services/jdownloader2:/config`
+- `/mnt/phoenix/media/incoming/jdownloader:/output`
+
+Environment baseline:
+- `USER_ID=1000`
+- `GROUP_ID=1001`
+- `UMASK=002`
+- `TZ=America/Phoenix`
+- `KEEP_APP_RUNNING=1`
+
+Suggested compose service:
+
+```yaml
+services:
+  jdownloader2:
+    image: jlesage/jdownloader-2
+    container_name: jdownloader2
+    restart: unless-stopped
+    environment:
+      USER_ID: "1000"
+      GROUP_ID: "1001"
+      UMASK: "002"
+      TZ: "America/Phoenix"
+      KEEP_APP_RUNNING: "1"
+    volumes:
+      - /mnt/phoenix/services/jdownloader2:/config
+      - /mnt/phoenix/media/incoming/jdownloader:/output
+```
+
+Initial non-goals:
+- no direct browser UI exposure
+- no reverse-proxy integration yet
+- no curated-library write access
+- no external NFS source mounts in the first pass
+
+First deployment verification:
+1. container starts cleanly
+2. MyJDownloader can see and control the instance
+3. downloads land in `/mnt/phoenix/media/incoming/jdownloader`
+4. new files are owned by `uid=1000`, `gid=1001`
+5. permissions match the shared-group expectation from `UMASK=002`
+
 Recommended `/etc/docker/daemon.json` baseline:
 
 ```json

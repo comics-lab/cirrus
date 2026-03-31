@@ -66,7 +66,7 @@ Latest Docker result:
 3. Define exact JDownloader bind mounts:
    - `/mnt/phoenix/services/jdownloader2`
    - `/mnt/phoenix/media/incoming/jdownloader`
-   - and any optional source-class paths only if justified
+   - and no optional source-class paths in the first pass
 4. Compare the staged `reality.local` reference files in `/mnt/incoming-root/reality-config-export/` against the Cirrus Docker/storage model and decide what to copy versus avoid.
 5. Deploy JDownloader only after the above is explicit, then pause again before any second application.
 

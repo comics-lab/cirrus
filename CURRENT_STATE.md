@@ -81,6 +81,9 @@ Not yet settled or incomplete:
 - Docker storage driver: `overlayfs`
 - Docker compose plugin version: `v5.1.1`
 - JDownloader 2 is the current first-planned application container, but it has not been deployed yet
+- JDownloader's planned host paths now exist:
+  - `/mnt/phoenix/services/jdownloader2`
+  - `/mnt/phoenix/media/incoming/jdownloader`
 - some nonessential services still need review
 - host role is now best described as a minimal desktop with services, not a stripped server
 
