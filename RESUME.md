@@ -59,6 +59,7 @@ Latest Docker result:
 - JDownloader 2 is deployed from `/srv/compose/jdownloader2/docker-compose.yml`
 - LAN-only browser UI remains available for JDownloader at `192.168.1.113:5800`
 - JDownloader baseline is validated; next work is defining the post-download processing boundary
+- Imported a curated subset of Mylar post-download utility docs/scripts into `imports/mylar-utilities-post-download/`; next session should examine and adapt them to the current Cirrus intake model.
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
