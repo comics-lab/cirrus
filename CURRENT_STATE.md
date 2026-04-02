@@ -101,6 +101,7 @@ Not yet settled or incomplete:
   - one already-Mylar-valid archive has now been promoted into `mylar-import`
   - remaining JDownloader intake archives are still in raw intake because they are currently `candidate` or `unresolved`, not safe auto-imports
   - alternate-processing and manual-review intake is now explicitly defined as `/mnt/phoenix/media/incoming/metadata-review`
+  - current policy is manual-only for `candidate` and `unresolved`: move them into `metadata-review`, fix them there, rescan, and promote only after they become `mylar_import_valid`
 - Weekly-pack verification status:
   - `/mnt/phoenix/media/incoming/weekly-lots/2026.03.25 Weekly Pack –` is fully verified against its non-`WebP` zip sources
   - `/mnt/phoenix/media/incoming/reality_weekly-lots/2026.02.25 Weekly Pack –` is fully verified against its non-`WebP` zip sources

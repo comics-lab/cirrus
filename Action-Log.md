@@ -69,3 +69,4 @@
 - Defined `/mnt/phoenix/media/incoming/metadata-review` as the alternate-processing and manual-review path for resolver `candidate` and `unresolved` files.
 - Added `utilities/verify_weekly_pack_extracts.py` and verified the weekly-pack trees against their non-`WebP` zip sources.
 - Confirmed that `weekly-lots/2026.03.25` and `reality_weekly-lots/2026.02.25` are fully trustworthy as larger test corpora, while `reality_weekly-lots/2026.02.11` is only partially trustworthy and most other `reality_weekly-lots` packs are incomplete or mismatched.
+- Set the handling policy for resolver `candidate` and `unresolved` files: they are manually moved into `metadata-review`, manually fixed there, rescanned, and only promoted into `mylar-import` after they pass `mylar_import_valid`.

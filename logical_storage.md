@@ -256,6 +256,7 @@ Current intake branching rule:
 - adjacent intake directories currently also exist under `media/incoming`, notably `comics-local` and `weekly-lots`
 - current audit, conversion, and tagging utilities may sample those adjacent intake directories as well, but any comics explicitly labeled `WebP` should be excluded from automated processing
 - Mylar should not be API-triggered until Pass 1 has completed and promoted ready files into `media/incoming/mylar-import`
+- `candidate` and `unresolved` files should be moved into `media/incoming/metadata-review` manually, fixed there manually, then rescanned; only after they pass `mylar_import_valid` should they be promoted into `media/incoming/mylar-import`
 
 Collision-avoidance rule:
 - do not let multiple applications rename or reorganize the same curated library tree by default

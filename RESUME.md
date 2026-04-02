@@ -71,6 +71,7 @@ Latest Docker result:
 - `utilities/pass1_write_comicinfo.py` now exists as the first Pass 1 wrapper, but the current JDownloader intake set has no safe new auto-writes yet: one file was already Mylar-valid and has been promoted separately, three files remain `candidate`, and one remains `unresolved`.
 - `utilities/promote_mylar_import.py` successfully moved the already-valid Batman omnibus from raw JDownloader intake into `/mnt/phoenix/media/incoming/mylar-import`.
 - `/mnt/phoenix/media/incoming/metadata-review` is now the defined alternate-processing path for resolver `candidate` and `unresolved` files.
+- Current policy choice: `candidate` and `unresolved` files are a manual move into `metadata-review`; they should be fixed there manually, rescanned, and only then promoted into `mylar-import` if they pass `mylar_import_valid`.
 - `utilities/verify_weekly_pack_extracts.py` now exists and has verified which weekly-pack trees are trustworthy as a broader non-`WebP` test corpus:
   - `weekly-lots/2026.03.25` is fully verified
   - `reality_weekly-lots/2026.02.25` is fully verified
@@ -84,7 +85,7 @@ Latest Docker result:
 
 ## Next Recommended Work
 1. Validate `utilities/cv_issue_resolver.py` on a broader `media/incoming` sample, excluding anything explicitly labeled `WebP`, and tune its confidence thresholds until only strong matches land in `resolved`.
-2. Decide whether to keep refining the resolver for the current JDownloader candidates or begin moving them into `metadata-review` for manual/alternate processing.
+2. Begin moving current JDownloader `candidate` and `unresolved` files into `metadata-review` manually, then define the manual rescan/verification loop there.
 3. Use the verified weekly-pack trees (`weekly-lots/2026.03.25`, `reality_weekly-lots/2026.02.25`, and the Image/Marvel slices of `reality_weekly-lots/2026.02.11`) as the broader non-`WebP` test base for audit and Pass 1 work.
 4. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
 5. Do not introduce a second application container until the intake-routing rules are explicit and tested.
