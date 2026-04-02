@@ -84,6 +84,7 @@ Not yet settled or incomplete:
 - JDownloader's planned host paths now exist:
   - `/mnt/phoenix/services/jdownloader2`
   - `/mnt/phoenix/media/incoming/jdownloader`
+  - `/mnt/phoenix/media/incoming/mylar-import`
 - Deployed compose file:
   - `/srv/compose/jdownloader2/docker-compose.yml`
 - Current JDownloader runtime:
@@ -95,6 +96,7 @@ Not yet settled or incomplete:
   - config/state files are being created as `rmleonard:media`
   - downloads are landing in `/mnt/phoenix/media/incoming/jdownloader` with usable permissions
   - intake output directory remains separate at `/mnt/phoenix/media/incoming/jdownloader`
+  - Pass 1 to Mylar handoff is now explicitly staged through `/mnt/phoenix/media/incoming/mylar-import`
 - some nonessential services still need review
 - host role is now best described as a minimal desktop with services, not a stripped server
 

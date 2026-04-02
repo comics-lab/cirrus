@@ -67,6 +67,7 @@ Latest Docker result:
 - `utilities/cv_issue_resolver.py` now exists as the pre-ComicTagger lookup stage: it uses existing root metadata plus filename/path inference to query ComicVine and emit a CSV report, with conservative `resolved`, `candidate`, and `unresolved` buckets instead of blindly auto-tagging weak matches.
 - A direct proof run against upstream ComicTagger 1.6.0-beta.10 confirmed that a known ComicVine issue ID can be written into a `.cbz` as a root `ComicInfo.xml` that passes the stricter `cbz_audit.py` / Mylar-valid checks.
 - Intake work is no longer limited to `media/incoming/jdownloader`; adjacent directories under `media/incoming`, currently `comics-local` and `weekly-lots`, may also be sampled for conversion, audit, and tagging work, but anything explicitly labeled `WebP` should be excluded from automated processing.
+- `/mnt/phoenix/media/incoming/mylar-import` now exists as the dedicated Pass 1 output and Mylar handoff directory; Mylar should only be API-triggered after Pass 1 finishes and moves ready archives there.
 - The local GCD database remains useful for descriptive issue metadata, but it does not contain direct ComicVine issue IDs or ComicVine URLs in `gcd_issue` or `gcd_series`.
 - The old `metroninfo_fill.py` helper cannot run on Cirrus as written because the expected local `METRON/darkseid` code tree is not present here; any new Metron stage will need a fresh, Cirrus-native dependency plan.
 
@@ -76,8 +77,9 @@ Latest Docker result:
 ## Next Recommended Work
 1. Validate `utilities/cv_issue_resolver.py` on a broader `media/incoming` sample, excluding anything explicitly labeled `WebP`, and tune its confidence thresholds until only strong matches land in `resolved`.
 2. Build the first real Pass 1 wrapper: `resolved` -> ComicTagger write of root `ComicInfo.xml`, then re-audit with `utilities/cbz_audit.py`.
-3. Decide the exact alternate-processing path for `candidate` and `unresolved` archives.
-4. Do not introduce a second application container until the intake-routing rules are explicit and tested.
+3. Promote only `mylar_import_valid` results into `/mnt/phoenix/media/incoming/mylar-import`; do not tickle Mylar until that Pass 1 promotion step is complete.
+4. Decide the exact alternate-processing path for `candidate` and `unresolved` archives.
+5. Do not introduce a second application container until the intake-routing rules are explicit and tested.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.
