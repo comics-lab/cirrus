@@ -251,6 +251,8 @@ Current intake branching rule:
 - JDownloader downloads should land in `media/incoming/jdownloader`
 - files with a valid `ComicInfo.xml` can then be promoted into the Mylar-oriented processing path
 - files without a valid `ComicInfo.xml` should be routed to alternate metadata or organizer processing rather than assumed Mylar-ready
+- adjacent intake directories currently also exist under `media/incoming`, notably `comics-local` and `weekly-lots`
+- current audit, conversion, and tagging utilities may sample those adjacent intake directories as well, but any comics explicitly labeled `WebP` should be excluded from automated processing
 
 Collision-avoidance rule:
 - do not let multiple applications rename or reorganize the same curated library tree by default

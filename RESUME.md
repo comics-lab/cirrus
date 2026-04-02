@@ -66,6 +66,7 @@ Latest Docker result:
 - `utilities/cbz_audit.py` now matches upstream Mylar's actual import baseline more closely: a file is only treated as `mylar_import_valid` if root `ComicInfo.xml` parses, `Series` and `Number` are present, and a ComicVine issue reference is recoverable from `Notes` or `Web`.
 - `utilities/cv_issue_resolver.py` now exists as the pre-ComicTagger lookup stage: it uses existing root metadata plus filename/path inference to query ComicVine and emit a CSV report, with conservative `resolved`, `candidate`, and `unresolved` buckets instead of blindly auto-tagging weak matches.
 - A direct proof run against upstream ComicTagger 1.6.0-beta.10 confirmed that a known ComicVine issue ID can be written into a `.cbz` as a root `ComicInfo.xml` that passes the stricter `cbz_audit.py` / Mylar-valid checks.
+- Intake work is no longer limited to `media/incoming/jdownloader`; adjacent directories under `media/incoming`, currently `comics-local` and `weekly-lots`, may also be sampled for conversion, audit, and tagging work, but anything explicitly labeled `WebP` should be excluded from automated processing.
 - The local GCD database remains useful for descriptive issue metadata, but it does not contain direct ComicVine issue IDs or ComicVine URLs in `gcd_issue` or `gcd_series`.
 - The old `metroninfo_fill.py` helper cannot run on Cirrus as written because the expected local `METRON/darkseid` code tree is not present here; any new Metron stage will need a fresh, Cirrus-native dependency plan.
 
@@ -73,7 +74,7 @@ Latest Docker result:
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Validate `utilities/cv_issue_resolver.py` on a broader intake sample and tune its confidence thresholds until only strong matches land in `resolved`.
+1. Validate `utilities/cv_issue_resolver.py` on a broader `media/incoming` sample, excluding anything explicitly labeled `WebP`, and tune its confidence thresholds until only strong matches land in `resolved`.
 2. Build the first real Pass 1 wrapper: `resolved` -> ComicTagger write of root `ComicInfo.xml`, then re-audit with `utilities/cbz_audit.py`.
 3. Decide the exact alternate-processing path for `candidate` and `unresolved` archives.
 4. Do not introduce a second application container until the intake-routing rules are explicit and tested.
