@@ -54,3 +54,6 @@
 - Installed `unar` so Cirrus can extract modern RAR5-based `.cbr` files that the local `7z` build could list but not extract.
 - Ran a first live conversion batch with `utilities/cbr_to_cbz.py`: one archive converted successfully to `.cbz` and staged its original `.cbr`; two others failed with likely-corrupt extraction errors and were left untouched.
 - Built `utilities/cbz_audit.py` as the second Cirrus-native post-download utility and ran a first live audit pass against intake `.cbz` files; the initial sample shows root `ComicInfo.xml` on some files, but inconsistent ComicVine references and mixed metadata completeness.
+- Rechecked upstream Mylar against a fresh clone and tightened `utilities/cbz_audit.py` to match the actual import baseline: `mylar_import_valid` now requires parseable root `ComicInfo.xml`, `Series`, `Number`, and a ComicVine issue reference recoverable from `Notes` or `Web`.
+- Confirmed that the local GCD database is useful for descriptive issue and series metadata but does not contain direct ComicVine issue IDs or ComicVine URLs in the primary issue/series tables.
+- Confirmed that the legacy `metroninfo_fill.py` script cannot run on Cirrus as written because the expected local `METRON/darkseid` dependency tree is absent; any new Metron stage will need a fresh dependency plan instead of reusing that script directly.

@@ -15,5 +15,6 @@ Current utilities:
 - `cbr_to_cbz.py`: convert `.cbr` archives under intake roots into `.cbz`,
   verify the new archive, and stage originals separately after success
 - `cbz_audit.py`: inspect `.cbz` intake archives for root vs nested
-  `ComicInfo.xml` / `MetronInfo.xml`, basic XML parseability, and a first-pass
-  ComicVine reference check
+  `ComicInfo.xml` / `MetronInfo.xml`, basic XML parseability, upstream-Mylar
+  ComicVine reference detection from `Notes` and `Web`, and first-pass
+  `mylar_import_valid` classification

@@ -63,15 +63,18 @@ Latest Docker result:
 - A new Cirrus-native `utilities/cbr_to_cbz.py` now exists and has passed a dry-run against `/mnt/phoenix/media/incoming/jdownloader`; next step is a controlled real conversion batch before building the metadata audit utility.
 - `utilities/cbr_to_cbz.py` has now completed a live test batch: one `.cbr` converted cleanly, and two archives were left untouched with likely-corrupt extraction failures recorded in the CSV report.
 - `utilities/cbz_audit.py` now exists and has completed a first live audit pass against intake `.cbz` files, confirming that root `ComicInfo.xml` is present on some files but ComicVine references are still inconsistent.
+- `utilities/cbz_audit.py` now matches upstream Mylar's actual import baseline more closely: a file is only treated as `mylar_import_valid` if root `ComicInfo.xml` parses, `Series` and `Number` are present, and a ComicVine issue reference is recoverable from `Notes` or `Web`.
+- The local GCD database remains useful for descriptive issue metadata, but it does not contain direct ComicVine issue IDs or ComicVine URLs in `gcd_issue` or `gcd_series`.
+- The old `metroninfo_fill.py` helper cannot run on Cirrus as written because the expected local `METRON/darkseid` code tree is not present here; any new Metron stage will need a fresh, Cirrus-native dependency plan.
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Pair the running JDownloader container with MyJDownloader.
-2. Perform a small test download and verify that files land in `/mnt/phoenix/media/incoming/jdownloader`.
-3. Confirm resulting ownership and permissions still match the shared `media`-group policy.
-4. Pause again before introducing any second application.
+1. Extend the post-download routing logic around the stricter `mylar_import_valid` baseline from `utilities/cbz_audit.py`.
+2. Decide the exact alternate-processing path for archives that are readable but not yet Mylar-valid.
+3. Build the next Cirrus-native metadata utility around real available sources: GCD for descriptive metadata and ComicVine-aware tooling for issue IDs.
+4. Do not introduce a second application container until the intake-routing rules are explicit and tested.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Audit CBZ intake archives for metadata placement and basic validity.
+"""Audit CBZ intake archives for metadata placement and Mylar import readiness.
 
 Current default focus:
 - scan `/mnt/phoenix/media/incoming/jdownloader`
 - inspect `.cbz` files only
 - detect root vs nested `ComicInfo.xml` / `MetronInfo.xml`
 - parse root `ComicInfo.xml` when present
-- report whether a likely ComicVine reference is present
+- report whether upstream-Mylar-compatible ComicVine references are present
+- classify whether an archive looks valid for Mylar library import
 
 This is intentionally a first-pass audit utility, not the final metadata
 enrichment pipeline.
@@ -43,12 +44,21 @@ class AuditRow:
     metroninfo_in_subfolders: int
     has_subfolders: int
     comicinfo_parse_ok: int
+    series_present: int
+    issue_number_present: int
+    notes_comicvine_reference_present: int
+    notes_comicvine_reference_value: str
+    web_comicvine_reference_present: int
+    web_comicvine_reference_value: str
     comicvine_reference_present: int
     comicvine_reference_value: str
+    mylar_import_valid: int
     series: str
     issue_number: str
     year: str
     publisher: str
+    web: str
+    notes: str
     note: str
 
 
@@ -80,12 +90,21 @@ def audit_cbz(path: Path) -> AuditRow:
     ci_nested = False
     mi_nested = False
     comicinfo_parse_ok = 0
+    series_present = 0
+    issue_number_present = 0
+    notes_comicvine_reference_present = 0
+    notes_comicvine_reference_value = ""
+    web_comicvine_reference_present = 0
+    web_comicvine_reference_value = ""
     comicvine_reference_present = 0
     comicvine_reference_value = ""
+    mylar_import_valid = 0
     series = ""
     issue_number = ""
     year = ""
     publisher = ""
+    web = ""
+    notes = ""
     note = ""
 
     try:
@@ -124,10 +143,31 @@ def audit_cbz(path: Path) -> AuditRow:
                 issue_number = text("Number")
                 year = text("Year")
                 publisher = text("Publisher")
-                reference = extract_comicvine_reference([text("Web"), text("Notes")])
+                web = text("Web")
+                notes = text("Notes")
+
+                if series:
+                    series_present = 1
+                if issue_number:
+                    issue_number_present = 1
+
+                notes_reference = extract_comicvine_reference([notes])
+                if notes_reference:
+                    notes_comicvine_reference_present = 1
+                    notes_comicvine_reference_value = notes_reference
+
+                web_reference = extract_comicvine_reference([web])
+                if web_reference:
+                    web_comicvine_reference_present = 1
+                    web_comicvine_reference_value = web_reference
+
+                reference = notes_reference or web_reference
                 if reference:
                     comicvine_reference_present = 1
                     comicvine_reference_value = reference
+
+                if comicinfo_parse_ok and series_present and issue_number_present and reference:
+                    mylar_import_valid = 1
 
     except zipfile.BadZipFile:
         note = "BadZipFile"
@@ -144,12 +184,21 @@ def audit_cbz(path: Path) -> AuditRow:
         metroninfo_in_subfolders=int(mi_nested),
         has_subfolders=int(has_subfolders),
         comicinfo_parse_ok=comicinfo_parse_ok,
+        series_present=series_present,
+        issue_number_present=issue_number_present,
+        notes_comicvine_reference_present=notes_comicvine_reference_present,
+        notes_comicvine_reference_value=notes_comicvine_reference_value,
+        web_comicvine_reference_present=web_comicvine_reference_present,
+        web_comicvine_reference_value=web_comicvine_reference_value,
         comicvine_reference_present=comicvine_reference_present,
         comicvine_reference_value=comicvine_reference_value,
+        mylar_import_valid=mylar_import_valid,
         series=series,
         issue_number=issue_number,
         year=year,
         publisher=publisher,
+        web=web,
+        notes=notes,
         note=note,
     )
 
@@ -199,12 +248,21 @@ def main() -> int:
                 "metroninfo_in_subfolders",
                 "has_subfolders",
                 "comicinfo_parse_ok",
+                "series_present",
+                "issue_number_present",
+                "notes_comicvine_reference_present",
+                "notes_comicvine_reference_value",
+                "web_comicvine_reference_present",
+                "web_comicvine_reference_value",
                 "comicvine_reference_present",
                 "comicvine_reference_value",
+                "mylar_import_valid",
                 "series",
                 "issue_number",
                 "year",
                 "publisher",
+                "web",
+                "notes",
                 "note",
             ],
         )
@@ -215,9 +273,13 @@ def main() -> int:
     with_comicinfo = sum(1 for row in rows if row.has_comicinfo_root)
     valid_parse = sum(1 for row in rows if row.comicinfo_parse_ok)
     with_cv = sum(1 for row in rows if row.comicvine_reference_present)
+    mylar_valid = sum(1 for row in rows if row.mylar_import_valid)
     print(f"scan_root={root}")
     print(f"report={report_path}")
-    print(f"processed={len(rows)} comicinfo_root={with_comicinfo} parse_ok={valid_parse} comicvine_ref={with_cv}")
+    print(
+        f"processed={len(rows)} comicinfo_root={with_comicinfo} "
+        f"parse_ok={valid_parse} comicvine_ref={with_cv} mylar_valid={mylar_valid}"
+    )
     return 0
 
 
