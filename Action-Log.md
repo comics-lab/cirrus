@@ -61,3 +61,7 @@
 - Proved the direct ComicTagger Pass 1 write path against the upstream 1.6.0-beta.10 checkout: given a known ComicVine issue ID, ComicTagger can write a root `ComicInfo.xml` that passes the stricter `cbz_audit.py` / Mylar-valid checks on Cirrus.
 - Recorded that adjacent intake directories under `media/incoming`, currently `comics-local` and `weekly-lots`, are also valid sample sources for utility work, but anything explicitly labeled `WebP` should be skipped by automated conversion, audit, and tagging passes.
 - Created `/mnt/phoenix/media/incoming/mylar-import` as the dedicated Pass 1 output and Mylar handoff directory; future Mylar API triggering should only occur after Pass 1 completes and has promoted validated files there.
+- Added `utilities/pass1_write_comicinfo.py` as the first Pass 1 wrapper around the strict resolver -> ComicTagger -> re-audit flow.
+- Added `utilities/promote_mylar_import.py` to move already-Mylar-valid files into the Mylar handoff directory without touching candidate or unresolved archives.
+- Dry-run validation showed that the current JDownloader intake contains no safe new automatic writes yet: one file was already valid, three remain resolver candidates, and one remains unresolved.
+- Promoted the already-valid Batman omnibus from raw JDownloader intake into `/mnt/phoenix/media/incoming/mylar-import` and verified that it remains `mylar_import_valid` after the move.

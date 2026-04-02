@@ -22,3 +22,10 @@ Current utilities:
   existing root `ComicInfo.xml`, archive filenames, and parent directory
   names; emits a CSV report and conservatively classifies results as
   `resolved`, `candidate`, or `unresolved` before any ComicTagger write pass
+- `pass1_write_comicinfo.py`: initial Pass 1 wrapper that re-audits files,
+  skips anything already Mylar-valid or labeled `WebP`, resolves likely
+  ComicVine issue IDs, and only attempts ComicTagger writes for `resolved`
+  matches
+- `promote_mylar_import.py`: move already-Mylar-valid archives from intake
+  into `/mnt/phoenix/media/incoming/mylar-import` without touching candidate
+  or unresolved files

@@ -68,6 +68,8 @@ Latest Docker result:
 - A direct proof run against upstream ComicTagger 1.6.0-beta.10 confirmed that a known ComicVine issue ID can be written into a `.cbz` as a root `ComicInfo.xml` that passes the stricter `cbz_audit.py` / Mylar-valid checks.
 - Intake work is no longer limited to `media/incoming/jdownloader`; adjacent directories under `media/incoming`, currently `comics-local` and `weekly-lots`, may also be sampled for conversion, audit, and tagging work, but anything explicitly labeled `WebP` should be excluded from automated processing.
 - `/mnt/phoenix/media/incoming/mylar-import` now exists as the dedicated Pass 1 output and Mylar handoff directory; Mylar should only be API-triggered after Pass 1 finishes and moves ready archives there.
+- `utilities/pass1_write_comicinfo.py` now exists as the first Pass 1 wrapper, but the current JDownloader intake set has no safe new auto-writes yet: one file was already Mylar-valid and has been promoted separately, three files remain `candidate`, and one remains `unresolved`.
+- `utilities/promote_mylar_import.py` successfully moved the already-valid Batman omnibus from raw JDownloader intake into `/mnt/phoenix/media/incoming/mylar-import`.
 - The local GCD database remains useful for descriptive issue metadata, but it does not contain direct ComicVine issue IDs or ComicVine URLs in `gcd_issue` or `gcd_series`.
 - The old `metroninfo_fill.py` helper cannot run on Cirrus as written because the expected local `METRON/darkseid` code tree is not present here; any new Metron stage will need a fresh, Cirrus-native dependency plan.
 
@@ -76,8 +78,8 @@ Latest Docker result:
 
 ## Next Recommended Work
 1. Validate `utilities/cv_issue_resolver.py` on a broader `media/incoming` sample, excluding anything explicitly labeled `WebP`, and tune its confidence thresholds until only strong matches land in `resolved`.
-2. Build the first real Pass 1 wrapper: `resolved` -> ComicTagger write of root `ComicInfo.xml`, then re-audit with `utilities/cbz_audit.py`.
-3. Promote only `mylar_import_valid` results into `/mnt/phoenix/media/incoming/mylar-import`; do not tickle Mylar until that Pass 1 promotion step is complete.
+2. Decide whether to keep refining the resolver for the current JDownloader candidates or begin a separate manual-review path for those files.
+3. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
 4. Decide the exact alternate-processing path for `candidate` and `unresolved` archives.
 5. Do not introduce a second application container until the intake-routing rules are explicit and tested.
 

@@ -97,6 +97,8 @@ Not yet settled or incomplete:
   - downloads are landing in `/mnt/phoenix/media/incoming/jdownloader` with usable permissions
   - intake output directory remains separate at `/mnt/phoenix/media/incoming/jdownloader`
   - Pass 1 to Mylar handoff is now explicitly staged through `/mnt/phoenix/media/incoming/mylar-import`
+  - one already-Mylar-valid archive has now been promoted into `mylar-import`
+  - remaining JDownloader intake archives are still in raw intake because they are currently `candidate` or `unresolved`, not safe auto-imports
 - some nonessential services still need review
 - host role is now best described as a minimal desktop with services, not a stripped server
 
