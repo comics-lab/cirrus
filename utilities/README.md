@@ -18,3 +18,7 @@ Current utilities:
   `ComicInfo.xml` / `MetronInfo.xml`, basic XML parseability, upstream-Mylar
   ComicVine reference detection from `Notes` and `Web`, and first-pass
   `mylar_import_valid` classification
+- `cv_issue_resolver.py`: query ComicVine for likely issue IDs based on
+  existing root `ComicInfo.xml`, archive filenames, and parent directory
+  names; emits a CSV report and conservatively classifies results as
+  `resolved`, `candidate`, or `unresolved` before any ComicTagger write pass

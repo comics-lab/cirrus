@@ -64,6 +64,8 @@ Latest Docker result:
 - `utilities/cbr_to_cbz.py` has now completed a live test batch: one `.cbr` converted cleanly, and two archives were left untouched with likely-corrupt extraction failures recorded in the CSV report.
 - `utilities/cbz_audit.py` now exists and has completed a first live audit pass against intake `.cbz` files, confirming that root `ComicInfo.xml` is present on some files but ComicVine references are still inconsistent.
 - `utilities/cbz_audit.py` now matches upstream Mylar's actual import baseline more closely: a file is only treated as `mylar_import_valid` if root `ComicInfo.xml` parses, `Series` and `Number` are present, and a ComicVine issue reference is recoverable from `Notes` or `Web`.
+- `utilities/cv_issue_resolver.py` now exists as the pre-ComicTagger lookup stage: it uses existing root metadata plus filename/path inference to query ComicVine and emit a CSV report, with conservative `resolved`, `candidate`, and `unresolved` buckets instead of blindly auto-tagging weak matches.
+- A direct proof run against upstream ComicTagger 1.6.0-beta.10 confirmed that a known ComicVine issue ID can be written into a `.cbz` as a root `ComicInfo.xml` that passes the stricter `cbz_audit.py` / Mylar-valid checks.
 - The local GCD database remains useful for descriptive issue metadata, but it does not contain direct ComicVine issue IDs or ComicVine URLs in `gcd_issue` or `gcd_series`.
 - The old `metroninfo_fill.py` helper cannot run on Cirrus as written because the expected local `METRON/darkseid` code tree is not present here; any new Metron stage will need a fresh, Cirrus-native dependency plan.
 
@@ -71,9 +73,9 @@ Latest Docker result:
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Extend the post-download routing logic around the stricter `mylar_import_valid` baseline from `utilities/cbz_audit.py`.
-2. Decide the exact alternate-processing path for archives that are readable but not yet Mylar-valid.
-3. Build the next Cirrus-native metadata utility around real available sources: GCD for descriptive metadata and ComicVine-aware tooling for issue IDs.
+1. Validate `utilities/cv_issue_resolver.py` on a broader intake sample and tune its confidence thresholds until only strong matches land in `resolved`.
+2. Build the first real Pass 1 wrapper: `resolved` -> ComicTagger write of root `ComicInfo.xml`, then re-audit with `utilities/cbz_audit.py`.
+3. Decide the exact alternate-processing path for `candidate` and `unresolved` archives.
 4. Do not introduce a second application container until the intake-routing rules are explicit and tested.
 
 Separate note cleared:
