@@ -55,10 +55,8 @@ def command_exists(name: str) -> bool:
     return shutil.which(name) is not None
 
 
-def run_extract(src: Path, dst_dir: Path) -> subprocess.CompletedProcess[bytes]:
-    if command_exists("unar"):
-        # unar extracts directly into the target directory and is more reliable
-        # for modern RAR5-based .cbr files than the local 7z build.
+def run_extract_with_tool(src: Path, dst_dir: Path, tool: str) -> subprocess.CompletedProcess[bytes]:
+    if tool == "unar":
         return subprocess.run(
             ["unar", "-q", "-f", "-o", str(dst_dir), str(src)],
             stdout=subprocess.PIPE,
@@ -112,6 +110,25 @@ def classify_extract_failure(detail: str) -> str:
     return "extract_failed"
 
 
+def extract_with_fallback(src: Path, extracted: Path) -> tuple[subprocess.CompletedProcess[bytes], str]:
+    attempted: list[str] = []
+    last_result: subprocess.CompletedProcess[bytes] | None = None
+
+    if command_exists("unar"):
+        attempted.append("unar")
+        last_result = run_extract_with_tool(src, extracted, "unar")
+        if last_result.returncode == 0:
+            return last_result, "unar"
+        shutil.rmtree(extracted, ignore_errors=True)
+        ensure_dir(extracted)
+
+    attempted.append("7z")
+    last_result = run_extract_with_tool(src, extracted, "7z")
+    if last_result.returncode == 0:
+        return last_result, "7z"
+    return last_result, "+".join(attempted)
+
+
 def convert_one(
     src: Path,
     scan_root: Path,
@@ -137,9 +154,11 @@ def convert_one(
         extracted = temp_dir / "payload"
         ensure_dir(extracted)
 
-        result = run_extract(src, extracted)
+        result, extractor = extract_with_fallback(src, extracted)
         if result.returncode != 0:
             detail = (result.stderr or result.stdout).decode(errors="ignore").strip()[:500]
+            if extractor:
+                detail = f"extractor={extractor}; {detail}"[:500]
             status = classify_extract_failure(detail)
             return ConversionResult(str(src), str(dst_cbz), status, detail)
 
@@ -151,7 +170,7 @@ def convert_one(
             return ConversionResult(str(src), str(dst_cbz), "verify_failed", detail)
 
         shutil.move(str(src), str(staged_original))
-        return ConversionResult(str(src), str(dst_cbz), "converted", str(staged_original))
+        return ConversionResult(str(src), str(dst_cbz), "converted", f"extractor={extractor}; staged={staged_original}")
     except Exception as exc:  # pragma: no cover - defensive path
         dst_cbz.unlink(missing_ok=True)
         return ConversionResult(str(src), str(dst_cbz), "error", str(exc))

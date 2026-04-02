@@ -77,6 +77,8 @@ Latest Docker result:
   - `reality_weekly-lots/2026.02.25` is fully verified
   - `reality_weekly-lots/2026.02.11` is partially verified (Image and Marvel only)
   - newer `reality_weekly-lots` packs for `2026.03.04`, `2026.03.11`, and `2026.03.18` still have zip files but no extracted publisher directories
+- Important next resolver fix: `Detective Comics 1107 (2026)` in the verified `2026.03.25` weekly pack is currently marked `unresolved`, but direct ComicVine issue search shows a valid match (`issue_id=1160271`) under volume `91098` (`Detective Comics`, 2016). The unresolved result is therefore a resolver logic gap caused by over-preferring the legacy `1937` volume (`18058`) for long-running series names.
+- JDownloader integrity follow-up remains partially open: current evidence suggests the remaining JDownloader `.cbr` files are largely readable and that some earlier failures were extractor-specific rather than true archive damage, but `utilities/cbr_to_cbz.py` still needs a clean full rerun with the new `7z` fallback before any archive is formally sidelined for re-download.
 - The local GCD database remains useful for descriptive issue metadata, but it does not contain direct ComicVine issue IDs or ComicVine URLs in `gcd_issue` or `gcd_series`.
 - The old `metroninfo_fill.py` helper cannot run on Cirrus as written because the expected local `METRON/darkseid` code tree is not present here; any new Metron stage will need a fresh, Cirrus-native dependency plan.
 
@@ -85,10 +87,12 @@ Latest Docker result:
 
 ## Next Recommended Work
 1. Validate `utilities/cv_issue_resolver.py` on a broader `media/incoming` sample, excluding anything explicitly labeled `WebP`, and tune its confidence thresholds until only strong matches land in `resolved`.
-2. Begin moving current JDownloader `candidate` and `unresolved` files into `metadata-review` manually, then define the manual rescan/verification loop there.
-3. Use the verified weekly-pack trees (`weekly-lots/2026.03.25`, `reality_weekly-lots/2026.02.25`, and the Image/Marvel slices of `reality_weekly-lots/2026.02.11`) as the broader non-`WebP` test base for audit and Pass 1 work.
-4. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
-5. Do not introduce a second application container until the intake-routing rules are explicit and tested.
+2. Fix the resolver volume-selection logic for long-running series with multiple same-name volumes, starting with `Detective Comics 1107 (2026)` in the verified `2026.03.25` weekly pack.
+3. Re-run the JDownloader `.cbr` conversion/integrity sweep with the new `7z` fallback and only then decide whether any archives truly need to be sidelined for re-download.
+4. Begin moving current JDownloader `candidate` and `unresolved` files into `metadata-review` manually, then define the manual rescan/verification loop there.
+5. Use the verified weekly-pack trees (`weekly-lots/2026.03.25`, `reality_weekly-lots/2026.02.25`, and the Image/Marvel slices of `reality_weekly-lots/2026.02.11`) as the broader non-`WebP` test base for audit and Pass 1 work.
+6. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
+7. Do not introduce a second application container until the intake-routing rules are explicit and tested.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.
