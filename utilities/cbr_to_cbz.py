@@ -51,7 +51,21 @@ def timestamped_report_path(report_dir: Path) -> Path:
     return report_dir / f"cbr_to_cbz_{ts}.csv"
 
 
-def run_7z_extract(src: Path, dst_dir: Path) -> subprocess.CompletedProcess[bytes]:
+def command_exists(name: str) -> bool:
+    return shutil.which(name) is not None
+
+
+def run_extract(src: Path, dst_dir: Path) -> subprocess.CompletedProcess[bytes]:
+    if command_exists("unar"):
+        # unar extracts directly into the target directory and is more reliable
+        # for modern RAR5-based .cbr files than the local 7z build.
+        return subprocess.run(
+            ["unar", "-q", "-f", "-o", str(dst_dir), str(src)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=900,
+            check=False,
+        )
     return subprocess.run(
         ["7z", "x", "-y", str(src), f"-o{dst_dir}"],
         stdout=subprocess.PIPE,
@@ -89,6 +103,15 @@ def verify_cbz(path: Path) -> tuple[bool, str]:
     return True, ""
 
 
+def classify_extract_failure(detail: str) -> str:
+    lowered = detail.lower()
+    if "attempted to read more data than was available" in lowered:
+        return "extract_failed_corrupt"
+    if "unsupported method" in lowered:
+        return "extract_failed_unsupported"
+    return "extract_failed"
+
+
 def convert_one(
     src: Path,
     scan_root: Path,
@@ -114,10 +137,11 @@ def convert_one(
         extracted = temp_dir / "payload"
         ensure_dir(extracted)
 
-        result = run_7z_extract(src, extracted)
+        result = run_extract(src, extracted)
         if result.returncode != 0:
             detail = (result.stderr or result.stdout).decode(errors="ignore").strip()[:500]
-            return ConversionResult(str(src), str(dst_cbz), "extract_failed", detail)
+            status = classify_extract_failure(detail)
+            return ConversionResult(str(src), str(dst_cbz), status, detail)
 
         zip_tree(extracted, dst_cbz)
 
