@@ -65,3 +65,7 @@
 - Added `utilities/promote_mylar_import.py` to move already-Mylar-valid files into the Mylar handoff directory without touching candidate or unresolved archives.
 - Dry-run validation showed that the current JDownloader intake contains no safe new automatic writes yet: one file was already valid, three remain resolver candidates, and one remains unresolved.
 - Promoted the already-valid Batman omnibus from raw JDownloader intake into `/mnt/phoenix/media/incoming/mylar-import` and verified that it remains `mylar_import_valid` after the move.
+- Tightened the resolver against the current JDownloader candidates: Michel Vaillant now correctly falls back to `unresolved` instead of a false-positive issue match, DC Finest remains a medium-confidence `candidate`, and Uri Tupka remains a low-confidence `candidate`.
+- Defined `/mnt/phoenix/media/incoming/metadata-review` as the alternate-processing and manual-review path for resolver `candidate` and `unresolved` files.
+- Added `utilities/verify_weekly_pack_extracts.py` and verified the weekly-pack trees against their non-`WebP` zip sources.
+- Confirmed that `weekly-lots/2026.03.25` and `reality_weekly-lots/2026.02.25` are fully trustworthy as larger test corpora, while `reality_weekly-lots/2026.02.11` is only partially trustworthy and most other `reality_weekly-lots` packs are incomplete or mismatched.

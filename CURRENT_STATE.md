@@ -85,6 +85,7 @@ Not yet settled or incomplete:
   - `/mnt/phoenix/services/jdownloader2`
   - `/mnt/phoenix/media/incoming/jdownloader`
   - `/mnt/phoenix/media/incoming/mylar-import`
+  - `/mnt/phoenix/media/incoming/metadata-review`
 - Deployed compose file:
   - `/srv/compose/jdownloader2/docker-compose.yml`
 - Current JDownloader runtime:
@@ -99,6 +100,12 @@ Not yet settled or incomplete:
   - Pass 1 to Mylar handoff is now explicitly staged through `/mnt/phoenix/media/incoming/mylar-import`
   - one already-Mylar-valid archive has now been promoted into `mylar-import`
   - remaining JDownloader intake archives are still in raw intake because they are currently `candidate` or `unresolved`, not safe auto-imports
+  - alternate-processing and manual-review intake is now explicitly defined as `/mnt/phoenix/media/incoming/metadata-review`
+- Weekly-pack verification status:
+  - `/mnt/phoenix/media/incoming/weekly-lots/2026.03.25 Weekly Pack –` is fully verified against its non-`WebP` zip sources
+  - `/mnt/phoenix/media/incoming/reality_weekly-lots/2026.02.25 Weekly Pack –` is fully verified against its non-`WebP` zip sources
+  - `/mnt/phoenix/media/incoming/reality_weekly-lots/2026.02.11 Weekly Pack –` is partially verified: Image and Marvel match, DC and INDIE do not
+  - several older `reality_weekly-lots` packs are mismatched or have only zip files with no extracted publisher directories yet
 - some nonessential services still need review
 - host role is now best described as a minimal desktop with services, not a stripped server
 

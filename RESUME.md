@@ -70,6 +70,12 @@ Latest Docker result:
 - `/mnt/phoenix/media/incoming/mylar-import` now exists as the dedicated Pass 1 output and Mylar handoff directory; Mylar should only be API-triggered after Pass 1 finishes and moves ready archives there.
 - `utilities/pass1_write_comicinfo.py` now exists as the first Pass 1 wrapper, but the current JDownloader intake set has no safe new auto-writes yet: one file was already Mylar-valid and has been promoted separately, three files remain `candidate`, and one remains `unresolved`.
 - `utilities/promote_mylar_import.py` successfully moved the already-valid Batman omnibus from raw JDownloader intake into `/mnt/phoenix/media/incoming/mylar-import`.
+- `/mnt/phoenix/media/incoming/metadata-review` is now the defined alternate-processing path for resolver `candidate` and `unresolved` files.
+- `utilities/verify_weekly_pack_extracts.py` now exists and has verified which weekly-pack trees are trustworthy as a broader non-`WebP` test corpus:
+  - `weekly-lots/2026.03.25` is fully verified
+  - `reality_weekly-lots/2026.02.25` is fully verified
+  - `reality_weekly-lots/2026.02.11` is partially verified (Image and Marvel only)
+  - newer `reality_weekly-lots` packs for `2026.03.04`, `2026.03.11`, and `2026.03.18` still have zip files but no extracted publisher directories
 - The local GCD database remains useful for descriptive issue metadata, but it does not contain direct ComicVine issue IDs or ComicVine URLs in `gcd_issue` or `gcd_series`.
 - The old `metroninfo_fill.py` helper cannot run on Cirrus as written because the expected local `METRON/darkseid` code tree is not present here; any new Metron stage will need a fresh, Cirrus-native dependency plan.
 
@@ -78,9 +84,9 @@ Latest Docker result:
 
 ## Next Recommended Work
 1. Validate `utilities/cv_issue_resolver.py` on a broader `media/incoming` sample, excluding anything explicitly labeled `WebP`, and tune its confidence thresholds until only strong matches land in `resolved`.
-2. Decide whether to keep refining the resolver for the current JDownloader candidates or begin a separate manual-review path for those files.
-3. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
-4. Decide the exact alternate-processing path for `candidate` and `unresolved` archives.
+2. Decide whether to keep refining the resolver for the current JDownloader candidates or begin moving them into `metadata-review` for manual/alternate processing.
+3. Use the verified weekly-pack trees (`weekly-lots/2026.03.25`, `reality_weekly-lots/2026.02.25`, and the Image/Marvel slices of `reality_weekly-lots/2026.02.11`) as the broader non-`WebP` test base for audit and Pass 1 work.
+4. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
 5. Do not introduce a second application container until the intake-routing rules are explicit and tested.
 
 Separate note cleared:

@@ -246,12 +246,13 @@ Current designated-writer baseline:
 - `media/incoming`: shared writable intake area for acquisition and manual ingest
 - `media/incoming/jdownloader`: dedicated first-stage intake path for JDownloader downloads
 - `media/incoming/mylar-import`: dedicated Pass 1 output path for archives that are ready for Mylar handoff
+- `media/incoming/metadata-review`: dedicated alternate-processing and manual-review path for candidate or unresolved archives
 - `staging`: shared repair or reorganization area, not the long-term library
 
 Current intake branching rule:
 - JDownloader downloads should land in `media/incoming/jdownloader`
 - files with a valid `ComicInfo.xml` can then be promoted into `media/incoming/mylar-import` as the Mylar-oriented processing path
-- files without a valid `ComicInfo.xml` should be routed to alternate metadata or organizer processing rather than assumed Mylar-ready
+- files without a valid `ComicInfo.xml`, or files that remain resolver `candidate` / `unresolved`, should be routed to `media/incoming/metadata-review` rather than assumed Mylar-ready
 - adjacent intake directories currently also exist under `media/incoming`, notably `comics-local` and `weekly-lots`
 - current audit, conversion, and tagging utilities may sample those adjacent intake directories as well, but any comics explicitly labeled `WebP` should be excluded from automated processing
 - Mylar should not be API-triggered until Pass 1 has completed and promoted ready files into `media/incoming/mylar-import`

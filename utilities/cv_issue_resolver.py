@@ -175,6 +175,11 @@ def parse_year(value: str) -> str:
 
 def infer_series_from_parent(parent_name: str) -> str:
     cleaned = strip_release_noise(parent_name)
+    issue_split = re.split(r"\s+#?\d+[A-Za-z]?\s+-\s+", cleaned, maxsplit=1)
+    if len(issue_split) == 2:
+        left = issue_split[0].strip()
+        if left:
+            return normalize_name(left)
     if " - " in cleaned:
         left = cleaned.split(" - ", 1)[0].strip()
         if left:
@@ -185,6 +190,9 @@ def infer_series_from_parent(parent_name: str) -> str:
 
 def infer_title_from_parent(parent_name: str) -> str:
     cleaned = strip_release_noise(parent_name)
+    issue_split = re.split(r"\s+#?\d+[A-Za-z]?\s+-\s+", cleaned, maxsplit=1)
+    if len(issue_split) == 2:
+        return normalize_name(issue_split[1])
     if " - " in cleaned:
         right = cleaned.split(" - ", 1)[1].strip()
         return normalize_name(re.sub(r"\((19|20)\d{2}\)", "", right).strip(" -"))
@@ -264,6 +272,35 @@ def best_volume_match(
         )
         if best is None or candidate.score > best.score:
             best = candidate
+    return best
+
+
+def best_issue_search_match(results: list[dict], title: str, year: str, publisher: str) -> dict | None:
+    title_fold = normalize_name(title).casefold()
+    pub_fold = normalize_name(publisher).casefold()
+    best = None
+    best_score = -1
+    for issue in results:
+        issue_name = normalize_name(issue.get("name") or "")
+        issue_year = str(issue.get("cover_date") or "")[:4]
+        volume = issue.get("volume") or {}
+        issue_pub = ""
+        if issue.get("publisher") and isinstance(issue.get("publisher"), dict):
+            issue_pub = normalize_name(issue["publisher"].get("name") or "")
+        score = 0
+        if title_fold and title_fold == issue_name.casefold():
+            score += 8
+        elif title and text_similarity(title, issue_name) >= 0.8:
+            score += 5
+        elif title and text_similarity(title, issue_name) >= 0.6:
+            score += 2
+        if year and issue_year == year:
+            score += 3
+        if pub_fold and issue_pub.casefold() == pub_fold:
+            score += 2
+        if score > best_score:
+            best = issue
+            best_score = score
     return best
 
 
@@ -386,7 +423,8 @@ def resolve_issue(
         except Exception as exc:
             note = f"issue_search_failed: {exc}"
             issues = {}
-        for issue in issues.get("results", []) if issues else []:
+        issue_results = issues.get("results", []) if issues else []
+        for issue in issue_results:
             issue_vol = issue.get("volume") or {}
             if str(issue_vol.get("id") or "") == volume.volume_id:
                 issue_id = str(issue.get("id") or "")
@@ -394,7 +432,14 @@ def resolve_issue(
                 issue_cover_date = issue.get("cover_date") or ""
                 break
         if not issue_id:
-            note = note or "no_issue_match"
+            best_issue = best_issue_search_match(issue_results, title, year, publisher)
+            if best_issue is not None:
+                issue_id = str(best_issue.get("id") or "")
+                issue_name = best_issue.get("name") or ""
+                issue_cover_date = best_issue.get("cover_date") or ""
+                note = "issue_search_fallback"
+            else:
+                note = note or "no_issue_match"
     else:
         note = "no_issue_number_or_title"
 
@@ -403,10 +448,10 @@ def resolve_issue(
     confidence = "none"
     status = "unresolved"
     if issue_id:
-        if volume.score >= 8:
+        if volume.score >= 10 and note != "issue_search_fallback":
             confidence = "high"
             status = "resolved"
-        elif volume.score >= 6:
+        elif volume.score >= 7:
             confidence = "medium"
             status = "candidate"
             note = note or "needs_review_medium_confidence"

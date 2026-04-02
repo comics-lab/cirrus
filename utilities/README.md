@@ -29,3 +29,6 @@ Current utilities:
 - `promote_mylar_import.py`: move already-Mylar-valid archives from intake
   into `/mnt/phoenix/media/incoming/mylar-import` without touching candidate
   or unresolved files
+- `verify_weekly_pack_extracts.py`: compare non-`WebP` weekly-pack zip files
+  against their same-named extracted publisher directories and report which
+  packs are trustworthy as a larger test corpus
