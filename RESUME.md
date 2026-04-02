@@ -60,6 +60,7 @@ Latest Docker result:
 - LAN-only browser UI remains available for JDownloader at `192.168.1.113:5800`
 - JDownloader baseline is validated; next work is defining the post-download processing boundary
 - Imported a curated subset of Mylar post-download utility docs/scripts into `imports/mylar-utilities-post-download/`; next session should examine and adapt them to the current Cirrus intake model.
+- A new Cirrus-native `utilities/cbr_to_cbz.py` now exists and has passed a dry-run against `/mnt/phoenix/media/incoming/jdownloader`; next step is a controlled real conversion batch before building the metadata audit utility.
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
