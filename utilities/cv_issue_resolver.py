@@ -304,6 +304,56 @@ def best_issue_search_match(results: list[dict], title: str, year: str, publishe
     return best
 
 
+def best_issue_number_match(
+    results: list[dict], series: str, number: str, year: str, publisher: str
+) -> dict | None:
+    series_fold = normalize_name(series).casefold()
+    pub_fold = normalize_name(publisher).casefold()
+    best = None
+    best_score = -1
+    for issue in results:
+        issue_number = str(issue.get("issue_number") or "").strip()
+        issue_year = str(issue.get("cover_date") or "")[:4]
+        issue_name = normalize_name(issue.get("name") or "")
+        volume = issue.get("volume") or {}
+        volume_name = normalize_name(volume.get("name") or "")
+        issue_pub = ""
+        publisher_block = issue.get("publisher")
+        if isinstance(publisher_block, dict):
+            issue_pub = normalize_name(publisher_block.get("name") or "")
+
+        score = 0
+        if number and issue_number == number:
+            score += 8
+        elif number:
+            continue
+        if year:
+            if issue_year and issue_year != year:
+                continue
+            if not issue_year:
+                continue
+        if volume_name.casefold() == series_fold:
+            score += 7
+        elif series_fold and series_fold in volume_name.casefold():
+            score += 4
+        else:
+            similarity = text_similarity(series, volume_name)
+            if similarity >= 0.9:
+                score += 5
+            elif similarity >= 0.75:
+                score += 3
+        if year and issue_year == year:
+            score += 3
+        if pub_fold and issue_pub.casefold() == pub_fold:
+            score += 2
+        if issue_name:
+            score += 1
+        if score > best_score:
+            best = issue
+            best_score = score
+    return best
+
+
 def resolve_issue(
     path: Path,
     *,
@@ -410,7 +460,34 @@ def resolve_issue(
             issue_name = issue.get("name") or ""
             issue_cover_date = issue.get("cover_date") or ""
         else:
-            note = note or "no_issue_match"
+            try:
+                issue_search = cv_request(
+                    base_url=base_url,
+                    api_key=api_key,
+                    user_agent=user_agent,
+                    endpoint="search",
+                    params={"resources": "issue", "query": f"{series} {number}", "limit": "10"},
+                )
+            except Exception as exc:
+                note = note or f"issue_search_failed: {exc}"
+                issue_search = {}
+            issue_results = issue_search.get("results", []) if issue_search else []
+            best_issue = best_issue_number_match(issue_results, series, number, year, publisher)
+            if best_issue is not None:
+                best_vol = best_issue.get("volume") or {}
+                issue_id = str(best_issue.get("id") or "")
+                issue_name = best_issue.get("name") or ""
+                issue_cover_date = best_issue.get("cover_date") or ""
+                volume = Candidate(
+                    volume_id=str(best_vol.get("id") or volume.volume_id),
+                    volume_name=normalize_name(best_vol.get("name") or volume.volume_name),
+                    volume_year=str(best_vol.get("start_year") or (year if year else "")),
+                    publisher=volume.publisher,
+                    score=max(volume.score, 10),
+                )
+                note = "issue_number_search_fallback"
+            else:
+                note = note or "no_issue_match"
     elif title:
         try:
             issues = cv_request(
@@ -448,7 +525,7 @@ def resolve_issue(
     confidence = "none"
     status = "unresolved"
     if issue_id:
-        if volume.score >= 10 and note != "issue_search_fallback":
+        if volume.score >= 10 and note not in {"issue_search_fallback"}:
             confidence = "high"
             status = "resolved"
         elif volume.score >= 7:
