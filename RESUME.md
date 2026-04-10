@@ -86,10 +86,12 @@ Latest Docker result:
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Validate `utilities/cv_issue_resolver.py` on a broader `media/incoming` sample, excluding anything explicitly labeled `WebP`, and tune its confidence thresholds until only strong matches land in `resolved`.
-2. Fix the resolver volume-selection logic for long-running series with multiple same-name volumes, starting with `Detective Comics 1107 (2026)` in the verified `2026.03.25` weekly pack.
-3. Re-run the JDownloader `.cbr` conversion/integrity sweep with the new `7z` fallback and only then decide whether any archives truly need to be sidelined for re-download.
-4. Begin moving current JDownloader `candidate` and `unresolved` files into `metadata-review` manually, then define the manual rescan/verification loop there.
+1. Continue Pass 1 work against the JDownloader `.cbz` corpus; intake is now `.cbz`-only again after quarantining the unresolved `.cbr` set.
+2. Treat `/mnt/phoenix/media/incoming/cbr-quarantine` as the archive-repair workspace:
+   - `28` canonical `.cbr` holdouts remain there
+   - duplicate copies are parked under `/mnt/phoenix/media/incoming/cbr-quarantine/duplicates`
+3. If additional quarantine `.cbr` files are manually extracted into sibling image folders, batch-rebuild normalized `.cbz` files from those folders before resuming metadata work.
+4. `Absolute Superman v02 - Son of the Demon` now has a normalized quarantine `.cbz` with page images at archive root; it is structurally valid but still lacks `ComicInfo.xml`.
 5. Use the verified weekly-pack trees (`weekly-lots/2026.03.25`, `reality_weekly-lots/2026.02.25`, and the Image/Marvel slices of `reality_weekly-lots/2026.02.11`) as the broader non-`WebP` test base for audit and Pass 1 work.
 6. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
 7. Do not introduce a second application container until the intake-routing rules are explicit and tested.

@@ -32,6 +32,7 @@ DEFAULT_ROOT = Path("/mnt/phoenix/media/incoming/jdownloader")
 DEFAULT_STAGING = Path("/mnt/phoenix/staging/cbr_to_cbz/originals")
 DEFAULT_REPORT_DIR = Path("/mnt/phoenix/staging/cbr_to_cbz/reports")
 DEFAULT_TMP_ROOT = Path("/tmp/cirrus-cbr-to-cbz")
+DEFAULT_EXTRACT_TIMEOUT = 120
 
 
 @dataclass
@@ -55,20 +56,25 @@ def command_exists(name: str) -> bool:
     return shutil.which(name) is not None
 
 
-def run_extract_with_tool(src: Path, dst_dir: Path, tool: str) -> subprocess.CompletedProcess[bytes]:
+def run_extract_with_tool(
+    src: Path,
+    dst_dir: Path,
+    tool: str,
+    timeout_seconds: int,
+) -> subprocess.CompletedProcess[bytes]:
     if tool == "unar":
         return subprocess.run(
             ["unar", "-q", "-f", "-o", str(dst_dir), str(src)],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            timeout=900,
+            timeout=timeout_seconds,
             check=False,
         )
     return subprocess.run(
         ["7z", "x", "-y", str(src), f"-o{dst_dir}"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        timeout=900,
+        timeout=timeout_seconds,
         check=False,
     )
 
@@ -103,6 +109,8 @@ def verify_cbz(path: Path) -> tuple[bool, str]:
 
 def classify_extract_failure(detail: str) -> str:
     lowered = detail.lower()
+    if "timed out after" in lowered:
+        return "extract_failed_timeout"
     if "attempted to read more data than was available" in lowered:
         return "extract_failed_corrupt"
     if "unsupported method" in lowered:
@@ -110,20 +118,35 @@ def classify_extract_failure(detail: str) -> str:
     return "extract_failed"
 
 
-def extract_with_fallback(src: Path, extracted: Path) -> tuple[subprocess.CompletedProcess[bytes], str]:
+def timeout_result(tool: str, timeout_seconds: int) -> subprocess.CompletedProcess[bytes]:
+    detail = f"{tool} timed out after {timeout_seconds}s"
+    return subprocess.CompletedProcess(args=[tool], returncode=124, stdout=b"", stderr=detail.encode())
+
+
+def extract_with_fallback(
+    src: Path,
+    extracted: Path,
+    timeout_seconds: int,
+) -> tuple[subprocess.CompletedProcess[bytes], str]:
     attempted: list[str] = []
     last_result: subprocess.CompletedProcess[bytes] | None = None
 
     if command_exists("unar"):
         attempted.append("unar")
-        last_result = run_extract_with_tool(src, extracted, "unar")
+        try:
+            last_result = run_extract_with_tool(src, extracted, "unar", timeout_seconds)
+        except subprocess.TimeoutExpired:
+            last_result = timeout_result("unar", timeout_seconds)
         if last_result.returncode == 0:
             return last_result, "unar"
         shutil.rmtree(extracted, ignore_errors=True)
         ensure_dir(extracted)
 
     attempted.append("7z")
-    last_result = run_extract_with_tool(src, extracted, "7z")
+    try:
+        last_result = run_extract_with_tool(src, extracted, "7z", timeout_seconds)
+    except subprocess.TimeoutExpired:
+        last_result = timeout_result("7z", timeout_seconds)
     if last_result.returncode == 0:
         return last_result, "7z"
     return last_result, "+".join(attempted)
@@ -134,6 +157,7 @@ def convert_one(
     scan_root: Path,
     staging_root: Path,
     tmp_root: Path,
+    timeout_seconds: int,
     dry_run: bool,
 ) -> ConversionResult:
     dst_cbz = src.with_suffix(".cbz")
@@ -154,7 +178,7 @@ def convert_one(
         extracted = temp_dir / "payload"
         ensure_dir(extracted)
 
-        result, extractor = extract_with_fallback(src, extracted)
+        result, extractor = extract_with_fallback(src, extracted, timeout_seconds)
         if result.returncode != 0:
             detail = (result.stderr or result.stdout).decode(errors="ignore").strip()[:500]
             if extractor:
@@ -232,6 +256,12 @@ def parse_args() -> argparse.Namespace:
         help="Optional maximum number of .cbr files to process",
     )
     parser.add_argument(
+        "--extract-timeout",
+        type=int,
+        default=DEFAULT_EXTRACT_TIMEOUT,
+        help="Maximum seconds to allow each extractor invocation before failing over",
+    )
+    parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Report what would be converted without changing files",
@@ -256,7 +286,16 @@ def main() -> int:
     for src in iter_cbr_files(scan_root):
         if args.limit and processed >= args.limit:
             break
-        rows.append(convert_one(src, scan_root, staging_root, tmp_root, args.dry_run))
+        rows.append(
+            convert_one(
+                src,
+                scan_root,
+                staging_root,
+                tmp_root,
+                args.extract_timeout,
+                args.dry_run,
+            )
+        )
         processed += 1
 
     write_report(report_path, rows)
