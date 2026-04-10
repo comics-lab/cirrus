@@ -88,13 +88,19 @@ Latest Docker result:
 ## Next Recommended Work
 1. Continue Pass 1 work against the JDownloader `.cbz` corpus; intake is now `.cbz`-only again after quarantining the unresolved `.cbr` set.
 2. Treat `/mnt/phoenix/media/incoming/cbr-quarantine` as the archive-repair workspace:
-   - `28` canonical `.cbr` holdouts remain there
+   - `49` raw `.cbr` files remain there
    - duplicate copies are parked under `/mnt/phoenix/media/incoming/cbr-quarantine/duplicates`
-3. If additional quarantine `.cbr` files are manually extracted into sibling image folders, batch-rebuild normalized `.cbz` files from those folders before resuming metadata work.
-4. `Absolute Superman v02 - Son of the Demon` now has a normalized quarantine `.cbz` with page images at archive root; it is structurally valid but still lacks `ComicInfo.xml`.
-5. Use the verified weekly-pack trees (`weekly-lots/2026.03.25`, `reality_weekly-lots/2026.02.25`, and the Image/Marvel slices of `reality_weekly-lots/2026.02.11`) as the broader non-`WebP` test base for audit and Pass 1 work.
-6. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
-7. Do not introduce a second application container until the intake-routing rules are explicit and tested.
+3. `utilities/rebuild_quarantine_cbz.py` now exists and has rebuilt `28` normalized `.cbz` files from extracted quarantine image folders.
+4. Normalized quarantine `.cbz` files now live in `/mnt/phoenix/media/incoming/metadata-review/quarantine-normalized`.
+5. Current successful quarantine-normalized Pass 1 promotions:
+   - `Finder - Voice`
+   - `Ghost Machine - The Official Guidebook 01`
+   - `Our Brilliant Ruin - Horror at Crane Mansion`
+   - `Universal Monsters - Phantom of the Opera 002`
+6. `Lobo - Back to Back` remains in review; the low-confidence and unresolved normalized quarantine files should stay in `metadata-review` until explicitly reviewed.
+7. Use the verified weekly-pack trees (`weekly-lots/2026.03.25`, `reality_weekly-lots/2026.02.25`, and the Image/Marvel slices of `reality_weekly-lots/2026.02.11`) as the broader non-`WebP` test base for audit and Pass 1 work.
+8. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
+9. Do not introduce a second application container until the intake-routing rules are explicit and tested.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.

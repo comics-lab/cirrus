@@ -78,3 +78,12 @@
 - Confirmed that JDownloader intake is `.cbz`-only again after quarantine, so Pass 1 work can continue without archive-repair noise mixed into the main intake tree.
 - Promoted six more already-Mylar-valid `.cbz` files from JDownloader into `/mnt/phoenix/media/incoming/mylar-import`.
 - Normalized the quarantined `Absolute Superman v02 - Son of the Demon` rebuild so its page images are now at archive root, and cleaned its quarantine folder down to just the original `.cbr` plus the normalized `.cbz`.
+- Added `utilities/rebuild_quarantine_cbz.py` to rebuild normalized `.cbz` files from extracted image folders under `/mnt/phoenix/media/incoming/cbr-quarantine`.
+- Rebuilt `28` normalized `.cbz` files from the quarantine image-folder set and moved those rebuilt archives into `/mnt/phoenix/media/incoming/metadata-review/quarantine-normalized`.
+- Cleaned `cbr-quarantine` so it now contains only raw `.cbr` files; the two extensionless RAR files were renamed back into proper `.cbr` paths.
+- Audited the `28` normalized quarantine `.cbz` files and confirmed they were structurally sound but initially had no `ComicInfo.xml`, ComicVine refs, or `mylar_valid` hits.
+- Ran the resolver against `metadata-review/quarantine-normalized` and got `1` resolved, `16` candidates, and `11` unresolved.
+- Took the single high-confidence resolved file, `Finder - Voice`, through Pass 1 successfully and promoted it into `/mnt/phoenix/media/incoming/mylar-import`.
+- Manually accepted and tagged three medium-confidence title-specific candidates: `Ghost Machine - The Official Guidebook 01`, `Our Brilliant Ruin - Horror at Crane Mansion`, and `Universal Monsters - Phantom of the Opera 002`.
+- Re-audited those three as `mylar_valid` and promoted them into `/mnt/phoenix/media/incoming/mylar-import`.
+- Left `Lobo - Back to Back` and the remaining low-confidence/unresolved normalized quarantine files in metadata review for later explicit review.

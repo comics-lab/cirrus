@@ -32,3 +32,6 @@ Current utilities:
 - `verify_weekly_pack_extracts.py`: compare non-`WebP` weekly-pack zip files
   against their same-named extracted publisher directories and report which
   packs are trustworthy as a larger test corpus
+- `rebuild_quarantine_cbz.py`: rebuild normalized `.cbz` files from extracted
+  image folders under `/mnt/phoenix/media/incoming/cbr-quarantine`, verify the
+  rebuilt archive, and delete the extracted working folder only after success
