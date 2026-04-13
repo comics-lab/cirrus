@@ -81,26 +81,47 @@ Latest Docker result:
 - JDownloader integrity follow-up remains partially open: current evidence suggests the remaining JDownloader `.cbr` files are largely readable and that some earlier failures were extractor-specific rather than true archive damage, but `utilities/cbr_to_cbz.py` still needs a clean full rerun with the new `7z` fallback before any archive is formally sidelined for re-download.
 - The local GCD database remains useful for descriptive issue metadata, but it does not contain direct ComicVine issue IDs or ComicVine URLs in `gcd_issue` or `gcd_series`.
 - The old `metroninfo_fill.py` helper cannot run on Cirrus as written because the expected local `METRON/darkseid` code tree is not present here; any new Metron stage will need a fresh, Cirrus-native dependency plan.
+- The preferred raw-archive recovery method on Cirrus is now:
+  1. rename `.cbr` to `.rar`
+  2. verify with `file` that the archive is actually `RAR archive data`
+  3. extract with `unrar`
+  4. rebuild normalized `.cbz`
+  5. move rebuilt `.cbz` into `metadata-review/quarantine-normalized`
+  6. archive the raw `.rar` originals
+- Raw archive quarantine is effectively cleared as active work; the previously active `2026-04-11-jdownloader` and `2026-04-13-jdownloader` batches were rebuilt and moved into `metadata-review/quarantine-normalized`, and the stale `2026-04-10-prior-downloads` raw originals were archived because matching `.cbz` files already existed downstream.
+- A fresh full JDownloader audit/resolver cycle was completed before the latest manual ComicTagger wave:
+  - full audit snapshot: `157` `.cbz`, `30` root `ComicInfo.xml`, `3` already-`mylar_valid`
+  - full resolver snapshot: `6` resolved, `120` candidates, `31` unresolved
+- The repaired ComicTagger environment is now `/tmp/comictagger-pass1d`; the older `/tmp/comictagger-pass1b` wrapper is broken and should not be reused.
+- The five remaining high-confidence resolved JDownloader files were successfully tagged with the repaired ComicTagger environment and promoted into `/mnt/phoenix/media/incoming/mylar-import`.
+- Neither normalized quarantine batch contains any further safe automatic Pass 1 wins:
+  - `2026-04-11-jdownloader`: `0` resolved, `2` candidates, `11` unresolved
+  - `2026-04-13-jdownloader`: `0` resolved, `0` candidates, `6` unresolved
+- Blind medium-confidence auto-writing is not productive enough to continue: a bounded nine-file test failed to produce any new `mylar_valid` files.
+- After a manual ComicTagger session on Cirrus, the live JDownloader audit changed substantially:
+  - `149` `.cbz` in scope before promotion
+  - `99` files with root `ComicInfo.xml`
+  - `77` files with ComicVine refs
+  - `77` files `mylar_valid`
+- Those `77` valid files were promoted into `/mnt/phoenix/media/incoming/mylar-import`.
+- Current live intake after that promotion:
+  - JDownloader intake: `72` `.cbz`
+  - Mylar staging: `100` `.cbz` in `/mnt/phoenix/media/incoming/mylar-import`
+  - remaining JDownloader set: `72` files, `22` with root `ComicInfo.xml`, `0` ComicVine refs, `0` `mylar_valid`
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Continue Pass 1 work against the JDownloader `.cbz` corpus; intake is now `.cbz`-only again after quarantining the unresolved `.cbr` set.
-2. Treat `/mnt/phoenix/media/incoming/cbr-quarantine` as the archive-repair workspace:
-   - `49` raw `.cbr` files remain there
-   - duplicate copies are parked under `/mnt/phoenix/media/incoming/cbr-quarantine/duplicates`
-3. `utilities/rebuild_quarantine_cbz.py` now exists and has rebuilt `28` normalized `.cbz` files from extracted quarantine image folders.
-4. Normalized quarantine `.cbz` files now live in `/mnt/phoenix/media/incoming/metadata-review/quarantine-normalized`.
-5. Current successful quarantine-normalized Pass 1 promotions:
-   - `Finder - Voice`
-   - `Ghost Machine - The Official Guidebook 01`
-   - `Our Brilliant Ruin - Horror at Crane Mansion`
-   - `Universal Monsters - Phantom of the Opera 002`
-6. `Lobo - Back to Back` remains in review; the low-confidence and unresolved normalized quarantine files should stay in `metadata-review` until explicitly reviewed.
-7. Use the verified weekly-pack trees (`weekly-lots/2026.03.25`, `reality_weekly-lots/2026.02.25`, and the Image/Marvel slices of `reality_weekly-lots/2026.02.11`) as the broader non-`WebP` test base for audit and Pass 1 work.
-8. Once more than a single test file is staged in `/mnt/phoenix/media/incoming/mylar-import`, verify the exact Mylar API `forceProcess` call against the eventual Mylar deployment target.
-9. Do not introduce a second application container until the intake-routing rules are explicit and tested.
+1. Install Docker Mylar now. The staging threshold has been crossed decisively: `/mnt/phoenix/media/incoming/mylar-import` now holds `100` `.cbz` files.
+2. Bind Mylar only to the intended paths:
+   - config/state on Phoenix services storage
+   - import input at `/mnt/phoenix/media/incoming/mylar-import`
+   - final library output according to the existing Phoenix storage policy
+3. Verify the exact Mylar API `forceProcess` call and test import behavior on a small controlled subset before letting it consume the whole staged backlog.
+4. Keep the remaining JDownloader set (`72` `.cbz`) in review; do not continue blind medium-confidence auto-writes.
+5. Leave normalized quarantine files in `metadata-review/quarantine-normalized` for explicit review rather than automatic promotion; there are no safe automatic wins left there.
+6. Continue using the `rename -> verify RAR -> unrar -> rebuild` workflow for any future raw archive recovery on Cirrus.
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.
