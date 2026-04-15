@@ -108,17 +108,20 @@ Latest Docker result:
   - JDownloader intake: `72` `.cbz`
   - Mylar staging: `100` `.cbz` in `/mnt/phoenix/media/incoming/mylar-import`
   - remaining JDownloader set: `72` files, `22` with root `ComicInfo.xml`, `0` ComicVine refs, `0` `mylar_valid`
+- Docker Mylar is now deployed from `/srv/compose/mylar3/docker-compose.yml`:
+  - UI: `http://192.168.1.113:8090`
+  - config: `/mnt/phoenix/services/mylar`
+  - imports: `/mnt/phoenix/media/incoming/mylar-import`
+  - library target: `/mnt/phoenix/media/comics`
+- Current Mylar startup state is healthy apart from the expected missing ComicVine API key warning.
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Install Docker Mylar now. The staging threshold has been crossed decisively: `/mnt/phoenix/media/incoming/mylar-import` now holds `100` `.cbz` files.
-2. Bind Mylar only to the intended paths:
-   - config/state on Phoenix services storage
-   - import input at `/mnt/phoenix/media/incoming/mylar-import`
-   - final library output according to the existing Phoenix storage policy
-3. Verify the exact Mylar API `forceProcess` call and test import behavior on a small controlled subset before letting it consume the whole staged backlog.
+1. Configure Mylar's ComicVine API key and core application settings in the new Docker deployment.
+2. Verify Mylar's own API key and the exact `forceProcess` call shape against the live container.
+3. Test Mylar import behavior on a small controlled subset from `/mnt/phoenix/media/incoming/mylar-import` before letting it consume the full `100`-file staged backlog.
 4. Keep the remaining JDownloader set (`72` `.cbz`) in review; do not continue blind medium-confidence auto-writes.
 5. Leave normalized quarantine files in `metadata-review/quarantine-normalized` for explicit review rather than automatic promotion; there are no safe automatic wins left there.
 6. Continue using the `rename -> verify RAR -> unrar -> rebuild` workflow for any future raw archive recovery on Cirrus.

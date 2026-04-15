@@ -88,17 +88,26 @@ Not yet settled or incomplete:
   - `/mnt/phoenix/media/incoming/metadata-review`
 - Deployed compose file:
   - `/srv/compose/jdownloader2/docker-compose.yml`
+  - `/srv/compose/mylar3/docker-compose.yml`
 - Current JDownloader runtime:
   - image: `jlesage/jdownloader-2`
   - LAN-only browser UI is available at `http://192.168.1.113:5800`
   - MyJDownloader is working as the routine control path
+- Current Mylar runtime:
+  - image: `lscr.io/linuxserver/mylar3:latest`
+  - LAN-only web UI is available at `http://192.168.1.113:8090`
+  - config/state path is `/mnt/phoenix/services/mylar`
+  - imports are staged from `/mnt/phoenix/media/incoming/mylar-import`
+  - library target path is `/mnt/phoenix/media/comics`
 - Verified current container result:
   - `jdownloader2` container is running and surviving reboot cleanly
+  - `mylar3` container is running and responding on `192.168.1.113:8090`
   - config/state files are being created as `rmleonard:media`
   - downloads are landing in `/mnt/phoenix/media/incoming/jdownloader` with usable permissions
   - intake output directory remains separate at `/mnt/phoenix/media/incoming/jdownloader`
   - Pass 1 to Mylar handoff is now explicitly staged through `/mnt/phoenix/media/incoming/mylar-import`
-  - one already-Mylar-valid archive has now been promoted into `mylar-import`
+  - Mylar startup is clean apart from the expected missing ComicVine API key warning
+  - `100` already-validated `.cbz` files are staged in `mylar-import`
   - remaining JDownloader intake archives are still in raw intake because they are currently `candidate` or `unresolved`, not safe auto-imports
   - alternate-processing and manual-review intake is now explicitly defined as `/mnt/phoenix/media/incoming/metadata-review`
   - current policy is manual-only for `candidate` and `unresolved`: move them into `metadata-review`, fix them there, rescan, and promote only after they become `mylar_import_valid`

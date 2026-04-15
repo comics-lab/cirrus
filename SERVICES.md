@@ -441,8 +441,46 @@ Current deployment result:
 - container name: `jdownloader2`
 - state path: `/mnt/phoenix/services/jdownloader2`
 - output path: `/mnt/phoenix/media/incoming/jdownloader`
-- no browser UI port is published
+- LAN-only browser UI is published at `192.168.1.113:5800`
 - container is running successfully
+
+### Mylar 3
+
+First-pass deployment shape:
+
+```yaml
+services:
+  mylar3:
+    image: lscr.io/linuxserver/mylar3:latest
+    container_name: mylar3
+    restart: unless-stopped
+    environment:
+      PUID: "1000"
+      PGID: "1001"
+      UMASK: "002"
+      TZ: "America/Los_Angeles"
+    ports:
+      - "192.168.1.113:8090:8090"
+    volumes:
+      - /mnt/phoenix/services/mylar:/config
+      - /mnt/phoenix/media/comics:/comics
+      - /mnt/phoenix/media/incoming/mylar-import:/downloads
+```
+
+Current deployment result:
+- compose project path: `/srv/compose/mylar3/docker-compose.yml`
+- container name: `mylar3`
+- state path: `/mnt/phoenix/services/mylar`
+- import path: `/mnt/phoenix/media/incoming/mylar-import`
+- library path: `/mnt/phoenix/media/comics`
+- LAN-only UI is published at `192.168.1.113:8090`
+- container is running successfully
+
+Immediate post-install findings:
+- startup is clean apart from the expected missing ComicVine API key warning
+- default Docker-aware comic path is `/comics`
+- Mylar is not yet configured to process the staged import set
+- next validation step is to set the ComicVine API key, confirm the API key for Mylar itself, and test a small controlled import from `/downloads`
 
 Immediate next step after deployment:
 - MyJDownloader pairing is complete
