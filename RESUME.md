@@ -126,5 +126,22 @@ Latest Docker result:
 5. Leave normalized quarantine files in `metadata-review/quarantine-normalized` for explicit review rather than automatic promotion; there are no safe automatic wins left there.
 6. Continue using the `rename -> verify RAR -> unrar -> rebuild` workflow for any future raw archive recovery on Cirrus.
 
+## Additional Current Work
+- `reality.local:/mnt/fearless` remains unresolved as an NFS export problem.
+- Cirrus-side findings:
+  - mounting `reality.local:/mnt/fearless` onto both `/mnt/fearless` and a fresh `/mnt/fearless-test` shows the same wrong tree: `ddump`, `input`, `marvel`, `mrvl`, `SPACE`
+  - forcing `vers=3` instead of `nfs4` does not change the result
+- `reality.local` findings:
+  - local shell view of `/mnt/fearless` is correct and is mounted from `/dev/sde`
+  - `rpc.mountd` also sees the correct `/mnt/fearless` tree and `findmnt` shows `/dev/sde`
+  - NFS service stack is up (`nfs-server`, `rpcbind`, port `2049`, NFS v3/v4 enabled)
+- attempted workaround:
+  - exported a fresh `/export/fearless` bind-export on `reality.local`
+  - Cirrus still received the same wrong `ddump/input/marvel/...` tree from `reality.local:/export/fearless`
+- current conclusion:
+  - this is not a simple Cirrus client mount issue
+  - this is not an NFSv4-only pseudoroot issue
+  - next session should continue on `reality.local` by verifying `/export/fearless` locally, then inspecting `exportfs -v` and `/proc/fs/nfsd/exports` before making further changes
+
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.
