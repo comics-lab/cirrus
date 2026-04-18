@@ -31,7 +31,10 @@ from cv_issue_resolver import DEFAULT_CONFIG, ResolutionRow, load_cv_config, res
 
 DEFAULT_ROOT = Path("/mnt/phoenix/media/incoming")
 DEFAULT_REPORT_DIR = Path("/mnt/phoenix/staging/pass1_write_comicinfo/reports")
-DEFAULT_COMICTAGGER = Path("/tmp/comictagger-pass1b/bin/comictagger")
+DEFAULT_COMICTAGGER_CANDIDATES = [
+    Path("/tmp/comictagger-pass1d/bin/comictagger"),
+    Path("/tmp/comictagger-pass1b/bin/comictagger"),
+]
 
 
 @dataclass
@@ -53,6 +56,13 @@ def timestamped_report_path(report_dir: Path) -> Path:
     ts = datetime.now().strftime("%Y-%m-%d_%H%M%S")
     report_dir.mkdir(parents=True, exist_ok=True)
     return report_dir / f"pass1_write_comicinfo_{ts}.csv"
+
+
+def default_comictagger_bin() -> Path:
+    for candidate in DEFAULT_COMICTAGGER_CANDIDATES:
+        if candidate.exists():
+            return candidate
+    return DEFAULT_COMICTAGGER_CANDIDATES[0]
 
 
 def should_skip_webp(path: Path) -> bool:
@@ -136,7 +146,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", default=str(DEFAULT_CONFIG), help="ComicVine config file")
     parser.add_argument(
         "--comictagger-bin",
-        default=str(DEFAULT_COMICTAGGER),
+        default=str(default_comictagger_bin()),
         help="Path to the working ComicTagger CLI binary",
     )
     parser.add_argument(

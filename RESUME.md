@@ -105,26 +105,29 @@ Latest Docker result:
   - `77` files `mylar_valid`
 - Those `77` valid files were promoted into `/mnt/phoenix/media/incoming/mylar-import`.
 - Current live intake after that promotion:
-  - JDownloader intake: `72` `.cbz`
+  - JDownloader intake: `112` `.cbz`
   - Mylar staging: `100` `.cbz` in `/mnt/phoenix/media/incoming/mylar-import`
-  - remaining JDownloader set: `72` files, `22` with root `ComicInfo.xml`, `0` ComicVine refs, `0` `mylar_valid`
+  - remaining JDownloader set: `112` files split as `29` medium-confidence candidates, `34` low-confidence candidates, `52` unresolved, and `1` resolver error
 - Docker Mylar is now deployed from `/srv/compose/mylar3/docker-compose.yml`:
   - UI: `http://192.168.1.113:8090`
   - config: `/mnt/phoenix/services/mylar`
   - imports: `/mnt/phoenix/media/incoming/mylar-import`
   - library target: `/mnt/phoenix/media/comics`
+- Docker Kavita is now deployed from `/srv/compose/kavita/docker-compose.yml`:
+  - UI: `http://192.168.1.113:5000`
+  - config: `/mnt/phoenix/services/kavita`
+  - library source: `/mnt/phoenix/media/comics` mounted read-only
 - Current Mylar startup state is healthy apart from the expected missing ComicVine API key warning.
+- The current Pass 1 wrapper must prefer `/tmp/comictagger-pass1d/bin/comictagger`; direct ComicTagger writes against that environment succeeded for both the resolved slice and a bounded medium-confidence batch.
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Configure Mylar's ComicVine API key and core application settings in the new Docker deployment.
-2. Verify Mylar's own API key and the exact `forceProcess` call shape against the live container.
-3. Test Mylar import behavior on a small controlled subset from `/mnt/phoenix/media/incoming/mylar-import` before letting it consume the full `100`-file staged backlog.
-4. Keep the remaining JDownloader set (`72` `.cbz`) in review; do not continue blind medium-confidence auto-writes.
-5. Leave normalized quarantine files in `metadata-review/quarantine-normalized` for explicit review rather than automatic promotion; there are no safe automatic wins left there.
-6. Continue using the `rename -> verify RAR -> unrar -> rebuild` workflow for any future raw archive recovery on Cirrus.
+1. Complete Kavita first-run setup against `/mnt/phoenix/media/comics` and verify it sees the small Mylar-populated library cleanly.
+2. Continue bounded medium-confidence Pass 1 work from the `112` live JDownloader files; do not broaden to the whole candidate set at once.
+3. Leave normalized quarantine files in `metadata-review/quarantine-normalized` for explicit review rather than automatic promotion.
+4. Once Pass 1 stabilizes, begin testing the `weekly-lots` datasource and the proposed Pass X flow for already-known Mylar series.
 
 ## Additional Current Work
 - `reality.local:/mnt/fearless` is restored on Cirrus and currently mounts cleanly.

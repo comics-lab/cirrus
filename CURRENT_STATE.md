@@ -89,6 +89,7 @@ Not yet settled or incomplete:
 - Deployed compose file:
   - `/srv/compose/jdownloader2/docker-compose.yml`
   - `/srv/compose/mylar3/docker-compose.yml`
+  - `/srv/compose/kavita/docker-compose.yml`
 - Current JDownloader runtime:
   - image: `jlesage/jdownloader-2`
   - LAN-only browser UI is available at `http://192.168.1.113:5800`
@@ -99,16 +100,23 @@ Not yet settled or incomplete:
   - config/state path is `/mnt/phoenix/services/mylar`
   - imports are staged from `/mnt/phoenix/media/incoming/mylar-import`
   - library target path is `/mnt/phoenix/media/comics`
+- Current Kavita runtime:
+  - image: `lscr.io/linuxserver/kavita:latest`
+  - LAN-only web UI is available at `http://192.168.1.113:5000`
+  - config/state path is `/mnt/phoenix/services/kavita`
+  - library source path is `/mnt/phoenix/media/comics` mounted read-only
 - Verified current container result:
   - `jdownloader2` container is running and surviving reboot cleanly
   - `mylar3` container is running and responding on `192.168.1.113:8090`
+  - `kavita` container is running and responding on `192.168.1.113:5000`
   - config/state files are being created as `rmleonard:media`
   - downloads are landing in `/mnt/phoenix/media/incoming/jdownloader` with usable permissions
   - intake output directory remains separate at `/mnt/phoenix/media/incoming/jdownloader`
   - Pass 1 to Mylar handoff is now explicitly staged through `/mnt/phoenix/media/incoming/mylar-import`
   - Mylar startup is clean apart from the expected missing ComicVine API key warning
-  - `100` already-validated `.cbz` files are staged in `mylar-import`
-  - remaining JDownloader intake archives are still in raw intake because they are currently `candidate` or `unresolved`, not safe auto-imports
+  - `100` `.cbz` files are staged in `mylar-import`
+  - remaining JDownloader intake archives are reduced to `112` `.cbz`
+  - current live JDownloader split is `29` medium-confidence candidates, `34` low-confidence candidates, `52` unresolved, and `1` resolver error
   - alternate-processing and manual-review intake is now explicitly defined as `/mnt/phoenix/media/incoming/metadata-review`
   - current policy is manual-only for `candidate` and `unresolved`: move them into `metadata-review`, fix them there, rescan, and promote only after they become `mylar_import_valid`
 - Weekly-pack verification status:

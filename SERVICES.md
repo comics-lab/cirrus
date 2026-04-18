@@ -482,6 +482,40 @@ Immediate post-install findings:
 - Mylar is not yet configured to process the staged import set
 - next validation step is to set the ComicVine API key, confirm the API key for Mylar itself, and test a small controlled import from `/downloads`
 
+### Kavita
+
+First-pass deployment shape:
+
+```yaml
+services:
+  kavita:
+    image: lscr.io/linuxserver/kavita:latest
+    container_name: kavita
+    restart: unless-stopped
+    environment:
+      PUID: "1000"
+      PGID: "1001"
+      TZ: "America/Los_Angeles"
+    ports:
+      - "192.168.1.113:5000:5000"
+    volumes:
+      - /mnt/phoenix/services/kavita:/config
+      - /mnt/phoenix/media/comics:/comics:ro
+```
+
+Current deployment result:
+- compose project path: `/srv/compose/kavita/docker-compose.yml`
+- container name: `kavita`
+- state path: `/mnt/phoenix/services/kavita`
+- library mount: `/mnt/phoenix/media/comics:/comics:ro`
+- LAN-only UI is published at `192.168.1.113:5000`
+- container is running successfully
+
+Current role:
+- Kavita is the library reader and presentation layer
+- Mylar remains the primary writer for `/mnt/phoenix/media/comics`
+- Kavita should stay read-only on the comics library tree
+
 Immediate next step after deployment:
 - MyJDownloader pairing is complete
 - test downloads are landing in `/mnt/phoenix/media/incoming/jdownloader`
