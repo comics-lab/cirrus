@@ -132,13 +132,24 @@ Latest Docker result:
   - `showmount -e 192.168.1.126` advertises both `/mnt/fearless` and `/export/fearless`
   - a fresh mount of `192.168.1.126:/mnt/fearless` shows the expected top-level tree: `A`, `books`, `comics`, `docker`, `Downloads`, `DOWNLOADS`, `From_Longbox`, `LIBRARY`
   - Cirrus now has the intended live mount back at `/mnt/fearless`
+- On `reality.local`, the commented bind-mount block in `/etc/fstab` lines `44` through `57` has now been restored:
+  - `/mnt/DC`
+  - `/mnt/pubs/Comics/Publishers/DC`
+  - `/mnt/longbox`
+  - `/mnt/shortbox`
+  - `/home/Various-Downloads/Various/else-where/FLBM-*`
+  - `/mnt/grackle/LIBRARY/{Archie Comics,Dark Horse Comics,Rebellion}`
+  - line `57` required a typo fix from `Mylar-Shortbox-ROO` to `Mylar-Shortbox-ROOT`
 - The remaining NFS problem is narrower and server-side:
   - `192.168.1.126:/export/fearless` mounts as an empty directory from Cirrus
   - the old stale client test mount to `/mnt/fearless-test` has been removed
   - the direct export path is good; the bind-export path is the broken one
+- During verification, `reality.local:/mnt/longbox` briefly failed from Cirrus over NFSv4 with `Stale file handle` even though NFSv3 worked.
+- A restart of `nfs-server` on `reality.local` cleared that condition; after restart, Cirrus successfully mounted `/mnt/DC`, `/mnt/shortbox`, `/mnt/longbox`, and `/mnt/fearless` over NFSv4.
 - Current conclusion:
   - do not use `/export/fearless` for Cirrus
   - keep Cirrus pointed at `reality.local:/mnt/fearless`
+  - the restored bind mounts and direct exports are now usable
   - if the bind-export is still needed on `reality.local`, the next server-side checks are `findmnt /export/fearless`, `ls -la /export/fearless`, `exportfs -v`, and `/proc/fs/nfsd/exports`
 
 Separate note cleared:
