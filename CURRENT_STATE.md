@@ -187,5 +187,5 @@ The larger book structure under `the_lab/comics-lab-book/` exists, but much of i
 
 - Cirrus setup is not complete.
 - Phoenix has been reset as a clean Btrfs data volume, the initial subvolume layout exists, and the shared group/ACL baseline has been applied.
-- Docker is installed, but application/container deployment has not begun yet.
+- Docker is installed and application containers are deployed on Cirrus; current live services include JDownloader 2 and Mylar 3.
 - This repo should continue to document Cirrus itself, not the whole lab.

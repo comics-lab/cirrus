@@ -127,21 +127,19 @@ Latest Docker result:
 6. Continue using the `rename -> verify RAR -> unrar -> rebuild` workflow for any future raw archive recovery on Cirrus.
 
 ## Additional Current Work
-- `reality.local:/mnt/fearless` remains unresolved as an NFS export problem.
-- Cirrus-side findings:
-  - mounting `reality.local:/mnt/fearless` onto both `/mnt/fearless` and a fresh `/mnt/fearless-test` shows the same wrong tree: `ddump`, `input`, `marvel`, `mrvl`, `SPACE`
-  - forcing `vers=3` instead of `nfs4` does not change the result
-- `reality.local` findings:
-  - local shell view of `/mnt/fearless` is correct and is mounted from `/dev/sde`
-  - `rpc.mountd` also sees the correct `/mnt/fearless` tree and `findmnt` shows `/dev/sde`
-  - NFS service stack is up (`nfs-server`, `rpcbind`, port `2049`, NFS v3/v4 enabled)
-- attempted workaround:
-  - exported a fresh `/export/fearless` bind-export on `reality.local`
-  - Cirrus still received the same wrong `ddump/input/marvel/...` tree from `reality.local:/export/fearless`
-- current conclusion:
-  - this is not a simple Cirrus client mount issue
-  - this is not an NFSv4-only pseudoroot issue
-  - next session should continue on `reality.local` by verifying `/export/fearless` locally, then inspecting `exportfs -v` and `/proc/fs/nfsd/exports` before making further changes
+- `reality.local:/mnt/fearless` is restored on Cirrus and currently mounts cleanly.
+- Verified live from Cirrus:
+  - `showmount -e 192.168.1.126` advertises both `/mnt/fearless` and `/export/fearless`
+  - a fresh mount of `192.168.1.126:/mnt/fearless` shows the expected top-level tree: `A`, `books`, `comics`, `docker`, `Downloads`, `DOWNLOADS`, `From_Longbox`, `LIBRARY`
+  - Cirrus now has the intended live mount back at `/mnt/fearless`
+- The remaining NFS problem is narrower and server-side:
+  - `192.168.1.126:/export/fearless` mounts as an empty directory from Cirrus
+  - the old stale client test mount to `/mnt/fearless-test` has been removed
+  - the direct export path is good; the bind-export path is the broken one
+- Current conclusion:
+  - do not use `/export/fearless` for Cirrus
+  - keep Cirrus pointed at `reality.local:/mnt/fearless`
+  - if the bind-export is still needed on `reality.local`, the next server-side checks are `findmnt /export/fearless`, `ls -la /export/fearless`, `exportfs -v`, and `/proc/fs/nfsd/exports`
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.

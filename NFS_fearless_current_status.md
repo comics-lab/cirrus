@@ -1,23 +1,16 @@
 # NFS Fearless Current Status
 
-Current date: `2026-04-16`
+Current date: `2026-04-17`
 
-## Problem
+## Current Status
 
-Cirrus mounts `reality.local:/mnt/fearless`, but the visible tree is wrong.
-
-Observed on Cirrus:
+Cirrus is back on the correct direct export:
 
 ```text
-ddump/
-input/
-marvel -> /mnt/arcs/marvel/From_Longbox/Mylar-Shortbox-ROOT/marvel
-marvel.here/
-mrvl/
-SPACE/
+reality.local:/mnt/fearless -> /mnt/fearless
 ```
 
-Expected on `reality.local` local shell:
+The mounted tree on Cirrus now matches the expected top level on `reality.local`:
 
 ```text
 A/
@@ -30,6 +23,14 @@ From_Longbox/
 LIBRARY/
 ...
 ```
+
+The remaining broken path is the separate bind-export:
+
+```text
+reality.local:/export/fearless
+```
+
+That path currently mounts as an empty directory from Cirrus.
 
 ## What Was Verified
 
@@ -44,6 +45,16 @@ reality.local:/mnt/fearless /mnt/fearless nfs defaults,_netdev,nofail 0 0
 - remounting `/mnt/fearless` did not help
 - mounting to a fresh alternate client path `/mnt/fearless-test` still showed the same wrong tree
 - forcing NFSv3 instead of NFSv4 still showed the same wrong tree
+- `showmount -e 192.168.1.126` currently advertises both `/mnt/fearless` and `/export/fearless`
+- a fresh privileged mount of `192.168.1.126:/mnt/fearless` on a temporary probe path returned the expected `A/books/comics/...` tree
+- a fresh privileged mount of `192.168.1.126:/export/fearless` on a separate temporary probe path returned an empty directory
+- Cirrus was then restored to the intended live mount:
+
+```bash
+sudo mount /mnt/fearless
+findmnt /mnt/fearless
+ls -la /mnt/fearless | sed -n '1,80p'
+```
 
 ### On reality.local
 
@@ -72,14 +83,14 @@ sudo mkdir -p /export/fearless
 sudo mount --bind /mnt/fearless /export/fearless
 ```
 
-But Cirrus mounting `reality.local:/export/fearless` still received the same wrong `ddump/input/marvel/...` tree.
+The live recheck on `2026-04-17` narrowed that result further: `reality.local:/export/fearless` currently mounts as an empty directory, not as the correct `fearless` tree.
 
 ## Current Conclusion
 
-- this is not a simple Cirrus client mount issue
-- this is not an NFSv4-only pseudoroot issue
-- this is not explained by `rpc.mountd` seeing the wrong namespace
-- the active export object presented to Cirrus is still wrong even when a fresh exported path is used
+- `reality.local:/mnt/fearless` is the correct export for Cirrus and is currently working
+- `reality.local:/export/fearless` is still broken server-side
+- the stale Cirrus-side test mount has been removed
+- the remaining problem is no longer "fearless is unavailable on Cirrus"; it is specifically "the optional bind-export path on reality.local does not present the expected object"
 
 ## Next Session
 
@@ -95,4 +106,5 @@ sudo cat /proc/fs/nfsd/exports
 Goal:
 - verify what `/export/fearless` looks like locally
 - verify what exact export objects the kernel NFS server thinks it is serving
-- only after that decide whether to rebuild the bind mount and exports again
+- decide whether `/export/fearless` should be repaired or removed entirely
+- leave Cirrus using `reality.local:/mnt/fearless` unless a concrete server-side reason appears to change that
