@@ -109,3 +109,32 @@
 - Restored the commented `reality.local:/etc/fstab` bind-mount block for lines `44` through `57`, including `/mnt/DC`, `/mnt/pubs/Comics/Publishers/DC`, `/mnt/longbox`, `/mnt/shortbox`, the `FLBM-*` paths under `/home/Various-Downloads/Various/else-where`, and selected `grackle` library binds. Fixed the last entry's source typo from `Mylar-Shortbox-ROO` to `Mylar-Shortbox-ROOT` before enabling it.
 - Verified from Cirrus that `/mnt/DC` and `/mnt/shortbox` mounted cleanly over NFSv4 immediately after the bind-mount restore. `/mnt/longbox` initially failed over NFSv4 with `Stale file handle`, but still mounted over NFSv3, which narrowed the issue to the live NFSv4 export object rather than the bind mount itself.
 - Restarted `nfs-server` on `reality.local`, then re-tested from Cirrus and confirmed that `/mnt/longbox`, `/mnt/DC`, `/mnt/shortbox`, and `/mnt/fearless` all mounted cleanly again over NFSv4. `showmount -e localhost` remained correct, while `/proc/fs/nfsd/exports` stayed oddly sparse despite successful client mounts.
+- Created repo-side cross-host handoff templates under `templates/reality-library-handoff/` and used them to seed an external coordination workspace at `/mnt/phoenix/media/incoming/fearless-ssh/LIBRARY/FOUND_FILES/` with `README.md`, `HANDOFF.md`, `AGENTS.md`, and `DIALOG.md`, plus a mirrored `MISSING_ISSUES.md` at the library root.
+- Added a `## Starting Prompt` section to the external `FOUND_FILES/AGENTS.md` so a `reality.local` Codex agent can ingest the workflow, read the handoff files, and search the library tree for missing issues staged by demand from Cirrus.
+- Audited `/mnt/phoenix/media/incoming/fearless-ssh/LIBRARY/Archie Comics` as a bulk migration candidate: `1825` `.cbz`, all with parseable root `ComicInfo.xml`, `1770` with recoverable ComicVine refs / `mylar_valid`, and `55` holdbacks.
+- Classified the `55` Archie holdbacks and confirmed they are not duplicate-name or annual cases; they are mostly plain issues missing ComicVine refs plus a smaller digest/anthology/collection subset. Saved the holdback CSV at `/tmp/archie_holdbacks_2026_04_21.csv`.
+- Added `utilities/mylar_paced_import.py` as a conservative one-file-at-a-time importer, then proved it is the wrong path for Archie bulk migration because blind `forceProcess` against loose staged files still ends in `No matches for Manual Run`.
+- Confirmed that many Archie series directories contain `series.json` and/or `cvinfo`, and that `112` Archie directories have a usable ComicVine `comicid` in `series.json`.
+- Added `utilities/mylar_series_import.py` as the preferred series-aware Mylar migration tool. It reads `series.json`, adds the series to Mylar by ComicVine volume id, copies `.cbz` files into `ComicLocation`, then runs `recheckFiles` and `manualRename`.
+- Updated `utilities/README.md` to document the new Archie-oriented import helpers.
+- Proved the series-aware import path on a small Archie subset:
+  - `Comet (1983)` `2 / 2`
+  - `Fly Man (1965)` `8 / 8`
+  - `Adventures of the Jaguar (1961)` `15 / 15`
+- Verified that Mylar series rename normalization must happen after `recheckFiles`, using the web endpoint `/manualRename?comicid=<ComicID>`.
+- Continued the Archie plain-series lane and completed these additional imports:
+  - `Adventures of the Fly (1960)` `25 / 25`
+  - `Archie & Friends (1992)` `159 / 159`
+  - `The Black Hood (1983)` `3 / 3`
+  - `The Hangman (2015)` `4 / 4`
+  - `The Fly (1959)` `6 / 6`
+  - `Archie Comics (1942)` `113 / 113`
+  - `Archie at Riverdale High (1972)` `113 / 113`
+  - `Betty And Veronica: Summer Fun (1994)` `6 / 6`
+  - `Archie is Mr. Justice (2025)` `4 / 4`
+  - `Hangman Comics (1942)` `7 / 7`
+- Established that annuals/digests/special-format Archie directories need a separate lane and should be excluded from the automated `mylar_series_import.py` plain-series batches.
+- Confirmed source-coverage gaps rather than importer failures for:
+  - `Archie (1960)`: `546 / 553`, missing `151, 191, 237, 261, 266, 269, 489`
+  - `Black Hood Comics (1943)`: `10 / 11`, missing `15`
+- Added those confirmed gaps to repo-root `MISSING_ISSUES.md` and mirrored the same list into `/mnt/phoenix/media/incoming/fearless-ssh/LIBRARY/MISSING_ISSUES.md` so the `reality.local` search agent can work against a shared demand list.

@@ -35,3 +35,10 @@ Current utilities:
 - `rebuild_quarantine_cbz.py`: rebuild normalized `.cbz` files from extracted
   image folders under `/mnt/phoenix/media/incoming/cbr-quarantine`, verify the
   rebuilt archive, and delete the extracted working folder only after success
+- `mylar_paced_import.py`: slowly stage pre-tagged `.cbz` files into Mylar one
+  at a time, call `forceProcess` for a dedicated queue directory, and log
+  consumed vs rejected items so bulk imports can be throttled conservatively
+- `mylar_series_import.py`: import pre-organized series directories that
+  already carry `series.json` ComicVine volume ids by adding each series to
+  Mylar, copying issue files into the watched series folder, then calling
+  `recheckFiles` followed by `manualRename`

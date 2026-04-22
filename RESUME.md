@@ -119,15 +119,50 @@ Latest Docker result:
   - library source: `/mnt/phoenix/media/comics` mounted read-only
 - Current Mylar startup state is healthy apart from the expected missing ComicVine API key warning.
 - The current Pass 1 wrapper must prefer `/tmp/comictagger-pass1d/bin/comictagger`; direct ComicTagger writes against that environment succeeded for both the resolved slice and a bounded medium-confidence batch.
+- Cross-host search handoff is now established under `/mnt/phoenix/media/incoming/fearless-ssh/LIBRARY`:
+  - `MISSING_ISSUES.md` in the library root
+  - `FOUND_FILES/README.md`
+  - `FOUND_FILES/HANDOFF.md`
+  - `FOUND_FILES/AGENTS.md`
+  - `FOUND_FILES/DIALOG.md`
+- Matching repo-side templates now exist under `templates/reality-library-handoff/` so the external handoff workspace can be recreated or versioned cleanly.
+- `utilities/mylar_series_import.py` now exists as the preferred Archie-style bulk migration helper for pre-organized library trees with `series.json`. It adds series by ComicVine volume id, copies issue files into Mylar `ComicLocation`, then runs `recheckFiles` and `manualRename`.
+- `utilities/mylar_paced_import.py` also exists, but the older one-file-at-a-time `forceProcess` approach is not the right path for Archie bulk migration.
+- The active large-source migration lane is now `/mnt/phoenix/media/incoming/fearless-ssh/LIBRARY/Archie Comics`.
+- Audit of the Archie subtree established:
+  - `1825` `.cbz`
+  - `1825` root `ComicInfo.xml`
+  - `1770` recoverable ComicVine refs / `mylar_valid`
+  - `55` holdbacks
+- The `55` Archie holdbacks are tracked in `/tmp/archie_holdbacks_2026_04_21.csv`; they are mostly plain issues missing ComicVine refs plus a smaller digest/anthology subset, not duplicates or annuals.
+- The correct Archie migration path is now proven to be series-aware, not blind staged `forceProcess`.
+- Proven-complete Archie plain-series imports currently in Mylar:
+  - `Comet (1983)` `2 / 2`
+  - `Fly Man (1965)` `8 / 8`
+  - `Adventures of the Jaguar (1961)` `15 / 15`
+  - `Adventures of the Fly (1960)` `25 / 25`
+  - `Archie & Friends (1992)` `159 / 159`
+  - `The Black Hood (1983)` `3 / 3`
+  - `The Hangman (2015)` `4 / 4`
+  - `The Fly (1959)` `6 / 6`
+  - `Archie Comics (1942)` `113 / 113`
+  - `Archie at Riverdale High (1972)` `113 / 113`
+  - `Betty And Veronica: Summer Fun (1994)` `6 / 6`
+  - `Archie is Mr. Justice (2025)` `4 / 4`
+  - `Hangman Comics (1942)` `7 / 7`
+- Two Archie series are now confirmed source-limited rather than importer-broken:
+  - `Archie (1960)` `546 / 553`, missing `151, 191, 237, 261, 266, 269, 489`
+  - `Black Hood Comics (1943)` `10 / 11`, missing `15`
+- Those missing issues are now tracked in repo root `MISSING_ISSUES.md` and mirrored to `/mnt/phoenix/media/incoming/fearless-ssh/LIBRARY/MISSING_ISSUES.md`.
 
 ## Open Questions
 - Which desktop-oriented services are still intentionally enabled on Cirrus?
 
 ## Next Recommended Work
-1. Complete Kavita first-run setup against `/mnt/phoenix/media/comics` and verify it sees the small Mylar-populated library cleanly.
-2. Continue bounded medium-confidence Pass 1 work from the `112` live JDownloader files; do not broaden to the whole candidate set at once.
-3. Leave normalized quarantine files in `metadata-review/quarantine-normalized` for explicit review rather than automatic promotion.
-4. Once Pass 1 stabilizes, begin testing the `weekly-lots` datasource and the proposed Pass X flow for already-known Mylar series.
+1. Continue the Archie plain-series migration lane with `utilities/mylar_series_import.py`, keeping annuals/digests/special-format directories out of the automated batch.
+2. Let the `reality.local` side use `LIBRARY/MISSING_ISSUES.md` plus `FOUND_FILES/` to search for the confirmed Archie source gaps and stage any matches.
+3. Keep Pass 1 focused on the live JDownloader queue separately; do not mix bulk Archie migration with weak JDownloader resolver candidates.
+4. Revisit the `55` Archie holdbacks later as a smaller metadata-repair batch once the plain-series lane is exhausted.
 
 ## Additional Current Work
 - `reality.local:/mnt/fearless` is restored on Cirrus and currently mounts cleanly.
