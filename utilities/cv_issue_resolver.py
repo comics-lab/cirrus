@@ -19,6 +19,7 @@ import argparse
 import configparser
 import csv
 import json
+import os
 import re
 import time
 import urllib.error
@@ -138,6 +139,46 @@ def parse_root_comicinfo(path: Path) -> dict[str, str]:
         "publisher": text("Publisher"),
         "title": text("Title"),
     }
+
+
+def find_parent_sidecar(path: Path, filename: str) -> Path | None:
+    current = path.parent.resolve()
+    root = current.anchor
+    while True:
+        candidate = current / filename
+        if candidate.exists():
+            return candidate
+        if str(current) == root:
+            return None
+        current = current.parent
+
+
+def parse_series_json(path: Path) -> dict[str, str]:
+    sidecar = find_parent_sidecar(path, "series.json")
+    if not sidecar:
+        return {}
+    try:
+        payload = json.loads(sidecar.read_text(encoding="utf-8", errors="replace"))
+    except Exception:
+        return {}
+    meta = payload.get("metadata", {})
+    if isinstance(meta, list):
+        meta = meta[0] if meta else {}
+    if not isinstance(meta, dict):
+        return {}
+    return {
+        "series": str(meta.get("name") or meta.get("series") or "").strip(),
+        "publisher": str(meta.get("publisher") or "").strip(),
+        "year": str(meta.get("year") or "").strip(),
+        "comicid": str(meta.get("comicid") or "").strip(),
+    }
+
+
+def normalize_year(value: str) -> str:
+    if not value:
+        return ""
+    match = re.search(r"\b(19|20)\d{2}\b", value)
+    return match.group(0) if match else ""
 
 
 def normalize_name(value: str) -> str:
@@ -363,12 +404,14 @@ def resolve_issue(
     rate: float,
 ) -> ResolutionRow:
     ci = parse_root_comicinfo(path)
+    sj = parse_series_json(path)
     inferred = infer_from_path(path)
-    series = ci.get("series") or inferred["series"]
+    series = ci.get("series") or sj.get("series") or inferred["series"]
     number = ci.get("number") or inferred["number"]
-    year = ci.get("year") or inferred["year"]
-    publisher = ci.get("publisher") or inferred["publisher"]
+    year = normalize_year(ci.get("year") or "") or normalize_year(sj.get("year") or "") or inferred["year"]
+    publisher = ci.get("publisher") or sj.get("publisher") or inferred["publisher"]
     title = ci.get("title") or inferred["title"]
+    trusted_comicid = sj.get("comicid") or ""
 
     if not series:
         return ResolutionRow(
@@ -389,34 +432,59 @@ def resolve_issue(
             note="no_series_guess",
         )
 
-    try:
-        vol_search = cv_request(
-            base_url=base_url,
-            api_key=api_key,
-            user_agent=user_agent,
-            endpoint="search",
-            params={"resources": "volume", "query": series, "limit": "20"},
-        )
-    except Exception as exc:
-        return ResolutionRow(
-            cbz_path=str(path),
-            series_guess=series,
-            issue_number_guess=number,
-            year_guess=year,
-            publisher_guess=publisher,
-            volume_id="",
-            volume_name="",
-            volume_year="",
-            issue_id="",
-            issue_name="",
-            issue_cover_date="",
-            candidate_score="",
-            confidence="none",
-            status="error",
-            note=f"volume_search_failed: {exc}",
-        )
+    volume: Candidate | None = None
+    trusted_volume = False
+    if trusted_comicid:
+        try:
+            vol_detail = cv_request(
+                base_url=base_url,
+                api_key=api_key,
+                user_agent=user_agent,
+                endpoint="volume/4050-" + trusted_comicid,
+                params={},
+            )
+            result = vol_detail.get("results") or {}
+            if result:
+                volume = Candidate(
+                    volume_id=str(result.get("id") or trusted_comicid),
+                    volume_name=normalize_name(result.get("name") or series),
+                    volume_year=str(result.get("start_year") or year or ""),
+                    publisher=normalize_name((result.get("publisher") or {}).get("name") or publisher),
+                    score=100,
+                )
+                trusted_volume = True
+        except Exception:
+            volume = None
 
-    volume = best_volume_match(vol_search.get("results", []), series, year, publisher, title)
+    if volume is None:
+        try:
+            vol_search = cv_request(
+                base_url=base_url,
+                api_key=api_key,
+                user_agent=user_agent,
+                endpoint="search",
+                params={"resources": "volume", "query": series, "limit": "20"},
+            )
+        except Exception as exc:
+            return ResolutionRow(
+                cbz_path=str(path),
+                series_guess=series,
+                issue_number_guess=number,
+                year_guess=year,
+                publisher_guess=publisher,
+                volume_id="",
+                volume_name="",
+                volume_year="",
+                issue_id="",
+                issue_name="",
+                issue_cover_date="",
+                candidate_score="",
+                confidence="none",
+                status="error",
+                note=f"volume_search_failed: {exc}",
+            )
+        volume = best_volume_match(vol_search.get("results", []), series, year, publisher, title)
+
     if volume is None or not volume.volume_id:
         return ResolutionRow(
             cbz_path=str(path),
@@ -525,7 +593,11 @@ def resolve_issue(
     confidence = "none"
     status = "unresolved"
     if issue_id:
-        if volume.score >= 10 and note not in {"issue_search_fallback"}:
+        if trusted_volume:
+            confidence = "high"
+            status = "resolved"
+            note = note or "trusted_series_json_volume"
+        elif volume.score >= 10 and note not in {"issue_search_fallback"}:
             confidence = "high"
             status = "resolved"
         elif volume.score >= 7:

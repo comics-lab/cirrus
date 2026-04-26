@@ -192,3 +192,39 @@ Latest Docker result:
 
 Separate note cleared:
 - `reality.local` is back online, so the temporary `fearless` recovery incident is no longer part of the active Cirrus handoff.
+
+## New Current Resume Point
+- The external `FOUND_FILES` handoff from `fearless-ssh/LIBRARY` has now been imported back into the repo under `imports/fearless-library-handoff-2026-04-22/` and reconciled against live Mylar state.
+- The previously missing `Archie (1960)` issues `151, 191, 237, 261, 266, 269, 489` and `Black Hood Comics (1943) #15` were copied from the staged `FOUND_FILES` set into the live Cirrus library, rescanned, renamed, and verified in Mylar as fully downloaded. `MISSING_ISSUES.md` is now empty.
+- `utilities/dc_finest_metadata.py` now exists to write ISBN/GCD/Metron-style rooted metadata for `DC Finest` books without using ComicVine IDs. Three `DC Finest` books were enriched with both `ComicInfo.xml` and `MetronInfo.xml` and moved into `/mnt/phoenix/media/comics/DC Comics/DC Finest/` for library use.
+- JDownloader was cleaned again and is now back to a structurally sane raw boundary:
+  - `98` `.cbz`
+  - `0` `.cbr`
+  - `0` `.zip`
+  - `4` `.pdf`
+- `utilities/seed_legacy_series_metadata.py` now exists and is the entry point for seeding JDownloader runs from legacy library sidecars plus the local GCD DB.
+- `utilities/cv_issue_resolver.py` has been patched so that if a parent `series.json` contains a trusted ComicVine `comicid`, the resolver uses that series identity first instead of fuzzy re-guessing the volume. It also now normalizes malformed year text into a real 4-digit year.
+- That seeded resolver workflow is now proven on JDownloader:
+  - `Ultimate Elektra` `5 / 5`
+  - `Mantra v1` `24 / 24`
+  - `Mantra v2` `7 / 7`
+  - `Superboy & The Ravers` `19 / 19`
+  - `Marvel Mutts Infinity Comic` `2 / 2`
+  - `Batgirl` `122 / 122`
+- Those `179` files were promoted out of JDownloader into `/mnt/phoenix/media/incoming/mylar-import`.
+- Mylar is correctly configured to watch `/mylar-imports`, and the container has been restarted and verified:
+  - `check_folder = /mylar-imports`
+  - `manual_pp_folder = /mylar-imports`
+  - `comic_dir = /mylar-imports`
+  - `download_scan_interval = 5`
+- Important negative result: blind `check_folder` consumption on the full `182`-file staged basket did not work as hoped. Mylar kept reprocessing already-known runs like `Superboy & The Ravers` and `Marvel Mutts Infinity Comic` as duplicate/post-process work instead of draining the basket.
+- To restore a sane staging boundary, `179` known-series files were moved out of `/mnt/phoenix/media/incoming/mylar-import` into `/mnt/phoenix/media/incoming/archive/mylar-import-cleanup/2026-04-26-known-series-duplicates`.
+- The live `mylar-import` basket is now intentionally reduced to only three standalone books:
+  - `52 Aftermath - The Four Horsemen v01 (2008)`
+  - `Batman - Detective v01 (2007)`
+  - `JLA - Salvation Run v01 (2016)`
+
+## Practical Next Step
+1. Let Mylar scan the reduced 3-file basket once and see whether those standalone books import cleanly.
+2. Do not re-stage large known-series runs through `mylar-import`; use the proven series-aware or seeded known-series lanes instead.
+3. Keep JDownloader as the active raw intake queue and only promote files into `mylar-import` when they are true standalone candidates for Mylar folder processing.

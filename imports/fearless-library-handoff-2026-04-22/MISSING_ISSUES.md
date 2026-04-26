@@ -8,7 +8,23 @@ or other source trees.
 
 ## Current Gaps
 
-- none currently tracked
+### Archie (1960)
+- ComicID: `9628`
+- Mylar state: `546 / 553`
+- Missing issues:
+  - `151`
+  - `191`
+  - `237`
+  - `261`
+  - `266`
+  - `269`
+  - `489`
+
+### Black Hood Comics (1943)
+- ComicID: `19398`
+- Mylar state: `10 / 11`
+- Missing issues:
+  - `15`
 
 ## Notes
 
@@ -16,6 +32,3 @@ or other source trees.
 - Do not add titles here for metadata failures, ComicVine mismatches, or
   annual/digest/special-format deferrals.
 - When a missing issue is found and imported, remove it from this file.
-- On `2026-04-25`, the previously tracked gaps for `Archie (1960)` and
-  `Black Hood Comics (1943)` were filled from the staged `FOUND_FILES` set and
-  verified in the live Mylar DB as `553 / 553` and `11 / 11`.
