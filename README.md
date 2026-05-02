@@ -68,3 +68,21 @@ The root documentation still contains some older working notes, but the intended
 - keep host truth and setup tasks at the root
 - keep larger lab book material under `the_lab/`
 - move org-wide architecture work into a separate project after Cirrus setup is complete
+
+## Wiki Sync
+
+This repo now includes a GitHub Actions workflow to sync selected markdown docs into the repository wiki.
+
+Required secret:
+
+- `WIKI_PUSH_TOKEN`: a token with permission to push to the repository wiki
+
+The workflow syncs:
+
+- `README.md`
+- `CURRENT_STATE.md`
+- `SETUP_PLAN.md`
+- `SERVICES.md`
+- `RESUME.md`
+- `Action-Log.md`
+- `docs/**`
