@@ -32,7 +32,7 @@ jobs:
       - name: Run wiki sync script
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          WIKI_PUSH_TOKEN: ${{ secrets.WIKI_PUSH_TOKEN }}
+          WIKI_PUSH_TOKEN: ${{ secrets.WIKI_PUSH_TOKEN || secrets.wiki_push_token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
           WIKI_SYNC_MODE: docs
