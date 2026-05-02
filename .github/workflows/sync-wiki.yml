@@ -1,0 +1,41 @@
+name: Sync docs to Wiki
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+      - 'README.md'
+      - 'CURRENT_STATE.md'
+      - 'SETUP_PLAN.md'
+      - 'SERVICES.md'
+      - 'RESUME.md'
+      - 'Action-Log.md'
+      - '.github/scripts/sync-to-wiki.sh'
+      - '.github/workflows/sync-wiki.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: wiki-sync-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync-wiki:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run wiki sync script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WIKI_PUSH_TOKEN: ${{ secrets.WIKI_PUSH_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+          WIKI_SYNC_MODE: docs
+          WIKI_HOME_SOURCE: README.md
+        run: |
+          bash .github/scripts/sync-to-wiki.sh
