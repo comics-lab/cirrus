@@ -20,6 +20,7 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 
 - `CURRENT_STATE.md`: concise implemented truth for the host
 - `docs/token-efficiency.md`: guidance on reducing token use with files, scripts, and bounded work
+- `docs/wiki-sync.md`: GitHub wiki sync setup and required secret
 - `SETUP_PLAN.md`: ordered next work for Cirrus
 - `SERVICES.md`: current live service baseline and keep/drop review queue
 - `RESUME.md`: normalized session handoff for the next restart
@@ -39,6 +40,7 @@ Current root docs:
 - `README.md`: repo purpose and navigation
 - `CURRENT_STATE.md`: implemented host truth
 - `docs/token-efficiency.md`: token-saving operating model and repo workflow guidance
+- `docs/wiki-sync.md`: wiki sync setup and secret/bootstrap notes
 - `SETUP_PLAN.md`: ordered remaining work
 - `SERVICES.md`: service inventory and baseline decision point
 - `RESUME.md`: next-session restart point
