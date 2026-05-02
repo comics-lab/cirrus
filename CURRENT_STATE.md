@@ -176,6 +176,7 @@ Root docs are partly redundant.
 Most useful current files:
 
 - `README.md`
+- `docs/token-efficiency.md`
 - `AGENTS.md`
 - `CURRENT_STATE.md`
 - `SETUP_PLAN.md`
