@@ -39,3 +39,14 @@ jobs:
           WIKI_HOME_SOURCE: README.md
         run: |
           bash .github/scripts/sync-to-wiki.sh
+
+      - name: Report wiki token wiring
+        if: always()
+        env:
+          WIKI_PUSH_TOKEN: ${{ secrets.WIKI_PUSH_TOKEN || secrets.wiki_push_token }}
+        run: |
+          if [[ -n "${WIKI_PUSH_TOKEN:-}" ]]; then
+            echo "Wiki token secret is present."
+          else
+            echo "Wiki token secret is missing."
+          fi
