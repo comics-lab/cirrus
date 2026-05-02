@@ -104,18 +104,15 @@ def run_comictagger(
 
     cmd = [
         str(comictagger_bin),
-        "--no-gui",
         "-s",
         "-o",
         "--id",
         issue_id,
-        "--source",
-        "comicvine",
-        "--comicvine-key",
+        "--cv-api-key",
         api_key,
-        "--comicvine-url",
+        "--cv-url",
         base_url,
-        "--tags-write",
+        "-t",
         "cr",
         str(cbz_path),
     ]
