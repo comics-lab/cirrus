@@ -55,13 +55,15 @@ Mylar runs from Docker Compose at:
 
 Update procedure:
 
+To update every service in the compose project:
+
 ```bash
 cd /srv/compose/mylar3
 docker compose pull
 docker compose up -d
 ```
 
-If you want to update only the Mylar image:
+To update only Mylar:
 
 ```bash
 cd /srv/compose/mylar3
@@ -83,13 +85,15 @@ Kavita runs from Docker Compose at:
 
 Update procedure:
 
+To update every service in the compose project:
+
 ```bash
 cd /srv/compose/kavita
 docker compose pull
 docker compose up -d
 ```
 
-If you want to update only the Kavita image:
+To update only Kavita:
 
 ```bash
 cd /srv/compose/kavita
@@ -140,19 +144,29 @@ Notes:
 
 Komga updates with the same container recreation pattern as the other Docker apps:
 
+To update every service in the compose project:
+
 ```bash
 cd /srv/compose/komga
 docker compose pull
 docker compose up -d
 ```
 
-If only the Komga image needs to be refreshed:
+To update only Komga:
 
 ```bash
 cd /srv/compose/komga
 docker compose pull komga
 docker compose up -d komga
 ```
+
+## Pull Scope Rule
+
+Use `docker compose pull` when you want the whole compose stack refreshed.
+
+Use `docker compose pull <service>` when you want only one image refreshed.
+
+In both cases, `docker compose up -d` is what recreates the container if the image changed.
 
 ## Practical Rule
 
