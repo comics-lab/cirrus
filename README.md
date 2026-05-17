@@ -24,6 +24,7 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `docs/media-server-maintenance.md`: update/install guide for Mylar, Kavita, and Komga
 - `docs/intake-to-mylar-workflow.md`: step-by-step JDownloader to Mylar import workflow
 - `docs/cbl-readinglists-cache.md`: local ComicVine cache from CBL reading lists
+- `docs/prepass-normalization.md`: normalization stage before Pass 1
 - `SETUP_PLAN.md`: ordered next work for Cirrus
 - `SERVICES.md`: current live service baseline and keep/drop review queue
 - `RESUME.md`: normalized session handoff for the next restart
@@ -47,6 +48,7 @@ Current root docs:
 - `docs/media-server-maintenance.md`: Docker maintenance guide for Mylar, Kavita, and Komga
 - `docs/intake-to-mylar-workflow.md`: operational flow from raw intake to Mylar import
 - `docs/cbl-readinglists-cache.md`: cached ComicVine lookup support from `.cbl` files
+- `docs/prepass-normalization.md`: pre-Pass 1 normalization stage
 - `SETUP_PLAN.md`: ordered remaining work
 - `SERVICES.md`: service inventory and baseline decision point
 - `RESUME.md`: next-session restart point

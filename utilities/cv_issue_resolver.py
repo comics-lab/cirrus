@@ -21,6 +21,7 @@ import csv
 import json
 import os
 import re
+import sqlite3
 import time
 import urllib.error
 import urllib.parse
@@ -36,6 +37,7 @@ from difflib import SequenceMatcher
 DEFAULT_ROOT = Path("/mnt/phoenix/media/incoming/jdownloader")
 DEFAULT_REPORT_DIR = Path("/mnt/phoenix/staging/cv_issue_resolver/reports")
 DEFAULT_CONFIG = Path("/home/rmleonard/Projects/mylar-library/config.ini")
+DEFAULT_CBL_DB = Path("/home/rmleonard/Projects/cirrus/data/cbl_lookup.sqlite3")
 
 
 @dataclass
@@ -187,6 +189,13 @@ def normalize_name(value: str) -> str:
     return value
 
 
+def normalize_lookup_key(value: str) -> str:
+    value = normalize_name(value).casefold()
+    value = value.replace("&", " and ")
+    value = re.sub(r"[^a-z0-9]+", " ", value)
+    return re.sub(r"\s+", " ", value).strip()
+
+
 def strip_release_noise(value: str) -> str:
     value = re.sub(r"\((?:digital|webrip|hybrid)[^)]+\)", "", value, flags=re.I)
     value = re.sub(r"\((?:graphic novel|tpb|hardcover|hard cover)[^)]+\)", "", value, flags=re.I)
@@ -254,6 +263,79 @@ def infer_from_path(path: Path) -> dict[str, str]:
         "title": infer_title_from_parent(parent_name),
         "publisher": "",
     }
+
+
+def load_cbl_cache(db_path: Path) -> sqlite3.Connection | None:
+    if not db_path.exists():
+        return None
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def query_cbl_cache(
+    conn: sqlite3.Connection | None,
+    series: str,
+    number: str,
+    year: str,
+    publisher: str,
+) -> tuple[Candidate | None, str]:
+    if conn is None or not series:
+        return None, "no_cbl_cache"
+
+    series_key = normalize_lookup_key(series)
+    number_key = number.strip()
+    year_key = year.strip()
+    publisher_key = normalize_lookup_key(publisher)
+
+    try:
+        rows = conn.execute(
+            """
+            SELECT series, number, volume, year, comicvine_series_id, comicvine_issue_id
+            FROM cbl_issue_lookup
+            WHERE lower(series) = lower(?)
+               OR lower(series) LIKE lower(?)
+            """,
+            (series, f"%{series}%"),
+        ).fetchall()
+    except Exception as exc:
+        return None, f"cbl_cache_query_failed: {exc}"
+
+    if not rows:
+        return None, "no_cbl_cache_match"
+
+    def row_score(row: sqlite3.Row) -> int:
+        score = 0
+        row_series = normalize_lookup_key(row["series"])
+        if row_series == series_key:
+            score += 6
+        elif series_key and series_key in row_series:
+            score += 4
+        elif row_series and row_series in series_key:
+            score += 3
+        if number_key and str(row["number"]).strip() == number_key:
+            score += 5
+        if year_key and str(row["year"]).strip() == year_key:
+            score += 2
+        row_pub = normalize_lookup_key(str(row["publisher"]) if "publisher" in row.keys() else "")
+        if publisher_key and row_pub == publisher_key:
+            score += 1
+        return score
+
+    best_row = max(rows, key=row_score)
+    scored = row_score(best_row)
+    if scored >= 7 and str(best_row["comicvine_issue_id"]).strip():
+        return (
+            Candidate(
+                volume_id=str(best_row["comicvine_series_id"]).strip(),
+                volume_name=normalize_name(best_row["series"]),
+                volume_year=str(best_row["volume"]).strip() or str(best_row["year"]).strip(),
+                publisher=publisher,
+                score=scored,
+            ),
+            "cbl_cache_resolved" if scored >= 10 else "cbl_cache_candidate",
+        )
+    return None, "cbl_cache_ambiguous"
 
 
 def text_similarity(left: str, right: str) -> float:
@@ -402,6 +484,7 @@ def resolve_issue(
     user_agent: str,
     base_url: str,
     rate: float,
+    cbl_db: Path | None = None,
 ) -> ResolutionRow:
     ci = parse_root_comicinfo(path)
     sj = parse_series_json(path)
@@ -434,6 +517,13 @@ def resolve_issue(
 
     volume: Candidate | None = None
     trusted_volume = False
+    cbl_conn = load_cbl_cache(cbl_db) if cbl_db else None
+    cbl_volume, cbl_note = query_cbl_cache(cbl_conn, series, number, year, publisher)
+    if cbl_volume is not None and cbl_volume.volume_id:
+        volume = cbl_volume
+        trusted_volume = True
+        if cbl_note:
+            note = cbl_note
     if trusted_comicid:
         try:
             vol_detail = cv_request(
@@ -634,12 +724,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--report", default="", help="Optional explicit CSV report path")
     parser.add_argument("--limit", type=int, default=0, help="Optional maximum number of .cbz files to inspect")
     parser.add_argument("--config", default=str(DEFAULT_CONFIG), help="Config file containing ComicVine settings")
+    parser.add_argument("--cbl-db", default=str(DEFAULT_CBL_DB), help="Local CBL cache database")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     api_key, user_agent, base_url, rate = load_cv_config(Path(args.config))
+    cbl_db = Path(args.cbl_db).resolve() if args.cbl_db else None
     root = Path(args.root).resolve()
     report_path = Path(args.report).resolve() if args.report else timestamped_report_path(DEFAULT_REPORT_DIR)
 
@@ -648,7 +740,7 @@ def main() -> int:
     for path in sorted(root.rglob("*.cbz")):
         if args.limit and count >= args.limit:
             break
-        rows.append(resolve_issue(path, api_key=api_key, user_agent=user_agent, base_url=base_url, rate=rate))
+        rows.append(resolve_issue(path, api_key=api_key, user_agent=user_agent, base_url=base_url, rate=rate, cbl_db=cbl_db))
         count += 1
 
     with report_path.open("w", newline="", encoding="utf-8") as fh:
