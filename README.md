@@ -23,6 +23,7 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `docs/wiki-sync.md`: GitHub wiki sync setup and required secret
 - `docs/media-server-maintenance.md`: update/install guide for Mylar, Kavita, and Komga
 - `docs/intake-to-mylar-workflow.md`: step-by-step JDownloader to Mylar import workflow
+- `docs/cbl-readinglists-cache.md`: local ComicVine cache from CBL reading lists
 - `SETUP_PLAN.md`: ordered next work for Cirrus
 - `SERVICES.md`: current live service baseline and keep/drop review queue
 - `RESUME.md`: normalized session handoff for the next restart
@@ -45,6 +46,7 @@ Current root docs:
 - `docs/wiki-sync.md`: wiki sync setup and secret/bootstrap notes
 - `docs/media-server-maintenance.md`: Docker maintenance guide for Mylar, Kavita, and Komga
 - `docs/intake-to-mylar-workflow.md`: operational flow from raw intake to Mylar import
+- `docs/cbl-readinglists-cache.md`: cached ComicVine lookup support from `.cbl` files
 - `SETUP_PLAN.md`: ordered remaining work
 - `SERVICES.md`: service inventory and baseline decision point
 - `RESUME.md`: next-session restart point
