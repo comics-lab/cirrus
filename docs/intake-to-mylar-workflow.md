@@ -44,10 +44,11 @@ Use the scripts in this order:
 
 1. extract `.zip` payloads
 2. convert `.cbr` to `.cbz`
-3. audit the resulting `.cbz`
-4. run Pass 1 only on high-confidence matches
-5. promote `mylar_valid` files into `mylar-import`
-6. let Mylar import from `mylar-import`
+3. run pre-pass normalization on files with local sidecars or cache matches
+4. audit the resulting `.cbz`
+5. run Pass 1 only on high-confidence matches
+6. promote `mylar_valid` files into `mylar-import`
+7. let Mylar import from `mylar-import`
 
 ## 1. Extract Zip Payloads
 
@@ -175,7 +176,48 @@ Likely outcomes:
 - `BadZipFile`
   - archive is broken or mislabeled
 
-## 4. Pass 1 Metadata Writing
+## 4. Pre-Pass Normalization
+
+Script:
+
+- `utilities/prepass_normalize.py`
+
+Default command:
+
+```bash
+python3 utilities/prepass_normalize.py
+```
+
+What it does:
+
+- scans `.cbz` under the intake root
+- reads local `series.json` and root `ComicInfo.xml`
+- consults the local CBL lookup cache
+- when the match is strong, moves the file into a publisher/series folder
+- writes rooted `ComicInfo.xml`
+- writes rooted `MetronInfo.xml`
+- emits a CSV report of normalized vs manual-review files
+
+Useful options:
+
+```bash
+python3 utilities/prepass_normalize.py --root /mnt/phoenix/media/incoming/jdownloader
+python3 utilities/prepass_normalize.py --cache-db /home/rmleonard/Projects/cirrus/data/cbl_lookup.sqlite3
+python3 utilities/prepass_normalize.py --report /tmp/prepass.csv
+```
+
+Likely outcomes:
+
+- `normalize_ready`
+  - strong local match; file was moved and rewritten
+- `manual_review`
+  - no strong local match
+  - leave it in intake or move to review
+- `target_exists`
+  - destination file already exists
+  - inspect before retrying
+
+## 5. Pass 1 Metadata Writing
 
 Script:
 
@@ -223,7 +265,7 @@ Important note:
 - the script uses a working ComicTagger CLI and is intentionally conservative
 - do not force `candidate` or `unresolved` rows into automatic tagging unless you have manually verified them
 
-## 5. Promote Ready Files Into Mylar Import
+## 6. Promote Ready Files Into Mylar Import
 
 Script:
 
@@ -259,7 +301,7 @@ Likely outcomes:
 - `skipped_webp`
   - ignore or handle separately
 
-## 6. Mylar Import
+## 7. Mylar Import
 
 Mylar watches:
 

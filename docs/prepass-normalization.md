@@ -36,6 +36,9 @@ Current behavior:
 - reads `series.json` from the parent chain when present
 - consults the local CBL cache
 - emits a report of strong matches vs manual-review files
+- when the cache match is strong, moves the file into a publisher/series folder
+- writes or refreshes rooted `ComicInfo.xml`
+- writes rooted `MetronInfo.xml`
 
 Default command:
 

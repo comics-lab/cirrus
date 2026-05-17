@@ -8,6 +8,8 @@ import csv
 import json
 import re
 import sqlite3
+import shutil
+import tempfile
 import zipfile
 from dataclasses import dataclass
 from datetime import datetime
@@ -46,6 +48,7 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--root", default=str(DEFAULT_ROOT))
     ap.add_argument("--cache-db", default=str(DEFAULT_CACHE_DB))
     ap.add_argument("--report", default="")
+    ap.add_argument("--dry-run", action="store_true")
     return ap.parse_args()
 
 
@@ -135,6 +138,70 @@ def query_cache(conn: sqlite3.Connection | None, series: str, issue: str, year: 
     return None, "ambiguous"
 
 
+def build_comicinfo(series: str, issue: str, year: str, publisher: str, volume: str, notes: str, web: str, comicvine_issue_id: str) -> bytes:
+    root = ET.Element("ComicInfo")
+
+    def add(tag: str, value: str | None) -> None:
+        if value is None or value == "":
+            return
+        ET.SubElement(root, tag).text = str(value)
+
+    add("Series", series)
+    add("Number", issue or "1")
+    add("Year", year)
+    add("Volume", volume or year or "1")
+    add("Publisher", publisher)
+    add("Notes", notes or (f"[CVDB:{comicvine_issue_id}]" if comicvine_issue_id else ""))
+    add("Web", web)
+    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
+
+
+def build_metroninfo(series: str, issue: str, year: str, publisher: str, comicvine_issue_id: str, comicvine_series_id: str) -> bytes:
+    root = ET.Element("MetronInfo")
+
+    def add(tag: str, value: str | None) -> None:
+        if value is None or value == "":
+            return
+        ET.SubElement(root, tag).text = str(value)
+
+    add("Series", series)
+    add("Number", issue or "1")
+    add("Year", year)
+    add("Publisher", publisher)
+    add("ComicVineSeriesId", comicvine_series_id)
+    add("ComicVineIssueId", comicvine_issue_id)
+    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
+
+
+def rewrite_zip(cbz: Path, comicinfo_xml: bytes, metroninfo_xml: bytes) -> None:
+    tmp = Path(tempfile.mkstemp(suffix=".cbz", dir=cbz.parent)[1])
+    try:
+        with zipfile.ZipFile(cbz, "r") as zin, zipfile.ZipFile(tmp, "w", compression=zipfile.ZIP_DEFLATED) as zout:
+            has_comicinfo = False
+            has_metroninfo = False
+            for item in zin.infolist():
+                lower = item.filename.lower()
+                if lower == "comicinfo.xml":
+                    has_comicinfo = True
+                    continue
+                if lower == "metroninfo.xml":
+                    has_metroninfo = True
+                    continue
+                zout.writestr(item, zin.read(item.filename))
+            if not has_comicinfo:
+                zout.writestr("ComicInfo.xml", comicinfo_xml)
+            else:
+                zout.writestr("ComicInfo.xml", comicinfo_xml)
+            if not has_metroninfo:
+                zout.writestr("MetronInfo.xml", metroninfo_xml)
+            else:
+                zout.writestr("MetronInfo.xml", metroninfo_xml)
+        tmp.replace(cbz)
+    finally:
+        if tmp.exists():
+            tmp.unlink(missing_ok=True)
+
+
 def main() -> int:
     args = parse_args()
     root = Path(args.root).resolve()
@@ -172,6 +239,45 @@ def main() -> int:
             )
             continue
 
+        target_publisher = publisher or "Unknown"
+        target_series = str(cache_row["series"]).strip()
+        target_volume = str(cache_row["volume"]).strip() or year or "1"
+        target_dir = root.parent / target_publisher / f"{target_series} ({target_volume})"
+        comicvine_issue_id = str(cache_row["comicvine_issue_id"]).strip()
+        comicvine_series_id = str(cache_row["comicvine_series_id"]).strip()
+        comicinfo_xml = build_comicinfo(
+            series=target_series,
+            issue=issue,
+            year=year,
+            publisher=target_publisher,
+            volume=target_volume,
+            notes=root_meta.get("notes") or (f"[CVDB:{comicvine_issue_id}]" if comicvine_issue_id else ""),
+            web=root_meta.get("web") or "",
+            comicvine_issue_id=comicvine_issue_id,
+        )
+        metroninfo_xml = build_metroninfo(
+            series=target_series,
+            issue=issue,
+            year=year,
+            publisher=target_publisher,
+            comicvine_issue_id=comicvine_issue_id,
+            comicvine_series_id=comicvine_series_id,
+        )
+        action = "normalize_ready"
+        note = "local_cache_match"
+        if not args.dry_run:
+            target_dir.mkdir(parents=True, exist_ok=True)
+            dest = target_dir / cbz.name
+            if cbz.parent != target_dir:
+                if dest.exists():
+                    action = "target_exists"
+                    note = "destination_exists"
+                else:
+                    shutil.move(str(cbz), str(dest))
+                    cbz = dest
+            if action == "normalize_ready":
+                rewrite_zip(cbz, comicinfo_xml, metroninfo_xml)
+
         rows.append(
             PrepassRow(
                 cbz_path=str(cbz),
@@ -180,11 +286,11 @@ def main() -> int:
                 year_guess=year,
                 publisher_guess=publisher,
                 cache_status=cache_status,
-                match_series=str(cache_row["series"]),
-                match_issue_id=str(cache_row["comicvine_issue_id"]),
-                match_series_id=str(cache_row["comicvine_series_id"]),
-                action="normalize_ready" if cache_status in {"issue_match", "unique_series"} else "review",
-                note="local_cache_match",
+                match_series=target_series,
+                match_issue_id=comicvine_issue_id,
+                match_series_id=comicvine_series_id,
+                action=action,
+                note=note,
             )
         )
 
