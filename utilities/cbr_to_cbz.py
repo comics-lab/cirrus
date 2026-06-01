@@ -33,6 +33,7 @@ DEFAULT_STAGING = Path("/mnt/phoenix/staging/cbr_to_cbz/originals")
 DEFAULT_REPORT_DIR = Path("/mnt/phoenix/staging/cbr_to_cbz/reports")
 DEFAULT_TMP_ROOT = Path("/tmp/cirrus-cbr-to-cbz")
 DEFAULT_EXTRACT_TIMEOUT = 120
+DEFAULT_SAFETY_BYTES = 2 * 1024**3
 
 
 @dataclass
@@ -107,6 +108,10 @@ def verify_cbz(path: Path) -> tuple[bool, str]:
     return True, ""
 
 
+def free_bytes_available(path: Path) -> int:
+    return shutil.disk_usage(path).free
+
+
 def classify_extract_failure(detail: str) -> str:
     lowered = detail.lower()
     if "timed out after" in lowered:
@@ -172,6 +177,16 @@ def convert_one(
 
     ensure_dir(staged_original.parent)
     ensure_dir(tmp_root)
+
+    free_bytes = free_bytes_available(src.parent)
+    required_bytes = src.stat().st_size * 2
+    if free_bytes < required_bytes + DEFAULT_SAFETY_BYTES:
+        return ConversionResult(
+            str(src),
+            str(dst_cbz),
+            "skip_no_space",
+            f"free={free_bytes}; required={required_bytes}; safety={DEFAULT_SAFETY_BYTES}",
+        )
 
     temp_dir = Path(tempfile.mkdtemp(prefix="extract_", dir=tmp_root))
     try:

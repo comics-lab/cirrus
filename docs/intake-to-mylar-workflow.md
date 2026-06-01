@@ -131,6 +131,9 @@ Likely errors:
 - `skip_exists`
   - a `.cbz` with the same name already exists
   - do not overwrite; compare or archive the duplicate
+- `skip_no_space`
+  - not enough free space on the target filesystem
+  - leave the source archive in place and retry later after cleanup
 - `extract_failed_corrupt`
   - the raw archive is probably damaged
   - quarantine it and inspect with another tool or re-download if needed
