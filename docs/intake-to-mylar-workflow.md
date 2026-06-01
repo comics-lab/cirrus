@@ -68,6 +68,14 @@ What it does:
 - extracts `.cbz`, `.cbr`, and `.pdf` entries from `.zip` files
 - skips entries with `webp` in the name
 - moves processed zips into `/mnt/phoenix/media/incoming/archive`
+- if a zip filename itself contains `webp`, it is left in place and not archived
+- if the extracted payload would exceed available space on the target filesystem, the zip is left in place and not archived
+
+For weekly packs or other alternate roots, pass the root explicitly:
+
+```bash
+python3 utilities/extract_zip_payloads.py --root /mnt/phoenix/media/incoming/weekly-lots
+```
 
 Useful options:
 
