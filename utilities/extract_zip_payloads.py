@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import re
 import shutil
 import zipfile
 from dataclasses import dataclass
@@ -56,7 +57,10 @@ def should_skip_entry(name: str) -> bool:
 
 
 def should_skip_archive(zip_path: Path) -> bool:
-    return "webp" in zip_path.name.casefold()
+    name = zip_path.name.casefold()
+    if "webp" in name:
+        return True
+    return bool(re.search(r"\b20\d{2}\.\d{2}\.\d{2}\b.*\bweek\b|\bweek\b.*\b20\d{2}\.\d{2}\.\d{2}\b", name))
 
 
 def target_for_member(parent: Path, member_name: str) -> Path:

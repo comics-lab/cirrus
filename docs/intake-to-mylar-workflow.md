@@ -69,6 +69,7 @@ What it does:
 - skips entries with `webp` in the name
 - moves processed zips into `/mnt/phoenix/media/incoming/archive`
 - if a zip filename itself contains `webp`, it is left in place and not archived
+- if a zip filename looks like a weekly pack date plus `week`, it is left in place and not archived
 - if the extracted payload would exceed available space on the target filesystem, the zip is left in place and not archived
 
 For weekly packs or other alternate roots, pass the root explicitly:
