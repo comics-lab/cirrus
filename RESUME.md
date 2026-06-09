@@ -223,8 +223,12 @@ Separate note cleared:
   - `52 Aftermath - The Four Horsemen v01 (2008)`
   - `Batman - Detective v01 (2007)`
   - `JLA - Salvation Run v01 (2016)`
+- Host optimization detour completed:
+  - dedicated Btrfs swap subvolume is active at `/swap`
+  - `/swap/swapfile` is active and zswap was verified with a pressure test
+  - the setup note lives in `docs/btrfs-swapfile.md`
 
 ## Practical Next Step
-1. Let Mylar scan the reduced 3-file basket once and see whether those standalone books import cleanly.
-2. Do not re-stage large known-series runs through `mylar-import`; use the proven series-aware or seeded known-series lanes instead.
+1. Return to the app/deployment track and pick up the next planned service work, starting with Immich deployment and phone/tablet migration planning.
+2. Keep the Archie plain-series migration lane paused until there is a deliberate batch to process.
 3. Keep JDownloader as the active raw intake queue and only promote files into `mylar-import` when they are true standalone candidates for Mylar folder processing.

@@ -196,5 +196,6 @@ The larger book structure under `the_lab/comics-lab-book/` exists, but much of i
 
 - Cirrus setup is not complete.
 - Phoenix has been reset as a clean Btrfs data volume, the initial subvolume layout exists, and the shared group/ACL baseline has been applied.
-- Docker is installed and application containers are deployed on Cirrus; current live services include JDownloader 2 and Mylar 3.
+- Docker is installed and application containers are deployed on Cirrus; current live services include JDownloader 2, Mylar 3, and Kavita.
+- `/swap` is active on a dedicated Btrfs subvolume and zswap has been verified under synthetic pressure; the procedure is documented in `docs/btrfs-swapfile.md`.
 - This repo should continue to document Cirrus itself, not the whole lab.

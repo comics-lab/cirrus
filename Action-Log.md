@@ -151,3 +151,11 @@
   - `Batman - Detective v01`
   - `JLA - Salvation Run v01`
 - Current conclusion: Mylar’s `check_folder` loop is useful for watched-series duplicate/post-process handling, but not as a bulk blind-import mechanism for a mixed staged basket. The next session should treat known-series runs with the series-aware lane and leave only true standalone import candidates in `mylar-import`.
+
+## 2026-06-08
+- Paused the comics-intake work for an out-of-band host optimization detour.
+- Verified and activated a dedicated Btrfs swap subvolume at `/swap`.
+- Rebuilt `/swap/swapfile` with `btrfs filesystem mkswapfile`.
+- Confirmed `swapon --show` and `free -h` report the swapfile active.
+- Verified zswap activity using `utilities/zswap_pressure_test.py`.
+- Added the swapfile procedure to `docs/btrfs-swapfile.md`.

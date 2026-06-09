@@ -60,6 +60,11 @@ def should_skip_archive(zip_path: Path) -> bool:
     name = zip_path.name.casefold()
     if "webp" in name:
         return True
+    return False
+
+
+def should_leave_in_place(zip_path: Path) -> bool:
+    name = zip_path.name.casefold()
     return bool(re.search(r"\b20\d{2}\.\d{2}\.\d{2}\b.*\bweek\b|\bweek\b.*\b20\d{2}\.\d{2}\.\d{2}\b", name))
 
 
@@ -171,11 +176,12 @@ def extract_one(zip_path: Path, scan_root: Path, archive_root: Path, dry_run: bo
                 if dry_run:
                     extracted_count += 1
                     continue
+                target.parent.mkdir(parents=True, exist_ok=True)
                 with zf.open(member) as src, target.open("wb") as dst:
                     shutil.copyfileobj(src, dst)
                 extracted_count += 1
 
-        if not dry_run:
+        if not dry_run and not should_leave_in_place(zip_path):
             archive_path.parent.mkdir(parents=True, exist_ok=True)
             shutil.move(str(zip_path), str(archive_path))
 
@@ -188,7 +194,7 @@ def extract_one(zip_path: Path, scan_root: Path, archive_root: Path, dry_run: bo
             skipped_webp_count=skipped_webp,
             required_bytes=required_bytes,
             free_bytes=free_bytes,
-            status="dry_run" if dry_run else "archived",
+            status="dry_run" if dry_run else ("weekly_left_in_place" if should_leave_in_place(zip_path) else "archived"),
             note="",
         )
     except zipfile.BadZipFile:
@@ -254,6 +260,8 @@ def main() -> int:
             writer.writerow(row.__dict__)
 
     archived = sum(1 for row in rows if row.status == "archived")
+    weekly_left_in_place = sum(1 for row in rows if row.status == "weekly_left_in_place")
+    skip_webp_archive = sum(1 for row in rows if row.status == "skip_webp_archive")
     dry_run = sum(1 for row in rows if row.status == "dry_run")
     no_payloads = sum(1 for row in rows if row.status == "no_payloads")
     skip_no_space = sum(1 for row in rows if row.status == "skip_no_space")
@@ -262,7 +270,8 @@ def main() -> int:
     print(f"archive_root={archive_root}")
     print(f"report={report_path}")
     print(
-        f"processed={len(rows)} archived={archived} dry_run={dry_run} "
+        f"processed={len(rows)} archived={archived} weekly_left_in_place={weekly_left_in_place} "
+        f"skip_webp_archive={skip_webp_archive} dry_run={dry_run} "
         f"no_payloads={no_payloads} skip_no_space={skip_no_space} failed={failed}"
     )
     return 0 if failed == 0 else 1
