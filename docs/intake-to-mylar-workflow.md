@@ -10,6 +10,8 @@ and getting them into:
 
 so Mylar3 can automatically consume them.
 
+For a visual overview of the same path, see [`docs/intake-flow-diagram.md`](./intake-flow-diagram.md).
+
 The rule is simple:
 
 - raw intake stays in `jdownloader`
@@ -125,6 +127,8 @@ python3 utilities/cbr_to_cbz.py --dry-run
 python3 utilities/cbr_to_cbz.py --limit 25
 python3 utilities/cbr_to_cbz.py --extract-timeout 180
 python3 utilities/cbr_to_cbz.py --root /path/to/other/root
+python3 utilities/cbr_to_cbz.py --triage-only
+python3 utilities/cbr_to_cbz.py --exclude cache --exclude metadata-review
 ```
 
 Likely errors:
@@ -144,6 +148,12 @@ Likely errors:
 - `verify_failed`
   - extraction succeeded but the rebuilt `.cbz` did not verify
   - do not promote it
+
+Triage mode:
+
+- `--triage-only` walks the tree, classifies `.cbr` candidates, and prints a per-folder summary without extracting anything
+- use it first on a bad batch to identify which directories are producing the most failures
+- then run real conversion with `--limit` or `--exclude` against only the clean subtrees
 
 ## 3. Audit CBZ Readiness
 

@@ -23,6 +23,7 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `docs/wiki-sync.md`: GitHub wiki sync setup and required secret
 - `docs/media-server-maintenance.md`: update/install guide for Mylar, Kavita, and Komga
 - `docs/intake-to-mylar-workflow.md`: step-by-step JDownloader to Mylar import workflow
+- `docs/intake-flow-diagram.md`: one-page visual map of the intake and handoff path
 - `docs/cbl-readinglists-cache.md`: local ComicVine cache from CBL reading lists
 - `docs/prepass-normalization.md`: normalization stage before Pass 1
 - `docs/btrfs-swapfile.md`: dedicated Btrfs subvolume swapfile setup
@@ -48,6 +49,7 @@ Current root docs:
 - `docs/wiki-sync.md`: wiki sync setup and secret/bootstrap notes
 - `docs/media-server-maintenance.md`: Docker maintenance guide for Mylar, Kavita, and Komga
 - `docs/intake-to-mylar-workflow.md`: operational flow from raw intake to Mylar import
+- `docs/intake-flow-diagram.md`: one-page visual map of the intake and handoff path
 - `docs/cbl-readinglists-cache.md`: cached ComicVine lookup support from `.cbl` files
 - `docs/prepass-normalization.md`: pre-Pass 1 normalization stage
 - `docs/btrfs-swapfile.md`: Btrfs swapfile setup using a dedicated subvolume
