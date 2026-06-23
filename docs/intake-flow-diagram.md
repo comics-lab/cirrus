@@ -30,12 +30,12 @@ flowchart TD
     G --> G3[Failure lane candidate unresolved API error weak match]
     G --> H[Promote Mylar-valid archives utilities/promote_mylar_import.py]
     H --> H1[Moves only files that pass audit]
-    H --> H2[/mnt/phoenix/media/incoming/mylar-import]
+    H --> H2[Mylar staging directory]
     H --> H3[Failure lane not_mylar_valid skipped_webp]
-    H2 --> I[Mylar container consumes the staged file /mylar-imports]
+    H2 --> I[Mylar container consumes the staged file]
     I --> J[Library placement / post-processing]
     K[Optional paced path utilities/mylar_paced_import.py] --> K1[Stages one file at a time into Mylar queue]
-    K1 --> K2[Reject lane /mnt/phoenix/media/incoming/mylar-import/paced-rejects]
+    K1 --> K2[Reject lane paced-rejects]
 ```
 
 ## Source To Field Map
