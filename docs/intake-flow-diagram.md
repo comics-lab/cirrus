@@ -12,38 +12,30 @@ Mylar then watches the container path:
 
 ```mermaid
 flowchart TD
-    A[JDownloader / torrent download lands in<br/>/mnt/phoenix/media/incoming/jdownloader] --> B[Extract zip payloads<br/>utilities/extract_zip_payloads.py]
-    A --> C[Convert .cbr to .cbz<br/>utilities/cbr_to_cbz.py]
-
-    B --> B1[Failure lane<br/>zip corrupt / no payloads / webp-only / already expanded]
-    C --> C1[Failure lane<br/>unsupported archive method / corrupt archive / no space / verify failed]
-
+    A[JDownloader or torrent download lands in /mnt/phoenix/media/incoming/jdownloader] --> B[Extract zip payloads utilities/extract_zip_payloads.py]
+    A --> C[Convert cbr to cbz utilities/cbr_to_cbz.py]
+    B --> B1[Failure lane zip corrupt no payloads webp-only already expanded]
+    C --> C1[Failure lane unsupported archive method corrupt archive no space verify failed]
     B --> D[Resulting archives in intake tree]
     C --> D
-
-    D --> E[Audit structural readiness<br/>utilities/cbz_audit.py]
-    E --> E1[Failure lane<br/>bad zip / missing ComicInfo.xml / missing Series or Number / no ComicVine ref]
-
-    E --> F[Pre-pass normalization<br/>utilities/prepass_normalize.py]
-    F --> F1[Inputs:<br/>series.json<br/>root ComicInfo.xml<br/>local CBL cache<br/>seeded series cache]
-    F --> F2[Writes or refreshes:<br/>ComicInfo.xml<br/>MetronInfo.xml<br/>publisher/series folder placement]
-    F --> F3[Failure lane<br/>no strong local match / ambiguous issue / manual review]
-
-    F --> G[Pass 1 metadata write<br/>utilities/pass1_write_comicinfo.py]
-    G --> G1[Inputs:<br/>ComicVine API + local resolver cache + ComicInfo.xml + series.json + CBL cache]
-    G --> G2[Populates or updates:<br/>Series<br/>Number<br/>Year<br/>Publisher<br/>Volume<br/>Notes<br/>Web<br/>ComicVine issue id]
-    G --> G3[Failure lane<br/>candidate / unresolved / API error / weak match]
-
-    G --> H[Promote Mylar-valid archives<br/>utilities/promote_mylar_import.py]
+    D --> E[Audit structural readiness utilities/cbz_audit.py]
+    E --> E1[Failure lane bad zip missing ComicInfo.xml missing Series or Number no ComicVine ref]
+    E --> F[Pre-pass normalization utilities/prepass_normalize.py]
+    F --> F1[Inputs series.json root ComicInfo.xml local CBL cache seeded series cache]
+    F --> F2[Writes or refreshes ComicInfo.xml MetronInfo.xml publisher series folder placement]
+    F --> F3[Failure lane no strong local match ambiguous issue manual review]
+    F --> G[Pass 1 metadata write utilities/pass1_write_comicinfo.py]
+    G --> G1[Inputs ComicVine API local resolver cache ComicInfo.xml series.json CBL cache]
+    G --> G2[Populates or updates Series Number Year Publisher Volume Notes Web ComicVine issue id]
+    G --> G3[Failure lane candidate unresolved API error weak match]
+    G --> H[Promote Mylar-valid archives utilities/promote_mylar_import.py]
     H --> H1[Moves only files that pass audit]
     H --> H2[/mnt/phoenix/media/incoming/mylar-import]
-    H --> H3[Failure lane<br/>not_mylar_valid / skipped_webp]
-
-    H2 --> I[Mylar container consumes the staged file<br/>/mylar-imports]
+    H --> H3[Failure lane not_mylar_valid skipped_webp]
+    H2 --> I[Mylar container consumes the staged file /mylar-imports]
     I --> J[Library placement / post-processing]
-
-    K[Optional paced path<br/>utilities/mylar_paced_import.py] --> K1[Stages one file at a time into Mylar queue]
-    K1 --> K2[Reject lane<br/>/mnt/phoenix/media/incoming/mylar-import/paced-rejects]
+    K[Optional paced path utilities/mylar_paced_import.py] --> K1[Stages one file at a time into Mylar queue]
+    K1 --> K2[Reject lane /mnt/phoenix/media/incoming/mylar-import/paced-rejects]
 ```
 
 ## Source To Field Map
@@ -145,4 +137,3 @@ The file should end up in:
 and then be consumed by Mylar from:
 
 - `/mylar-imports`
-
