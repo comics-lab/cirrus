@@ -52,6 +52,24 @@ Use the scripts in this order:
 6. promote `mylar_valid` files into `mylar-import`
 7. let Mylar import from `mylar-import`
 
+If you want the normal Pass 1 handoff as one shell step, use:
+
+```bash
+./scripts/pass1_then_promote.sh
+```
+
+That wrapper runs:
+
+1. `utilities/pass1_write_comicinfo.py`
+2. `utilities/promote_mylar_import.py`
+
+Use the separate wrappers when you want to split the phases:
+
+```bash
+./scripts/pass1_batch.sh
+./scripts/promote_mylar_import.sh
+```
+
 ## 1. Extract Zip Payloads
 
 Script:
@@ -268,6 +286,13 @@ python3 utilities/pass1_write_comicinfo.py --dry-run
 python3 utilities/pass1_write_comicinfo.py --root /mnt/phoenix/media/incoming/jdownloader
 ```
 
+Shell wrapper:
+
+```bash
+./scripts/pass1_batch.sh
+./scripts/pass1_batch.sh /mnt/phoenix/media/incoming/jdownloader 500
+```
+
 Likely resolver states:
 
 - `resolved`
@@ -312,6 +337,13 @@ python3 utilities/promote_mylar_import.py --dry-run
 python3 utilities/promote_mylar_import.py --limit 20
 python3 utilities/promote_mylar_import.py --root /path/to/source
 python3 utilities/promote_mylar_import.py --dest /mnt/phoenix/media/incoming/mylar-import
+```
+
+Shell wrapper:
+
+```bash
+./scripts/promote_mylar_import.sh
+./scripts/promote_mylar_import.sh /mnt/phoenix/media/incoming/jdownloader /mnt/phoenix/media/incoming/mylar-import
 ```
 
 Likely outcomes:

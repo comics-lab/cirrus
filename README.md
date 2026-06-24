@@ -26,6 +26,9 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `docs/intake-flow-diagram.md`: one-page visual map of the intake and handoff path
 - `docs/cbl-readinglists-cache.md`: local ComicVine cache from CBL reading lists
 - `docs/prepass-normalization.md`: normalization stage before Pass 1
+- `scripts/pass1_batch.sh`: shell wrapper for Pass 1
+- `scripts/promote_mylar_import.sh`: shell wrapper for promotion into Mylar staging
+- `scripts/pass1_then_promote.sh`: combined Pass 1 plus promotion wrapper
 - `docs/btrfs-swapfile.md`: dedicated Btrfs subvolume swapfile setup
 - `SETUP_PLAN.md`: ordered next work for Cirrus
 - `SERVICES.md`: current live service baseline and keep/drop review queue
@@ -52,6 +55,9 @@ Current root docs:
 - `docs/intake-flow-diagram.md`: one-page visual map of the intake and handoff path
 - `docs/cbl-readinglists-cache.md`: cached ComicVine lookup support from `.cbl` files
 - `docs/prepass-normalization.md`: pre-Pass 1 normalization stage
+- `scripts/pass1_batch.sh`: Pass 1 shell wrapper
+- `scripts/promote_mylar_import.sh`: promotion shell wrapper
+- `scripts/pass1_then_promote.sh`: combined handoff shell wrapper
 - `docs/btrfs-swapfile.md`: Btrfs swapfile setup using a dedicated subvolume
 - `SETUP_PLAN.md`: ordered remaining work
 - `SERVICES.md`: service inventory and baseline decision point
