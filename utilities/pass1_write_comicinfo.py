@@ -32,6 +32,8 @@ from cv_issue_resolver import DEFAULT_CONFIG, ResolutionRow, load_cv_config, res
 DEFAULT_ROOT = Path("/mnt/phoenix/media/incoming")
 DEFAULT_REPORT_DIR = Path("/mnt/phoenix/staging/pass1_write_comicinfo/reports")
 DEFAULT_COMICTAGGER_CANDIDATES = [
+    Path("/home/rmleonard/Projects/comics/comictagger/.venv/bin/comictagger"),
+    Path("/home/rmleonard/Projects/comics-lab/comictagger/.venv/bin/comictagger"),
     Path("/tmp/comictagger-pass1d/bin/comictagger"),
     Path("/tmp/comictagger-pass1b/bin/comictagger"),
 ]
