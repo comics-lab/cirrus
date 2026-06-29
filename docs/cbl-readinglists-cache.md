@@ -41,6 +41,8 @@ The CSV report is written under:
 Script:
 
 - `utilities/build_cbl_cache.py`
+- `utilities/cbl_cache_match_report.py`
+- `utilities/cbl_cache_vs_library_report.py`
 
 Default command:
 
@@ -54,6 +56,10 @@ Useful options:
 python3 utilities/build_cbl_cache.py --dry-run
 python3 utilities/build_cbl_cache.py --root ../CBL-ReadingLists
 python3 utilities/build_cbl_cache.py --db /home/rmleonard/Projects/cirrus/data/cbl_lookup.sqlite3
+python3 utilities/cbl_cache_match_report.py --root ../CBL-ReadingLists
+python3 utilities/cbl_cache_match_report.py --db /home/rmleonard/Projects/cirrus/data/cbl_lookup.sqlite3
+python3 utilities/cbl_cache_vs_library_report.py
+python3 utilities/cbl_cache_vs_library_report.py --root /mnt/phoenix/media/comics --root /mnt/phoenix/media/incoming/mylar-import
 ```
 
 ## Why This Helps
@@ -70,3 +76,9 @@ The cache is a helper, not a source of truth.
 
 Use it when a file title or series name already looks like a known reading-list match.
 If the reading list is ambiguous or the issue number is unreliable, fall back to manual review or the normal resolver path.
+
+`cbl_cache_match_report.py` is the report companion when you want counts instead of rebuilding the cache.
+It tells you how many reading-list books are exact cache hits, series-only hits, ambiguous hits, or unmatched.
+
+`cbl_cache_vs_library_report.py` compares the cached reading-list ComicVine ids against existing CBZ archives in the comics library and Mylar staging basket.
+It tells you how many cached reading-list issues are already present versus still missing.
