@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+from collections import Counter, defaultdict
 import shutil
 import subprocess
 import sys
@@ -34,12 +35,25 @@ DEFAULT_REPORT_DIR = Path("/mnt/phoenix/staging/cbr_to_cbz/reports")
 DEFAULT_TMP_ROOT = Path("/tmp/cirrus-cbr-to-cbz")
 DEFAULT_EXTRACT_TIMEOUT = 120
 DEFAULT_SAFETY_BYTES = 2 * 1024**3
+DEFAULT_EXCLUDES = (
+    "cache",
+    "duplicates",
+    "metadata-review",
+    "mylar-import",
+)
 
 
 @dataclass
 class ConversionResult:
     src_cbr: str
     dst_cbz: str
+    status: str
+    detail: str = ""
+
+
+@dataclass
+class TriageResult:
+    src_cbr: str
     status: str
     detail: str = ""
 
@@ -53,6 +67,10 @@ def timestamped_report_path(report_dir: Path) -> Path:
     return report_dir / f"cbr_to_cbz_{ts}.csv"
 
 
+def normalize_excludes(values: list[str]) -> tuple[str, ...]:
+    return tuple(v.strip().lower() for v in values if v.strip())
+
+
 def command_exists(name: str) -> bool:
     return shutil.which(name) is not None
 
@@ -63,6 +81,14 @@ def run_extract_with_tool(
     tool: str,
     timeout_seconds: int,
 ) -> subprocess.CompletedProcess[bytes]:
+    if tool == "unrar":
+        return subprocess.run(
+            ["unrar", "x", "-o+", "-idq", str(src), str(dst_dir)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=timeout_seconds,
+            check=False,
+        )
     if tool == "unar":
         return subprocess.run(
             ["unar", "-q", "-f", "-o", str(dst_dir), str(src)],
@@ -87,6 +113,11 @@ def archive_relpath(root: Path, src: Path) -> Path:
         return Path(src.name)
 
 
+def is_excluded(path: Path, excludes: tuple[str, ...]) -> bool:
+    text = str(path).lower()
+    return any(fragment in text for fragment in excludes)
+
+
 def zip_tree(source_dir: Path, dst_cbz: Path) -> None:
     with zipfile.ZipFile(dst_cbz, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         for item in sorted(source_dir.rglob("*")):
@@ -106,6 +137,14 @@ def verify_cbz(path: Path) -> tuple[bool, str]:
     except Exception as exc:  # pragma: no cover - defensive path
         return False, str(exc)
     return True, ""
+
+
+def triage_one(src: Path, excludes: tuple[str, ...]) -> TriageResult:
+    if is_excluded(src, excludes):
+        return TriageResult(str(src), "excluded", "excluded_path")
+    if src.with_suffix(".cbz").exists():
+        return TriageResult(str(src), "skip_exists", "matching_cbz_exists")
+    return TriageResult(str(src), "candidate", "")
 
 
 def free_bytes_available(path: Path) -> int:
@@ -135,6 +174,17 @@ def extract_with_fallback(
 ) -> tuple[subprocess.CompletedProcess[bytes], str]:
     attempted: list[str] = []
     last_result: subprocess.CompletedProcess[bytes] | None = None
+
+    if command_exists("unrar"):
+        attempted.append("unrar")
+        try:
+            last_result = run_extract_with_tool(src, extracted, "unrar", timeout_seconds)
+        except subprocess.TimeoutExpired:
+            last_result = timeout_result("unrar", timeout_seconds)
+        if last_result.returncode == 0:
+            return last_result, "unrar"
+        shutil.rmtree(extracted, ignore_errors=True)
+        ensure_dir(extracted)
 
     if command_exists("unar"):
         attempted.append("unar")
@@ -281,6 +331,17 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Report what would be converted without changing files",
     )
+    parser.add_argument(
+        "--triage-only",
+        action="store_true",
+        help="Only classify files and print a failure summary without converting anything",
+    )
+    parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        help="Path fragment to exclude from processing; may be repeated",
+    )
     return parser.parse_args()
 
 
@@ -290,17 +351,27 @@ def main() -> int:
     staging_root = Path(args.staging).resolve()
     tmp_root = Path(args.tmp_root).resolve()
     report_path = Path(args.report).resolve() if args.report else timestamped_report_path(DEFAULT_REPORT_DIR)
+    excludes = normalize_excludes(list(DEFAULT_EXCLUDES) + list(args.exclude))
 
     if not scan_root.exists():
         print(f"scan root does not exist: {scan_root}", file=sys.stderr)
         return 2
 
     rows: list[ConversionResult] = []
+    triage_rows: list[TriageResult] = []
     processed = 0
 
     for src in iter_cbr_files(scan_root):
         if args.limit and processed >= args.limit:
             break
+        if args.triage_only:
+            triage_rows.append(triage_one(src, excludes))
+            processed += 1
+            continue
+        if is_excluded(src, excludes):
+            rows.append(ConversionResult(str(src), str(src.with_suffix(".cbz")), "excluded", "excluded_path"))
+            processed += 1
+            continue
         rows.append(
             convert_one(
                 src,
@@ -315,14 +386,31 @@ def main() -> int:
 
     write_report(report_path, rows)
 
+    if args.triage_only:
+        failure_counts = Counter(row.status for row in triage_rows)
+        folder_counts = defaultdict(Counter)
+        for row in triage_rows:
+            folder_counts[Path(row.src_cbr).parent.name][row.status] += 1
+        print(f"scan_root={scan_root}")
+        print(f"report={report_path}")
+        print(f"processed={len(triage_rows)} triage_only=1")
+        for status, count in sorted(failure_counts.items()):
+            print(f"{status}={count}")
+        print("by_folder=")
+        for folder, counts in sorted(folder_counts.items()):
+            summary = ", ".join(f"{status}:{count}" for status, count in sorted(counts.items()))
+            print(f"  {folder}: {summary}")
+        return 0
+
     converted = sum(1 for row in rows if row.status == "converted")
     skipped = sum(1 for row in rows if row.status == "skip_exists")
-    failed = sum(1 for row in rows if row.status not in {"converted", "skip_exists", "dry_run"})
+    excluded = sum(1 for row in rows if row.status == "excluded")
+    failed = sum(1 for row in rows if row.status not in {"converted", "skip_exists", "dry_run", "excluded"})
     dry_run = sum(1 for row in rows if row.status == "dry_run")
 
     print(f"scan_root={scan_root}")
     print(f"report={report_path}")
-    print(f"processed={len(rows)} converted={converted} skipped={skipped} dry_run={dry_run} failed={failed}")
+    print(f"processed={len(rows)} converted={converted} skipped={skipped} excluded={excluded} dry_run={dry_run} failed={failed}")
     return 0 if failed == 0 else 1
 
 

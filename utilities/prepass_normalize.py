@@ -138,6 +138,25 @@ def query_cache(conn: sqlite3.Connection | None, series: str, issue: str, year: 
     return None, "ambiguous"
 
 
+def pick_meta_value(*values: str) -> str:
+    for value in values:
+        if value and str(value).strip():
+            return str(value).strip()
+    return ""
+
+
+def extract_identifier_blob(root_meta: dict[str, str], sidecar: dict[str, str]) -> str:
+    fields = [
+        root_meta.get("notes", ""),
+        root_meta.get("web", ""),
+        sidecar.get("comicid", ""),
+        sidecar.get("series", ""),
+        sidecar.get("publisher", ""),
+        sidecar.get("year", ""),
+    ]
+    return " ".join(str(field) for field in fields if field)
+
+
 def build_comicinfo(series: str, issue: str, year: str, publisher: str, volume: str, notes: str, web: str, comicvine_issue_id: str) -> bytes:
     root = ET.Element("ComicInfo")
 
@@ -170,6 +189,58 @@ def build_metroninfo(series: str, issue: str, year: str, publisher: str, comicvi
     add("Publisher", publisher)
     add("ComicVineSeriesId", comicvine_series_id)
     add("ComicVineIssueId", comicvine_issue_id)
+    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
+
+
+def build_fallback_comicinfo(
+    *,
+    series: str,
+    issue: str,
+    year: str,
+    publisher: str,
+    volume: str,
+    notes: str,
+    web: str,
+) -> bytes:
+    root = ET.Element("ComicInfo")
+
+    def add(tag: str, value: str | None) -> None:
+        if value is None or value == "":
+            return
+        ET.SubElement(root, tag).text = str(value)
+
+    add("Series", series)
+    add("Number", issue or "1")
+    add("Year", year)
+    add("Volume", volume or year or "1")
+    add("Publisher", publisher)
+    add("Notes", notes)
+    add("Web", web)
+    return ET.tostring(root, encoding="utf-8", xml_declaration=True)
+
+
+def build_fallback_metroninfo(
+    *,
+    series: str,
+    issue: str,
+    year: str,
+    publisher: str,
+    notes: str,
+    web: str,
+) -> bytes:
+    root = ET.Element("MetronInfo")
+
+    def add(tag: str, value: str | None) -> None:
+        if value is None or value == "":
+            return
+        ET.SubElement(root, tag).text = str(value)
+
+    add("Series", series)
+    add("Number", issue or "1")
+    add("Year", year)
+    add("Publisher", publisher)
+    add("Notes", notes)
+    add("Web", web)
     return ET.tostring(root, encoding="utf-8", xml_declaration=True)
 
 
@@ -222,6 +293,61 @@ def main() -> int:
         issue = parse_issue_guess(cbz, root_meta)
         cache_row, cache_status = query_cache(conn, series, issue, year, publisher)
         if cache_row is None:
+            if not any([series, publisher, year, root_meta.get("notes"), root_meta.get("web"), sidecar.get("comicid")]):
+                rows.append(
+                    PrepassRow(
+                        cbz_path=str(cbz),
+                        series_guess=series,
+                        issue_guess=issue,
+                        year_guess=year,
+                        publisher_guess=publisher,
+                        cache_status=cache_status,
+                        match_series="",
+                        match_issue_id="",
+                        match_series_id="",
+                        action="manual_review",
+                        note="no_strong_local_match",
+                    )
+                )
+                continue
+
+            target_publisher = pick_meta_value(publisher, "Unknown")
+            target_series = pick_meta_value(series, sidecar.get("series"), cbz.stem)
+            target_volume = pick_meta_value(sidecar.get("comicid"), year, "1")
+            target_dir = root.parent / target_publisher / f"{target_series} ({target_volume})"
+            notes_blob = extract_identifier_blob(root_meta, sidecar) or root_meta.get("notes") or ""
+            comicinfo_xml = build_fallback_comicinfo(
+                series=target_series,
+                issue=issue,
+                year=year,
+                publisher=target_publisher,
+                volume=target_volume,
+                notes=notes_blob,
+                web=pick_meta_value(root_meta.get("web", ""), sidecar.get("comicid", "")),
+            )
+            metroninfo_xml = build_fallback_metroninfo(
+                series=target_series,
+                issue=issue,
+                year=year,
+                publisher=target_publisher,
+                notes=notes_blob,
+                web=pick_meta_value(root_meta.get("web", ""), sidecar.get("comicid", "")),
+            )
+            action = "normalize_ready"
+            note = "fallback_metadata"
+            if not args.dry_run:
+                target_dir.mkdir(parents=True, exist_ok=True)
+                dest = target_dir / cbz.name
+                if cbz.parent != target_dir:
+                    if dest.exists():
+                        action = "target_exists"
+                        note = "destination_exists"
+                    else:
+                        shutil.move(str(cbz), str(dest))
+                        cbz = dest
+                if action == "normalize_ready":
+                    rewrite_zip(cbz, comicinfo_xml, metroninfo_xml)
+
             rows.append(
                 PrepassRow(
                     cbz_path=str(cbz),
@@ -230,11 +356,11 @@ def main() -> int:
                     year_guess=year,
                     publisher_guess=publisher,
                     cache_status=cache_status,
-                    match_series="",
+                    match_series=target_series,
                     match_issue_id="",
                     match_series_id="",
-                    action="manual_review",
-                    note="no_strong_local_match",
+                    action=action,
+                    note=note,
                 )
             )
             continue

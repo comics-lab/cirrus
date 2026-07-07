@@ -29,6 +29,11 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `scripts/pass1_batch.sh`: shell wrapper for Pass 1
 - `scripts/promote_mylar_import.sh`: shell wrapper for promotion into Mylar staging
 - `scripts/pass1_then_promote.sh`: combined Pass 1 plus promotion wrapper
+- `scripts/file_cleanup.sh`: report-first intake cleanup, quarantine, and provenance-preserving wrapper
+- `scripts/file_cleanup_parallel.sh`: preconfigured parallel cleanup wrapper
+- `scripts/file_cleanup_apply.sh`: apply a previously generated cleanup report without rescanning
+- `scripts/refresh_intake_pipeline.sh`: full refresh pipeline from cache rebuild through pass1/promote
+- `utilities/intake_pipeline.py`: single Python entrypoint for the post-conversion intake pipeline
 - `docs/btrfs-swapfile.md`: dedicated Btrfs subvolume swapfile setup
 - `SETUP_PLAN.md`: ordered next work for Cirrus
 - `SERVICES.md`: current live service baseline and keep/drop review queue
@@ -58,6 +63,11 @@ Current root docs:
 - `scripts/pass1_batch.sh`: Pass 1 shell wrapper
 - `scripts/promote_mylar_import.sh`: promotion shell wrapper
 - `scripts/pass1_then_promote.sh`: combined handoff shell wrapper
+- `scripts/file_cleanup.sh`: file and directory cleanup wrapper with JSON reports and quarantine staging
+- `scripts/file_cleanup_parallel.sh`: parallel cleanup wrapper with a preset worker count
+- `scripts/file_cleanup_apply.sh`: replay a saved cleanup report as an apply step
+- `scripts/refresh_intake_pipeline.sh`: end-to-end intake refresh wrapper
+- `utilities/intake_pipeline.py`: consolidated Python pipeline entrypoint
 - `docs/btrfs-swapfile.md`: Btrfs swapfile setup using a dedicated subvolume
 - `SETUP_PLAN.md`: ordered remaining work
 - `SERVICES.md`: service inventory and baseline decision point
