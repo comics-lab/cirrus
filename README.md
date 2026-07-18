@@ -32,6 +32,8 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `docs/mylar-v3-buildout.md`: v3-only buildout normalizer for Mylar-shaped trees
 - `docs/comic-metadata-intake-contract.md`: metadata, provenance, confidence, and handoff contract
 - `docs/agent-skill-contract-inventory.md`: current agents, skills, contracts, and ownership map
+- `docs/Agent_Registry.md`: Cirrus-local agent roles and responsibilities
+- `docs/Director_Routing_Matrix.md`: deterministic request routing
 - `skills/comic-metadata-intake/SKILL.md`: bounded comic parser/intake agent guidance
 - `scripts/pass1_batch.sh`: shell wrapper for Pass 1
 - `scripts/promote_mylar_import.sh`: shell wrapper for promotion into Mylar staging
@@ -74,6 +76,8 @@ Current root docs:
 - `docs/mylar-v3-buildout.md`: staged buildout normalization for Mylar naming
 - `docs/comic-metadata-intake-contract.md`: contract for parser output and consumer handoff
 - `docs/agent-skill-contract-inventory.md`: agent, skill, and contract inventory
+- `docs/Agent_Registry.md`: local agent registry
+- `docs/Director_Routing_Matrix.md`: local routing matrix
 - `scripts/pass1_batch.sh`: Pass 1 shell wrapper
 - `scripts/promote_mylar_import.sh`: promotion shell wrapper
 - `scripts/pass1_then_promote.sh`: combined handoff shell wrapper
@@ -86,6 +90,7 @@ Current root docs:
 - `scripts/refresh_intake_pipeline.sh`: end-to-end intake refresh wrapper
 - `utilities/intake_pipeline.py`: consolidated Python pipeline entrypoint
 - `skills/comic-metadata-intake/SKILL.md`: comic metadata intake skill
+- `skills/library-ingest/SKILL.md`: general reversible library-ingest skill
 - `docs/btrfs-swapfile.md`: Btrfs swapfile setup using a dedicated subvolume
 - `SETUP_PLAN.md`: ordered remaining work
 - `SERVICES.md`: service inventory and baseline decision point

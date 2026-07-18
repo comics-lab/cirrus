@@ -9,6 +9,9 @@ exists.
 | Agent or control layer | Location | Role | Managing agent | Sub-agents |
 | --- | --- | --- | --- | --- |
 | Cirrus host agent | [`AGENTS.md`](../AGENTS.md) | Repository-scoped host, storage, service, and local comic-intake guidance | None | None |
+| Comic Metadata Intake Agent | [`skills/comic-metadata-intake/SKILL.md`](../skills/comic-metadata-intake/SKILL.md) | Comic archive metadata resolution and staging | [`docs/comic-metadata-intake-contract.md`](comic-metadata-intake-contract.md) | None |
+| Library Ingest Agent | [`docs/Agent_Contracts/Library_Ingest_Agent.md`](Agent_Contracts/Library_Ingest_Agent.md) | Reversible library discovery, enrichment, and layout work | [`skills/library-ingest/SKILL.md`](../skills/library-ingest/SKILL.md) | None |
+| Mylar Handoff Agent | [`docs/Agent_Contracts/Mylar_Handoff_Agent.md`](Agent_Contracts/Mylar_Handoff_Agent.md) | Approved promotion and post-import verification | [`skills/comic-metadata-intake/SKILL.md`](../skills/comic-metadata-intake/SKILL.md) | None |
 | Imported library handoff agent guidance | [`imports/fearless-library-handoff-2026-04-22/AGENTS.md`](../imports/fearless-library-handoff-2026-04-22/AGENTS.md) | Historical handoff material for the imported library | None; inactive in the Cirrus root | None |
 | Imported FOUND_FILES guidance | [`imports/fearless-library-handoff-2026-04-22/FOUND_FILES/AGENTS.md`](../imports/fearless-library-handoff-2026-04-22/FOUND_FILES/AGENTS.md) | Historical found-file handoff instructions | None; inactive in the Cirrus root | None |
 | Reality library handoff template | [`templates/reality-library-handoff/AGENTS.md`](../templates/reality-library-handoff/AGENTS.md) | Template for another host/library handoff | None; template only | None |
@@ -36,6 +39,9 @@ the skill for discovery; they do not create an agent or make the skill a sub-age
 | Contract | Location | Consumers | Scope |
 | --- | --- | --- | --- |
 | Comic Metadata Intake Contract | [`docs/comic-metadata-intake-contract.md`](comic-metadata-intake-contract.md) | Comic Metadata Intake skill; intake/resolver/materializer/promotion utilities | Archive states, provenance, source precedence, XML requirements, confidence, and Mylar handoff |
+| Library Ingest Agent Contract | [`docs/Agent_Contracts/Library_Ingest_Agent.md`](Agent_Contracts/Library_Ingest_Agent.md) | Library Ingest Agent | Reversible discovery, enrichment, layout, and integrity validation |
+| Comic Metadata Intake Agent Contract | [`docs/Agent_Contracts/Comic_Metadata_Intake_Agent.md`](Agent_Contracts/Comic_Metadata_Intake_Agent.md) | Comic Metadata Intake Agent | Identity resolution, provenance, mutation boundaries, and XML validation |
+| Mylar Handoff Agent Contract | [`docs/Agent_Contracts/Mylar_Handoff_Agent.md`](Agent_Contracts/Mylar_Handoff_Agent.md) | Mylar Handoff Agent | Approved promotion and post-import verification |
 
 No formal contracts currently exist for host truth, storage, hardening, services, or resume
 handoffs. Those areas are governed by their skill instructions and root documentation.
