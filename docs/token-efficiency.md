@@ -81,6 +81,10 @@ Good skill candidates:
 - library import workflow
 - metadata normalization workflow
 
+The comic-specific skill is intentionally bounded to metadata resolution and intake. It does
+not replace the host, storage, or service skills, and it should not be invoked for ordinary
+Docker or filesystem maintenance.
+
 If the workflow is still changing, a script or markdown note is usually better than a skill.
 
 ### 6. Keep Output Structured
@@ -128,6 +132,10 @@ Formalize scripts for:
 - ISBN-only library metadata
 - safe archive normalization
 - batch promotion into Mylar import baskets
+
+For comic parsing, prefer one inspect/resolve/materialize/promote pipeline with a saved JSON
+plan over separate agents repeatedly rescanning the same archives. The plan is the handoff
+between stages and is the main efficiency improvement.
 
 ### Agent Layer
 

@@ -40,15 +40,6 @@ Start in: `/home/rmleonard/Projects/cirrus`
 2. Decide whether `utilities/intake_pipeline.py` should stop shelling out and own the stage logic directly.
 3. Keep cleanup replay as the only report-driven apply step.
 4. Keep the `nproc` worker default and the live `.cbz` count limit behavior.
-- To restore a sane staging boundary, `179` known-series files were moved out of `/mnt/phoenix/media/incoming/mylar-import` into `/mnt/phoenix/media/incoming/archive/mylar-import-cleanup/2026-04-26-known-series-duplicates`.
-- The live `mylar-import` basket is now intentionally reduced to only three standalone books:
-  - `52 Aftermath - The Four Horsemen v01 (2008)`
-  - `Batman - Detective v01 (2007)`
-  - `JLA - Salvation Run v01 (2016)`
-- Host optimization detour completed:
-  - dedicated Btrfs swap subvolume is active at `/swap`
-  - `/swap/swapfile` is active and zswap was verified with a pressure test
-  - the setup note lives in `docs/btrfs-swapfile.md`
 
 ## Practical Next Step
 1. Return to the app/deployment track and pick up the next planned service work, starting with Immich deployment and phone/tablet migration planning.

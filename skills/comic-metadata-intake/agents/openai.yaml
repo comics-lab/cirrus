@@ -1,0 +1,4 @@
+interface:
+  display_name: "Comic Metadata Intake"
+  short_description: "Resolve and stage comic metadata safely."
+  default_prompt: "Parse comic archives, enrich metadata locally first, validate both XML files, and stage only safe Mylar/Kavita outputs."

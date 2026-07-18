@@ -25,10 +25,18 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `docs/intake-to-mylar-workflow.md`: step-by-step JDownloader to Mylar import workflow
 - `docs/intake-flow-diagram.md`: one-page visual map of the intake and handoff path
 - `docs/cbl-readinglists-cache.md`: local ComicVine cache from CBL reading lists
+- `docs/cbl-cache-collection-analysis.md`: collector-style analysis of the CBL cache
+- `docs/comicvine-ambiguity-verification.md`: review-only ComicVine ambiguity verifier
+- `docs/local-metadata-to-comicvine-resolution.md`: local GCD/Metron to ComicVine resolution flow
 - `docs/prepass-normalization.md`: normalization stage before Pass 1
+- `docs/mylar-v3-buildout.md`: v3-only buildout normalizer for Mylar-shaped trees
+- `docs/comic-metadata-intake-contract.md`: metadata, provenance, confidence, and handoff contract
+- `docs/agent-skill-contract-inventory.md`: current agents, skills, contracts, and ownership map
+- `skills/comic-metadata-intake/SKILL.md`: bounded comic parser/intake agent guidance
 - `scripts/pass1_batch.sh`: shell wrapper for Pass 1
 - `scripts/promote_mylar_import.sh`: shell wrapper for promotion into Mylar staging
 - `scripts/pass1_then_promote.sh`: combined Pass 1 plus promotion wrapper
+- `scripts/mylar_v3_buildout.sh`: v3-only Mylar buildout wrapper
 - `scripts/file_cleanup.sh`: report-first intake cleanup, quarantine, and provenance-preserving wrapper
 - `scripts/file_cleanup_parallel.sh`: preconfigured parallel cleanup wrapper
 - `scripts/file_cleanup_apply.sh`: apply a previously generated cleanup report without rescanning
@@ -59,15 +67,25 @@ Current root docs:
 - `docs/intake-to-mylar-workflow.md`: operational flow from raw intake to Mylar import
 - `docs/intake-flow-diagram.md`: one-page visual map of the intake and handoff path
 - `docs/cbl-readinglists-cache.md`: cached ComicVine lookup support from `.cbl` files
+- `docs/cbl-cache-collection-analysis.md`: collector-oriented analysis of cache uniqueness and ambiguity
+- `docs/comicvine-ambiguity-verification.md`: review-only ComicVine metadata verification flow
+- `docs/local-metadata-to-comicvine-resolution.md`: resolver for turning local metadata into ComicVine issue ids
 - `docs/prepass-normalization.md`: pre-Pass 1 normalization stage
+- `docs/mylar-v3-buildout.md`: staged buildout normalization for Mylar naming
+- `docs/comic-metadata-intake-contract.md`: contract for parser output and consumer handoff
+- `docs/agent-skill-contract-inventory.md`: agent, skill, and contract inventory
 - `scripts/pass1_batch.sh`: Pass 1 shell wrapper
 - `scripts/promote_mylar_import.sh`: promotion shell wrapper
 - `scripts/pass1_then_promote.sh`: combined handoff shell wrapper
+- `scripts/mylar_v3_buildout.sh`: v3 buildout shell wrapper
+- `scripts/verify_comicvine_ambiguity.sh`: ComicVine ambiguity verifier wrapper
+- `scripts/resolve_issue_from_local_metadata.sh`: local metadata to ComicVine resolver wrapper
 - `scripts/file_cleanup.sh`: file and directory cleanup wrapper with JSON reports and quarantine staging
 - `scripts/file_cleanup_parallel.sh`: parallel cleanup wrapper with a preset worker count
 - `scripts/file_cleanup_apply.sh`: replay a saved cleanup report as an apply step
 - `scripts/refresh_intake_pipeline.sh`: end-to-end intake refresh wrapper
 - `utilities/intake_pipeline.py`: consolidated Python pipeline entrypoint
+- `skills/comic-metadata-intake/SKILL.md`: comic metadata intake skill
 - `docs/btrfs-swapfile.md`: Btrfs swapfile setup using a dedicated subvolume
 - `SETUP_PLAN.md`: ordered remaining work
 - `SERVICES.md`: service inventory and baseline decision point

@@ -52,6 +52,13 @@ Use the scripts in this order:
 6. promote `mylar_valid` files into `mylar-import`
 7. let Mylar import from `mylar-import`
 
+If you are working a staged buildout tree that should be shaped before it enters
+Mylar, use the v3-only wrapper instead of the normal Pass 1 path:
+
+```bash
+./scripts/mylar_v3_buildout.sh /path/to/jdownloader /path/to/mylar-imports dry-run
+```
+
 If you want the normal Pass 1 handoff as one shell step, use:
 
 ```bash

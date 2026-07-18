@@ -42,3 +42,12 @@ Current utilities:
   already carry `series.json` ComicVine volume ids by adding each series to
   Mylar, copying issue files into the watched series folder, then calling
   `recheckFiles` followed by `manualRename`
+- `mylar_v3_buildout.py`: v3-only buildout normalizer that reshapes staged
+  branches toward Mylar's current folder/file templates, writes provenance into
+  `ComicInfo.xml` / `MetronInfo.xml`, and optionally promotes the branch into
+  the Mylar import root
+- `verify_comicvine_ambiguity.py`: review-only ComicVine verifier that checks
+  ambiguous issue ids against live ComicVine metadata with throttling and a CSV
+  report
+- `resolve_issue_from_local_metadata.py`: combine local GCD/Metron metadata with
+  the existing ComicVine resolver to recover a likely canonical issue id
