@@ -34,6 +34,7 @@ This repo is not the source of truth for comics-lab organization policy. It may 
 - `docs/agent-skill-contract-inventory.md`: current agents, skills, contracts, and ownership map
 - `docs/Agent_Registry.md`: Cirrus-local agent roles and responsibilities
 - `docs/Director_Routing_Matrix.md`: deterministic request routing
+- `docs/transmission-install.md`: deferred Docker Transmission installation and weekly-pack workflow
 - `skills/comic-metadata-intake/SKILL.md`: bounded comic parser/intake agent guidance
 - `scripts/pass1_batch.sh`: shell wrapper for Pass 1
 - `scripts/promote_mylar_import.sh`: shell wrapper for promotion into Mylar staging
@@ -78,6 +79,7 @@ Current root docs:
 - `docs/agent-skill-contract-inventory.md`: agent, skill, and contract inventory
 - `docs/Agent_Registry.md`: local agent registry
 - `docs/Director_Routing_Matrix.md`: local routing matrix
+- `docs/transmission-install.md`: Transmission deployment runbook
 - `scripts/pass1_batch.sh`: Pass 1 shell wrapper
 - `scripts/promote_mylar_import.sh`: promotion shell wrapper
 - `scripts/pass1_then_promote.sh`: combined handoff shell wrapper
