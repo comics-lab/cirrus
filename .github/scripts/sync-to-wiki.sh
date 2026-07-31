@@ -59,6 +59,7 @@ sidebar_title_for() {
     RESUME.md) printf '%s\n' "Resume" ;;
     Action-Log.md) printf '%s\n' "Action Log" ;;
     docs/token-efficiency.md) printf '%s\n' "Token Efficiency" ;;
+    docs/agent-skill-contract-inventory.md) printf '%s\n' "Agentic System Reference" ;;
     *)
       rel="${rel%.md}"
       rel="${rel##*/}"
